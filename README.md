@@ -1,61 +1,60 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sabrina Markon · Project Archive
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A curated collection of my real-world development work, built to showcase experience across legacy systems, modern stacks, and full application lifecycles.
 
-## About Laravel
+## 🔍 About
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This archive includes projects I've developed, maintained, or led—ranging from long-running client systems to creative side projects and team-built apps. Most are written in:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **PHP** (Laravel, custom frameworks, Magento 2 / Adobe Commerce)
+- **JavaScript** (React, jQuery, Node.js)
+- **Blade + Tailwind** (for modern Laravel views)
+- **MySQL/PostgreSQL** (for backend data)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+You can use this archive to:
+- View code and architecture examples
+- Understand my decision-making and technical approaches
+- Download summaries and interview-ready documentation
 
-## Learning Laravel
+## 🧠 Why This Archive Exists
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Most developers showcase only brand-new work. I’ve taken a different route—preserving legacy, real, and production-tested work I’ve done over the years.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Many projects were made under tight constraints (deadlines, client quirks, old systems), and I’ve included:
+- **Code insights**: What I knew, built, or learned
+- **Candidate context**: What this shows about me as a developer
+- **Files**: Each project may include a GitHub README, PDF summary, chat log, and interview questions
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📂 Featured Projects
 
-## Laravel Sponsors
+| Project | Summary | Tech Stack |
+|--------|---------|------------|
+| **PearlsOfWealth** | Custom email marketing platform that ran for 10+ years with 31 servers and automated peer-to-peer systems | PHP, MySQL, HTML, Bash |
+| **Banner Maker** | Laravel-based banner creator with user library, templates, and server-side rendering | Laravel 5.2, jQuery, ImageMagick |
+| *(More coming soon)* | Project summaries will be posted as I continue this archive | |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Each project includes links to:
+- GitHub repo or code folder
+- Project summary (`.docx`)
+- Interview-style Q&A
+- Real code analysis
 
-### Premium Partners
+## 🚀 What’s Next
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+This archive is part of a larger site hosted at [sabrinamarkon.com](https://sabrinamarkon.com) (in progress). Over time, I’ll include:
 
-## Contributing
+- Laravel Livewire/Inertia.js examples
+- A searchable archive browser
+- AI-assisted module generation (Laravel + OpenAI)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📫 Contact
 
-## Code of Conduct
+Want to collaborate or hire me?
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- 🔗 [LinkedIn](https://www.linkedin.com/in/sabrinamarkon/)
+- ✉️ Email: phpsitescripts@outlook.com
+- 🌎 Site (WIP): [sabrinamarkon.com](https://sabrinamarkon.com)
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> _“I don’t just write modern apps. I also clean up old ones, preserve what matters, and build systems that survive.”_
