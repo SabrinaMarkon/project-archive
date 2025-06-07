@@ -13,7 +13,7 @@ class AdminAccessTest extends TestCase
     public function test_guest_cannot_access_the_admin_area(): void
     {
         $response = $this->get('/admin');
-        $response->assertRedirect('/login'); // Breeze default for unauthenticated
+        $response->assertRedirect('/login');
     }
 
     public function test_non_admin_user_cannot_access_protected_admin_routes(): void
@@ -28,11 +28,14 @@ class AdminAccessTest extends TestCase
         }
     }
 
-    public function test_admin_user_can_access_admin_page(): void
+    public function test_admin_user_can_access_admin_area_pages(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);
+        $routes = ['/admin', '/dashboard'];
 
-        $response = $this->actingAs($admin)->get('/admin');
-        $response->assertOk(); // Will fail for now — we haven't made the route
+        foreach ($routes as $route) {
+            $response = $this->actingAs($admin)->get($route);
+            $response->assertOk();
+        }
     }
 }
