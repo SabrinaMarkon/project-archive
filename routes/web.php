@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AdminOnly;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,8 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/projects', [ProjectController::class, 'index']);
 
 Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
