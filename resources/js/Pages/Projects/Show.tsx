@@ -1,12 +1,6 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
-
-interface Project {
-    id: number;
-    title: string;
-    slug: string;
-    description: string;
-}
+import { Project } from '@/types/project';
 
 export default function Show({ project }: { project: Project }) {
     return (
