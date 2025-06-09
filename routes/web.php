@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('/projects', [ProjectController::class, 'index']);
+Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
 
 Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
