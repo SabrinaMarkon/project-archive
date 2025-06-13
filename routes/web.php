@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AdminOnly;
@@ -21,6 +22,10 @@ Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name
 Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
     Route::get('/admin', fn () => Inertia::render('Admin'))->name('admin');
+    Route::get('/admin/projects/create', function () {
+        return Inertia::render('Admin/Projects/Create');
+    });
+    Route::post('/admin/projects', [AdminProjectController::class, 'store']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
