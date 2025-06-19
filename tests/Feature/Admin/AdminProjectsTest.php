@@ -10,11 +10,18 @@ class AdminProjectsTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected User $admin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->admin = User::factory()->create(['is_admin' => true]);
+    }
+
     public function test_admin_user_can_create_a_project(): void
     {
-        $admin = User::factory()->create(['is_admin' => true]);
-
-        $response = $this->actingAs($admin)->post('/admin/projects', [
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
             'title' => 'Test Project',
             'slug' => 'test-project',
             'description' => 'This is a test project.',
@@ -31,13 +38,140 @@ class AdminProjectsTest extends TestCase
 
     public function test_admin_can_view_project_creation_form(): void
     {
-        $admin = User::factory()->create(['is_admin' => true]);
+        $response = $this->actingAs($this->admin)->get('/admin/projects/create');
 
-        $response = $this->actingAs($admin)->get('/admin/projects/create');
-    
         $response->assertOk();
-        $response->assertInertia(fn ($page) =>
+        $response->assertInertia(
+            fn($page) =>
             $page->component('Admin/Projects/Create')
         );
+    }
+
+    /**
+     * Form field validations: title
+     */
+    public function test_project_creation_requires_title(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => '',
+            'slug' => 'test-project',
+            'description' => 'Test project with no title',
+        ]);
+
+        $response->assertSessionHasErrors('title');
+    }
+
+    public function test_project_title_must_not_exceed_max_length(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => str_repeat('A', 256), // 256 characters
+            'slug' => 'test-project',
+            'description' => 'Too long title',
+        ]);
+
+        $response->assertSessionHasErrors('title');
+    }
+
+    public function test_project_title_must_be_unique(): void
+    {
+        // First project
+        $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Duplicate Title',
+            'slug' => 'first-slug',
+            'description' => 'First project',
+        ]);
+
+        $this->assertDatabaseCount('projects', 1);
+
+        // Second project with same title
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Duplicate Title',
+            'slug' => 'second-slug',
+            'description' => 'Second project',
+        ]);
+
+        $response->assertSessionHasErrors('title');
+    }
+
+    /**
+     * Form field validations: slug
+     */
+    public function test_project_creation_requires_slug(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => '',
+            'description' => 'Test project with no slug',
+        ]);
+
+        $response->assertSessionHasErrors('slug');
+    }
+
+    public function test_project_slug_must_not_exceed_max_length(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => str_repeat('A', 256),
+            'description' => 'Too long slug',
+        ]);
+
+        $response->assertSessionHasErrors('slug');
+    }
+
+    public function test_project_slug_must_be_unique(): void
+    {
+        // First project
+        $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'First Test Project',
+            'slug' => 'duplicate-slug',
+            'description' => 'First project',
+        ]);
+
+        $this->assertDatabaseCount('projects', 1);
+
+        // Second project with same slug
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Second Test Project',
+            'slug' => 'duplicate-slug',
+            'description' => 'Second project',
+        ]);
+
+        $response->assertSessionHasErrors('slug');
+    }
+
+    public function test_project_slug_must_be_properly_formatted(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => 'Invalid Slug!!!', // invalid because of spaces/special chars
+            'description' => 'Test project with improperly formatted slug.',
+        ]);
+
+        $response->assertSessionHasErrors('slug');
+    }
+
+    /**
+     * Form field validations: description
+     */
+    public function test_project_description_is_optional(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Project Without Description',
+            'slug' => 'no-description',
+            // no description field
+        ]);
+    
+        $response->assertSessionDoesntHaveErrors('description');
+    }
+
+    public function test_project_description_must_not_exceed_max_length(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => 'test-project',
+            'description' => str_repeat('A', 2001),
+        ]);
+
+        $response->assertSessionHasErrors('description');
     }
 }
