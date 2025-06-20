@@ -22,10 +22,12 @@ class StoreProjectRequest extends FormRequest
      */
     public function rules(): array
     {
+        $validation = json_decode(file_get_contents(resource_path('js/constants/validation.json')), true);
+
         return [
-            'title' => ['required', 'string', 'max:255', 'unique:projects,title'],
-            'slug' => ['required', 'string', 'max:100', 'unique:projects,slug', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
-            'description' => ['nullable', 'string', 'max:2000'],
+            'title' => ['required', 'string', 'max:' . $validation['MAX_TITLE_LENGTH'], 'unique:projects,title'],
+            'slug' => ['required', 'string', 'max:' . $validation['MAX_SLUG_LENGTH'], 'unique:projects,slug', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+            'description' => ['nullable', 'string', 'max:' . $validation['MAX_DESCRIPTION_LENGTH']],
         ];
     }
 }
