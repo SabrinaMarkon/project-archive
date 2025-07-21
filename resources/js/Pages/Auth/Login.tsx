@@ -12,7 +12,13 @@ export default function Login({
 }: {
     status?: string;
 }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    type FormData = {
+        email: string;
+        password: string;
+        remember: boolean;
+    };
+
+    const { data, setData, post, processing, errors, reset } = useForm<FormData>({
         email: '',
         password: '',
         remember: false,
