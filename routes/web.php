@@ -25,7 +25,11 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/admin/projects/create', function () {
         return Inertia::render('Admin/Projects/Create');
     });
+    Route::get('/admin/projects', [AdminProjectController::class, 'index']);
     Route::post('/admin/projects', [AdminProjectController::class, 'store']);
+    Route::get('/admin/projects/{project:slug}', function () {
+        return Inertia::render('Admin/Projects/Create');
+    });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

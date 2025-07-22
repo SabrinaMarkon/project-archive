@@ -52,11 +52,11 @@ export default function Create() {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Create Project
+                    Create or Edit Project
                 </h2>
             }
         >
-            <Head title="Create Project" />
+            <Head title="Create or Edit Project" />
 
             <div className="py-4 text-gray-900 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <form

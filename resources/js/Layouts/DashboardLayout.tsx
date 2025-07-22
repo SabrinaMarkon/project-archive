@@ -12,6 +12,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
         <nav className="flex flex-col space-y-2">
           <Link href="/dashboard" className="hover:text-blue-300">Dashboard</Link>
           <Link href="/admin/projects/create" className="hover:text-blue-300">Create Project</Link>
+          <Link href="/admin/projects" className="hover:text-blue-300">Project List</Link>
           <button onClick={() => router.post(route('logout'))} className="text-left hover:text-red-400">
             Logout
           </button>

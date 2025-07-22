@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
@@ -34,6 +35,38 @@ class AdminProjectsTest extends TestCase
         );
     }
 
+    /**
+     * Project list admin page
+     */
+    public function test_admin_can_see_project_list_page()
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/projects');
+
+        $response->assertStatus(200);
+        $response->assertInertia(
+            fn(AssertableInertia $page) =>
+            $page
+                ->component('Admin/Projects/Index')
+                ->has('auth')
+                ->where('auth.user.id', $this->admin->id)
+        );
+    }
+
+    public function test_projects_index_displays_project_list(): void
+    {
+        $projects = Project::factory()->count(3)->create();
+
+        $response = $this->actingAs($this->admin)->get('/admin/projects');
+
+        $response->assertStatus(200);
+        foreach ($projects as $project) {
+            $response->assertSee($project->title);
+        }
+    }
+
+    /**
+     * Create/edit project admin page
+     */
     public function test_admin_user_can_create_a_project(): void
     {
         $response = $this->actingAs($this->admin)->post('/admin/projects', [
@@ -60,6 +93,17 @@ class AdminProjectsTest extends TestCase
             fn($page) =>
             $page->component('Admin/Projects/Create')
         );
+    }
+
+    public function test_success_flash_message_is_set_after_project_creation(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Flash Test Project',
+            'slug' => 'flash-test-project',
+            'description' => 'Testing flash message',
+        ]);
+    
+        $response->assertSessionHas('success', 'Project created');
     }
 
     /**
@@ -188,16 +232,5 @@ class AdminProjectsTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('description');
-    }
-
-    public function test_success_flash_message_is_set_after_project_creation(): void
-    {
-        $response = $this->actingAs($this->admin)->post('/admin/projects', [
-            'title' => 'Flash Test Project',
-            'slug' => 'flash-test-project',
-            'description' => 'Testing flash message',
-        ]);
-    
-        $response->assertSessionHas('success', 'Project created');
     }
 }
