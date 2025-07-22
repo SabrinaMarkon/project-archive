@@ -189,4 +189,15 @@ class AdminProjectsTest extends TestCase
 
         $response->assertSessionHasErrors('description');
     }
+
+    public function test_success_flash_message_is_set_after_project_creation(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Flash Test Project',
+            'slug' => 'flash-test-project',
+            'description' => 'Testing flash message',
+        ]);
+    
+        $response->assertSessionHas('success', 'Project created');
+    }
 }

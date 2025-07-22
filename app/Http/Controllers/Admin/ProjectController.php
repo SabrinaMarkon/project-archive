@@ -15,6 +15,6 @@ class ProjectController extends Controller
     {
         $project = Project::create($request->validated());
 
-        return redirect("/projects/{$project->slug}");
+        return redirect("/projects/{$project->slug}")->with('success', 'Project created');
     }
 }
