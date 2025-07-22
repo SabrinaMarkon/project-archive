@@ -1,5 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DashboardLayout from '@/Layouts/DashboardLayout';
 import { Head } from '@inertiajs/react';
+
+Dashboard.layout = (page: React.ReactNode) => <DashboardLayout children={page} />;
 
 export default function Dashboard() {
     return (

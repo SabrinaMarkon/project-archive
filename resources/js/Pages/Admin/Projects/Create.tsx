@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import CharacterCount from "@/Components/CharacterCount";
+import DashboardLayout from '@/Layouts/DashboardLayout';
 import TextareaAutosize from "react-textarea-autosize";
 import * as validation from "@/constants/validation";
 import { formatSlug } from "@/utils/validation";
 import { useForm } from "@inertiajs/react";
+
+Create.layout = (page: React.ReactNode) => <DashboardLayout children={page} />;
 
 export default function Create() {
     const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);

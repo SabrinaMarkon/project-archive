@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class AdminProjectsTest extends TestCase
@@ -17,6 +18,20 @@ class AdminProjectsTest extends TestCase
         parent::setUp();
 
         $this->admin = User::factory()->create(['is_admin' => true]);
+    }
+
+    public function test_admin_can_see_dashboard_layout()
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/projects/create');
+
+        $response->assertStatus(200);
+        $response->assertInertia(
+            fn(AssertableInertia $page) =>
+            $page
+                ->component('Admin/Projects/Create')
+                ->has('auth')
+                ->where('auth.user.id', $this->admin->id)
+        );
     }
 
     public function test_admin_user_can_create_a_project(): void
@@ -160,7 +175,7 @@ class AdminProjectsTest extends TestCase
             'slug' => 'no-description',
             // no description field
         ]);
-    
+
         $response->assertSessionDoesntHaveErrors('description');
     }
 
