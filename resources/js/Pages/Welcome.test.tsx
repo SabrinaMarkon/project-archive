@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Welcome from '../Welcome';
+import Welcome from './Welcome';
 
 // Mock Inertia components
 vi.mock('@inertiajs/react', () => ({
