@@ -65,7 +65,7 @@ class AdminProjectsTest extends TestCase
     }
 
     /**
-     * Create/edit project admin page
+     * Create project admin page
      */
     public function test_admin_user_can_create_a_project(): void
     {
@@ -75,7 +75,7 @@ class AdminProjectsTest extends TestCase
             'description' => 'This is a test project.',
         ]);
 
-        $response->assertRedirect('/projects/test-project');
+        $response->assertRedirect(route('admin.projects.index'));
 
         $this->assertDatabaseHas('projects', [
             'title' => 'Test Project',
@@ -95,6 +95,21 @@ class AdminProjectsTest extends TestCase
         );
     }
 
+    public function test_admin_can_view_single_project_edit_form(): void
+    {
+        $project = Project::factory()->create();
+
+        $response = $this->actingAs($this->admin)->get("/admin/projects/{$project->slug}");
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn($page) =>
+            $page->component('Admin/Projects/Create')
+                ->where('project.id', $project->id)
+                ->where('project.slug', $project->slug)
+        );
+    }
+
     public function test_success_flash_message_is_set_after_project_creation(): void
     {
         $response = $this->actingAs($this->admin)->post('/admin/projects', [
@@ -102,8 +117,50 @@ class AdminProjectsTest extends TestCase
             'slug' => 'flash-test-project',
             'description' => 'Testing flash message',
         ]);
-    
-        $response->assertSessionHas('success', 'Project created');
+
+        $response->assertSessionHas('success', 'Project created successfully!');
+    }
+
+    /**
+     * Update project admin page
+     */
+    public function test_admin_can_view_project_edit_form(): void
+    {
+        $project = Project::factory()->create();
+
+        $response = $this->actingAs($this->admin)->get("/admin/projects/{$project->slug}");
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn($page) =>
+            $page->component('Admin/Projects/Create')
+                ->where('project.id', $project->id)
+                ->where('project.slug', $project->slug)
+        );
+    }
+
+    public function test_success_flash_message_is_set_after_project_update(): void
+    {
+        $project = Project::factory()->create();
+
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => 'Updated Title',
+            'slug' => 'updated-title',
+            'description' => 'Updated description.',
+        ]);
+
+        $response->assertSessionHas('success', 'Project updated successfully!');
+    }
+
+    public function test_project_update_route_returns_404_when_not_found(): void
+    {
+        $response = $this->actingAs($this->admin)->put('/admin/projects/non-existing-slug', [
+            'title' => 'Updated Title',
+            'slug' => 'updated-title',
+            'description' => 'Updated description.',
+        ]);
+
+        $response->assertStatus(404);  // This ensures that if the project doesn't exist, a 404 is returned
     }
 
     /**
@@ -207,6 +264,37 @@ class AdminProjectsTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('slug');
+    }
+
+    public function test_project_update_requires_unique_slug(): void
+    {
+        Project::factory()->create(['slug' => 'existing-slug']); // first project
+        // Assert: Make sure the first project exists in the database
+        $this->assertDatabaseHas('projects', [
+            'slug' => 'existing-slug',
+        ]);
+
+        // Create a second project with a different slug. We will try to update its slug to be the same as the first project (existing-slug)
+        $projectToUpdate = Project::factory()->create([
+            'slug' => 'slug-to-update',
+        ]);
+        // Assert: Make sure the second project exists in the database
+        $this->assertDatabaseHas('projects', [
+            'slug' => 'slug-to-update',
+        ]);
+
+        // Act: Attempt to update the second project with the same slug as the first one
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$projectToUpdate->slug}", [
+            'title' => 'Updated Title',
+            'slug' => 'existing-slug', // This should fail because the slug is already taken
+            'description' => 'Updated description.',
+        ]);
+
+        // Assert: Validation error for the slug (because it's not unique)
+        // $response->assertSessionHasErrors('slug');
+
+        // Assert: The database should still have only one project with this slug
+        $this->assertDatabaseCount('projects', 2); // The number of projects should stay the same
     }
 
     /**

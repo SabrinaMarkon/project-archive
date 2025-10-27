@@ -24,9 +24,24 @@ class StoreProjectRequest extends FormRequest
     {
         $validation = json_decode(file_get_contents(resource_path('js/constants/validation.json')), true);
 
+        // Check if we're updating a project or creating a new one. project ID will be null for a new project
+        // because it doesn't exist yet.
+        $projectId = $this->route('project') ? $this->route('project')->id : null;
+
         return [
-            'title' => ['required', 'string', 'max:' . $validation['MAX_TITLE_LENGTH'], 'unique:projects,title'],
-            'slug' => ['required', 'string', 'max:' . $validation['MAX_SLUG_LENGTH'], 'unique:projects,slug', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+            'title' => [
+                'required',
+                'string',
+                'max:' . $validation['MAX_TITLE_LENGTH'],
+                'unique:projects,title,' . $projectId, // unique:<table>,<column>,<ignore_id>. ignore_id is null for a new project
+            ],
+            'slug' => [
+                'required',
+                'string',
+                'max:' . $validation['MAX_SLUG_LENGTH'],
+                'unique:projects,slug,' . $projectId,
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+            ],
             'description' => ['nullable', 'string', 'max:' . $validation['MAX_DESCRIPTION_LENGTH']],
         ];
     }

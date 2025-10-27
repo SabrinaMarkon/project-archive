@@ -16,7 +16,7 @@ class ProjectController extends Controller
     {
         $projects = Project::all();
 
-        return \Inertia\Inertia::render('Admin/Projects/Index', [
+        return Inertia::render('Admin/Projects/Index', [
             'projects' => $projects,
         ]);
     }
@@ -26,9 +26,12 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return Inertia::render('Admin/Projects/Create', [
-            'project' => $project,
-        ]);
+        return Inertia::render(
+                'Admin/Projects/Create',
+                [
+                    'project' => $project,
+                ]
+            );
     }
 
     /**
@@ -38,6 +41,17 @@ class ProjectController extends Controller
     {
         $project = Project::create($request->validated());
 
-        return redirect("/projects/{$project->slug}")->with('success', 'Project created');
+        return redirect()->route('admin.projects.index')->with('success', 'Project created successfully!');
+    }
+
+    /**
+     * Update an existing project.
+     */
+    public function update(StoreProjectRequest $request, Project $project) // Validation is done automatically by StoreProjectRequest
+    {
+        // Use validated data to update the project record
+        $project->update($request->validated());
+
+        return redirect()->route('admin.projects.index')->with('success', 'Project updated successfully!');
     }
 }
