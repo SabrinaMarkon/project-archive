@@ -10,6 +10,11 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        hmr: {
+            host: 'localhost',
+        },
+    },
     test: {
         globals: true,
         environment: 'jsdom',
