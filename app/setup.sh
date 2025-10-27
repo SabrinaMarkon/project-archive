@@ -47,3 +47,5 @@ php-cs-fixer -V
 # Start project
 # npm run dev
 # php artisan serve
+# \\wsl$\Ubuntu\home\your-windows-username\git-repo-name
+echo "Setup complete! You can now run your Laravel project."
