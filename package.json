@@ -36,6 +36,7 @@
         "vitest": "^3.2.4"
     },
     "dependencies": {
+        "lucide-react": "^0.548.0",
         "react-textarea-autosize": "^8.5.9"
     }
 }
