@@ -1,4 +1,3 @@
-import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { Project } from '@/types/project';
 import PortfolioLayout from '@/Layouts/PortfolioLayout';

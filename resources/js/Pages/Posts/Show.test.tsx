@@ -19,82 +19,76 @@ vi.mock('@/Components/Portfolio/ContactSection', () => ({
     default: () => <div data-testid="contact-section">Contact Section</div>,
 }));
 
-describe('Project Show Page (/projects/{slug})', () => {
-    const mockProject = {
-        slug: 'test-project',
-        title: 'Test Project',
-        description: 'This is a detailed description of the test project.',
+describe('Post Show Page (/posts/{slug})', () => {
+    const mockPost = {
+        slug: 'test-post',
+        title: 'Test Post',
+        description: 'This is detailed content for the test post.',
     };
 
     it('renders the page with PortfolioLayout', () => {
-        render(<Show project={mockProject} />);
+        render(<Show post={mockPost} />);
 
         expect(screen.getByTestId('portfolio-layout')).toBeInTheDocument();
     });
 
-    it('sets the correct page title with project name', () => {
-        render(<Show project={mockProject} />);
+    it('sets the correct page title with post title', () => {
+        render(<Show post={mockPost} />);
 
-        expect(screen.getByText('Test Project - Sabrina Markon')).toBeInTheDocument();
+        expect(screen.getByText('Test Post - Sabrina Markon')).toBeInTheDocument();
     });
 
-    it('renders the project title in header', () => {
-        render(<Show project={mockProject} />);
+    it('renders the post title in header', () => {
+        render(<Show post={mockPost} />);
 
-        const titleElements = screen.getAllByText('Test Project');
+        const titleElements = screen.getAllByText('Test Post');
         expect(titleElements.length).toBeGreaterThan(0);
     });
 
-    it('renders back to projects link', () => {
-        render(<Show project={mockProject} />);
+    it('renders back to posts link', () => {
+        render(<Show post={mockPost} />);
 
-        const backLink = screen.getByText('Back to All Projects');
+        const backLink = screen.getByText('Back to All Posts');
         expect(backLink).toBeInTheDocument();
-        expect(backLink.closest('a')).toHaveAttribute('href', '/projects');
+        expect(backLink.closest('a')).toHaveAttribute('href', '/posts');
     });
 
-    it('renders project description', () => {
-        render(<Show project={mockProject} />);
+    it('renders post description', () => {
+        render(<Show post={mockPost} />);
 
-        expect(screen.getByText(mockProject.description)).toBeInTheDocument();
+        expect(screen.getByText(mockPost.description)).toBeInTheDocument();
     });
 
     it('shows default message when description is null', () => {
-        const projectWithoutDescription = {
-            ...mockProject,
+        const postWithoutDescription = {
+            ...mockPost,
             description: null,
         };
 
-        render(<Show project={projectWithoutDescription} />);
+        render(<Show post={postWithoutDescription} />);
 
-        expect(screen.getByText('No description available for this project yet.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available for this post yet.')).toBeInTheDocument();
     });
 
     it('shows default message when description is empty string', () => {
-        const projectWithEmptyDescription = {
-            ...mockProject,
+        const postWithEmptyDescription = {
+            ...mockPost,
             description: '',
         };
 
-        render(<Show project={projectWithEmptyDescription} />);
+        render(<Show post={postWithEmptyDescription} />);
 
-        expect(screen.getByText('No description available for this project yet.')).toBeInTheDocument();
-    });
-
-    it('renders "About This Project" section header', () => {
-        render(<Show project={mockProject} />);
-
-        expect(screen.getByText(/About This Project/i)).toBeInTheDocument();
+        expect(screen.getByText('No content is available for this post yet.')).toBeInTheDocument();
     });
 
     it('renders ContactSection', () => {
-        render(<Show project={mockProject} />);
+        render(<Show post={mockPost} />);
 
         expect(screen.getByTestId('contact-section')).toBeInTheDocument();
     });
 
     it('renders Code2 icon in header', () => {
-        const { container } = render(<Show project={mockProject} />);
+        const { container } = render(<Show post={mockPost} />);
 
         // Check for icon container with specific styling
         const iconContainer = container.querySelector('.w-16.h-16.rounded-xl');
@@ -102,7 +96,7 @@ describe('Project Show Page (/projects/{slug})', () => {
     });
 
     it('applies correct section backgrounds', () => {
-        const { container } = render(<Show project={mockProject} />);
+        const { container } = render(<Show post={mockPost} />);
 
         // Check for white header section
         const headerSection = container.querySelector('.pt-32.pb-12');
@@ -114,12 +108,12 @@ describe('Project Show Page (/projects/{slug})', () => {
     });
 
     it('preserves whitespace in description', () => {
-        const projectWithMultilineDescription = {
-            ...mockProject,
+        const postWithMultilineDescription = {
+            ...mockPost,
             description: 'Line 1\n\nLine 2\n\nLine 3',
         };
 
-        const { container } = render(<Show project={projectWithMultilineDescription} />);
+        const { container } = render(<Show post={postWithMultilineDescription} />);
 
         // Check for whitespace-pre-wrap class which preserves newlines
         const descriptionElement = container.querySelector('.whitespace-pre-wrap');
@@ -130,45 +124,46 @@ describe('Project Show Page (/projects/{slug})', () => {
     });
 
     it('renders content in white card', () => {
-        const { container } = render(<Show project={mockProject} />);
+        const { container } = render(<Show post={mockPost} />);
 
         // Check for white content card with specific styling
         const contentCard = container.querySelector('.bg-white.rounded-2xl.p-8');
         expect(contentCard).toBeInTheDocument();
     });
 
-    it('handles very long project titles', () => {
-        const projectWithLongTitle = {
-            ...mockProject,
-            title: 'This Is An Extremely Long Project Title That Should Still Display Correctly Without Breaking The Layout',
+    it('handles very long post titles', () => {
+        const postWithLongTitle = {
+            ...mockPost,
+            title: 'This Is An Extremely Long Post Title That Should Still Display Correctly Without Breaking The Layout',
         };
 
-        render(<Show project={projectWithLongTitle} />);
+        render(<Show post={postWithLongTitle} />);
 
-        expect(screen.getByText(projectWithLongTitle.title)).toBeInTheDocument();
+        const titleElements = screen.getAllByText(postWithLongTitle.title);
+        expect(titleElements.length).toBeGreaterThan(0);
     });
 
     it('handles very long descriptions', () => {
         const longDescription = 'Lorem ipsum dolor sit amet, '.repeat(100);
-        const projectWithLongDescription = {
-            ...mockProject,
+        const postWithLongDescription = {
+            ...mockPost,
             description: longDescription,
         };
 
-        render(<Show project={projectWithLongDescription} />);
+        render(<Show post={postWithLongDescription} />);
 
         // Use partial text match for very long strings
         expect(screen.getByText(/Lorem ipsum dolor sit amet,/)).toBeInTheDocument();
 
         // Verify the full text is in the document
-        const { container } = render(<Show project={projectWithLongDescription} />);
+        const { container } = render(<Show post={postWithLongDescription} />);
         expect(container.textContent).toContain('Lorem ipsum dolor sit amet,');
     });
 
     it('renders ArrowLeft icon in back link', () => {
-        render(<Show project={mockProject} />);
+        render(<Show post={mockPost} />);
 
-        const backLink = screen.getByText('Back to All Projects').closest('a');
+        const backLink = screen.getByText('Back to All Posts').closest('a');
         expect(backLink).toHaveClass('inline-flex', 'items-center');
     });
 });

@@ -20,7 +20,7 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                         <div className="hidden md:flex items-center space-x-8">
                             <Link href="/#home" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Home</Link>
                             <Link href="/projects" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Projects</Link>
-                            <Link href="/#writing" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Writing</Link>
+                            <Link href="/posts" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Writing</Link>
                             <Link href="/#about" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>About</Link>
                             <Link href="/#contact" className="px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300" style={{ backgroundColor: '#7a9d7a' }}>
                                 Contact
@@ -42,7 +42,7 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                         <div className="md:hidden pt-4 pb-2 space-y-2">
                             <Link href="/#home" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Home</Link>
                             <Link href="/projects" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Projects</Link>
-                            <Link href="/#writing" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Writing</Link>
+                            <Link href="/posts" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Writing</Link>
                             <Link href="/#about" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>About</Link>
                             <Link href="/#contact" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Contact</Link>
                         </div>
