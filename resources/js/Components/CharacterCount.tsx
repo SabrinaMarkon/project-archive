@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CharacterCountProps {
     value: string;
     max: number;

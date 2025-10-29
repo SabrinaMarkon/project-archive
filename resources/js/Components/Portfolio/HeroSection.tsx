@@ -1,4 +1,3 @@
-import React from 'react';
 import { Sparkles, Code2, BookOpen } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 
@@ -23,7 +22,7 @@ export default function HeroSection() {
                             <Code2 size={20} />
                             View Projects
                         </Link>
-                        <a href="/#writing" className="px-8 py-4 bg-white rounded-xl transition-all duration-300 flex items-center gap-2 font-semibold shadow-sm hover:shadow-md" style={{ border: '2px solid #7a9d7a', color: '#658965' }}>
+                        <a href="/posts" className="px-8 py-4 bg-white rounded-xl transition-all duration-300 flex items-center gap-2 font-semibold shadow-sm hover:shadow-md" style={{ border: '2px solid #7a9d7a', color: '#658965' }}>
                             <BookOpen size={20} />
                             Read Writing
                         </a>
