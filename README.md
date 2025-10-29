@@ -1,6 +1,7 @@
 # Sabrina Markon · Project Archive
 
 A curated collection of my real-world development work, built to showcase experience across legacy systems, modern stacks, and full application lifecycles.
+Hosted with Forge & Digital Ocean.
 
 ## 🔍 About
 
@@ -46,6 +47,7 @@ This archive is part of a larger site hosted at [sabrinamarkon.com](https://sabr
 - Laravel Livewire/Inertia.js examples
 - A searchable archive browser
 - AI-assisted module generation (Laravel + OpenAI)
+- Games and tutorials
 
 ## 📫 Contact
 
