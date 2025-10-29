@@ -2,7 +2,7 @@ export interface Post {
     id: number;
     title: string;
     slug: string;
-    description: string;
+    description: string | null;
     format: "html" | "markdown" | "plaintext";
     excerpt?: string;
     status: "draft" | "published" | "archived";
@@ -14,4 +14,5 @@ export interface Post {
     metaDescription?: string;
     viewCount?: number;
     isFeatured?: boolean;
+    readTime?: string; // Server-computed reading time via Eloquent accessor, e.g., "5 min read"
 }
