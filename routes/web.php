@@ -5,6 +5,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AdminOnly;
+use App\Models\Post;
 use App\Models\Project;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,10 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'projects' => Project::all(),
+        'posts' => Post::where('status', 'published')
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get(),
     ]);
 });
 
