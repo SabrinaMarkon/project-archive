@@ -22,6 +22,7 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                             <Link href="/projects" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Projects</Link>
                             <Link href="/posts" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Writing</Link>
                             <Link href="/#about" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>About</Link>
+                            <Link href="/resume" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>CV</Link>
                             <Link href="/#contact" className="px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300" style={{ backgroundColor: '#7a9d7a' }}>
                                 Contact
                             </Link>
@@ -44,6 +45,7 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                             <Link href="/projects" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Projects</Link>
                             <Link href="/posts" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Writing</Link>
                             <Link href="/#about" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>About</Link>
+                            {/* <Link href="/resume" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>CV</Link> */}
                             <Link href="/#contact" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Contact</Link>
                         </div>
                     )}
@@ -59,7 +61,7 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
             <footer className="py-8 px-6 bg-white">
                 <div className="max-w-6xl mx-auto border-t pt-8" style={{ borderColor: '#e5e3df' }}>
                     <div className="text-center" style={{ color: '#7a7a7a' }}>
-                        <p>© 2024 Sabrina Markon. Crafted with care and code.</p>
+                        <p>© 2025 Sabrina Markon. Crafted with care and code 💚</p>
                     </div>
                 </div>
             </footer>
