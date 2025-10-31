@@ -29,6 +29,20 @@ export default function Show({ project }: { project: Project }) {
                             {project.title}
                         </h1>
                     </div>
+
+                    {project.tags && project.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {project.tags.map((tag) => (
+                                <span
+                                    key={tag}
+                                    className="px-4 py-1.5 rounded-full text-sm font-medium"
+                                    style={{ backgroundColor: '#e8f0e8', color: '#5a7a5a' }}
+                                >
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 

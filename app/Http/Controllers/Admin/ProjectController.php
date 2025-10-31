@@ -54,4 +54,14 @@ class ProjectController extends Controller
 
         return redirect()->route('admin.projects.index')->with('success', 'Project updated successfully!');
     }
+
+    /**
+     * Delete an existing project.
+     */
+    public function destroy(Project $project)
+    {
+        $project->delete();
+
+        return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully!');
+    }
 }

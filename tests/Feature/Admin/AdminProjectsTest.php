@@ -321,4 +321,199 @@ class AdminProjectsTest extends TestCase
 
         $response->assertSessionHasErrors('description');
     }
+
+    /**
+     * Delete project tests
+     */
+    public function test_admin_can_delete_a_project(): void
+    {
+        $project = Project::factory()->create([
+            'title' => 'Project to Delete',
+            'slug' => 'project-to-delete',
+        ]);
+
+        $this->assertDatabaseHas('projects', ['slug' => 'project-to-delete']);
+
+        $response = $this->actingAs($this->admin)->delete("/admin/projects/{$project->slug}");
+
+        $response->assertRedirect(route('admin.projects.index'));
+        $this->assertDatabaseMissing('projects', ['slug' => 'project-to-delete']);
+    }
+
+    public function test_success_flash_message_is_set_after_project_deletion(): void
+    {
+        $project = Project::factory()->create();
+
+        $response = $this->actingAs($this->admin)->delete("/admin/projects/{$project->slug}");
+
+        $response->assertSessionHas('success', 'Project deleted successfully!');
+    }
+
+    public function test_project_delete_route_returns_404_when_not_found(): void
+    {
+        $response = $this->actingAs($this->admin)->delete('/admin/projects/non-existing-slug');
+
+        $response->assertStatus(404);
+    }
+
+    /**
+     * Tags functionality tests
+     */
+    public function test_admin_can_create_project_with_tags(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Project with Tags',
+            'slug' => 'project-with-tags',
+            'description' => 'This project has tags.',
+            'tags' => ['Laravel', 'React', 'TypeScript'],
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $this->assertDatabaseHas('projects', [
+            'title' => 'Project with Tags',
+            'slug' => 'project-with-tags',
+        ]);
+
+        $project = Project::where('slug', 'project-with-tags')->first();
+        $this->assertEquals(['Laravel', 'React', 'TypeScript'], $project->tags);
+    }
+
+    public function test_admin_can_create_project_without_tags(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Project without Tags',
+            'slug' => 'project-without-tags',
+            'description' => 'This project has no tags.',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project = Project::where('slug', 'project-without-tags')->first();
+        $this->assertNull($project->tags);
+    }
+
+    public function test_admin_can_update_project_tags(): void
+    {
+        $project = Project::factory()->create([
+            'tags' => ['PHP', 'MySQL'],
+        ]);
+
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'description' => $project->description,
+            'tags' => ['Laravel', 'PostgreSQL', 'Vue'],
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertEquals(['Laravel', 'PostgreSQL', 'Vue'], $project->tags);
+    }
+
+    public function test_admin_can_remove_all_tags_from_project(): void
+    {
+        $project = Project::factory()->create([
+            'tags' => ['PHP', 'MySQL'],
+        ]);
+
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'description' => $project->description,
+            'tags' => [],
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertEquals([], $project->tags);
+    }
+
+    public function test_tags_must_be_array(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => 'test-project',
+            'description' => 'Test',
+            'tags' => 'not-an-array',
+        ]);
+
+        $response->assertSessionHasErrors('tags');
+    }
+
+    public function test_each_tag_must_be_string(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => 'test-project',
+            'description' => 'Test',
+            'tags' => ['Valid Tag', 123, ['nested']],
+        ]);
+
+        $response->assertSessionHasErrors('tags.1');
+        $response->assertSessionHasErrors('tags.2');
+    }
+
+    public function test_each_tag_must_not_exceed_max_length(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => 'test-project',
+            'description' => 'Test',
+            'tags' => [str_repeat('A', 51)],
+        ]);
+
+        $response->assertSessionHasErrors('tags.0');
+    }
+
+    public function test_project_edit_form_includes_tags(): void
+    {
+        $project = Project::factory()->create([
+            'tags' => ['Laravel', 'Vue', 'Tailwind'],
+        ]);
+
+        $response = $this->actingAs($this->admin)->get("/admin/projects/{$project->slug}");
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn($page) =>
+            $page->component('Admin/Projects/Create')
+                ->where('project.tags', ['Laravel', 'Vue', 'Tailwind'])
+        );
+    }
+
+    public function test_public_project_list_includes_tags(): void
+    {
+        $project = Project::factory()->create([
+            'tags' => ['Laravel', 'React'],
+        ]);
+
+        $response = $this->get('/projects');
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn($page) =>
+            $page->component('Projects/Index')
+                ->has('projects', 1)
+                ->where('projects.0.tags', ['Laravel', 'React'])
+        );
+    }
+
+    public function test_public_project_show_includes_tags(): void
+    {
+        $project = Project::factory()->create([
+            'tags' => ['TypeScript', 'Node.js'],
+        ]);
+
+        $response = $this->get("/projects/{$project->slug}");
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn($page) =>
+            $page->component('Projects/Show')
+                ->where('project.tags', ['TypeScript', 'Node.js'])
+        );
+    }
 }

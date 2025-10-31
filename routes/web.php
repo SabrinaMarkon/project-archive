@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -38,11 +39,21 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/admin/projects', [AdminProjectController::class, 'index'])->name('admin.projects.index');
     Route::post('/admin/projects', [AdminProjectController::class, 'store'])->name('admin.projects.store');
     Route::put('/admin/projects/{project:slug}', [AdminProjectController::class, 'update'])->name('admin.projects.update');
+    Route::delete('/admin/projects/{project:slug}', [AdminProjectController::class, 'destroy'])->name('admin.projects.destroy');
     Route::get('/admin/projects/{project:slug}', function (Project $project) {
         return Inertia::render('Admin/Projects/Create', [
             'project' => $project,
         ]);
     });
+
+    // Admin Posts Routes
+    Route::get('/admin/posts', [AdminPostController::class, 'index'])->name('admin.posts.index');
+    Route::get('/admin/posts/create', [AdminPostController::class, 'create'])->name('admin.posts.create');
+    Route::post('/admin/posts', [AdminPostController::class, 'store'])->name('admin.posts.store');
+    Route::get('/admin/posts/{post:slug}', [AdminPostController::class, 'show'])->name('admin.posts.show');
+    Route::put('/admin/posts/{post:slug}', [AdminPostController::class, 'update'])->name('admin.posts.update');
+    Route::delete('/admin/posts/{post:slug}', [AdminPostController::class, 'destroy'])->name('admin.posts.destroy');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
