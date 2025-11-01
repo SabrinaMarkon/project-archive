@@ -4,17 +4,20 @@ import CharacterCount from "@/Components/CharacterCount";
 import DangerButton from "@/Components/DangerButton";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Modal from "@/Components/Modal";
+import PostContent from "@/Components/PostContent";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextareaAutosize from "react-textarea-autosize";
 import { formatSlug } from "@/utils/validation";
 import { Head, useForm } from "@inertiajs/react";
 import { Post } from "@/types/post";
+import { Eye } from "lucide-react";
 
 Create.layout = (page: React.ReactNode) => <DashboardLayout children={page} />;
 
 export default function Create({ post }: { post: Post | null }) {
     const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
     const [confirmingDeletion, setConfirmingDeletion] = useState(false);
+    const [showingPreview, setShowingPreview] = useState(false);
     const [tagInput, setTagInput] = useState("");
 
     const { data, setData, post: postForm, put, delete: destroy, processing, errors } = useForm({
@@ -316,6 +319,16 @@ export default function Create({ post }: { post: Post | null }) {
                             {post ? "Update" : "Create"} Post
                         </button>
 
+                        <button
+                            type="button"
+                            onClick={() => setShowingPreview(true)}
+                            className="inline-flex items-center gap-2 px-6 py-2.5 border-2 rounded-md hover:opacity-70 transition"
+                            style={{ borderColor: '#7a9d7a', color: '#7a9d7a' }}
+                        >
+                            <Eye size={18} />
+                            Preview
+                        </button>
+
                         {post && (
                             <DangerButton type="button" onClick={confirmDeletion}>
                                 Delete Post
@@ -338,6 +351,54 @@ export default function Create({ post }: { post: Post | null }) {
                         <DangerButton onClick={deletePost} disabled={processing}>
                             Delete Post
                         </DangerButton>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal show={showingPreview} onClose={() => setShowingPreview(false)} maxWidth="2xl">
+                <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold" style={{ color: '#3d3d3d' }}>
+                            Preview
+                        </h2>
+                        <SecondaryButton onClick={() => setShowingPreview(false)}>
+                            Close
+                        </SecondaryButton>
+                    </div>
+
+                    <div className="border rounded-lg p-6" style={{ borderColor: '#e5e3df', backgroundColor: '#f9f8f6' }}>
+                        <h1 className="text-3xl font-bold mb-4" style={{ color: '#2d2d2d' }}>
+                            {data.title || 'Untitled Post'}
+                        </h1>
+
+                        {data.excerpt && (
+                            <div className="mb-6 pb-6 border-b" style={{ borderColor: '#e5e3df' }}>
+                                <p className="text-lg italic" style={{ color: '#7a7a7a' }}>
+                                    {data.excerpt}
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="prose prose-lg max-w-none">
+                            <PostContent
+                                content={data.description}
+                                format={data.format as 'html' | 'markdown' | 'plaintext'}
+                            />
+                        </div>
+
+                        {data.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t" style={{ borderColor: '#e5e3df' }}>
+                                {data.tags.map((tag) => (
+                                    <span
+                                        key={tag}
+                                        className="px-3 py-1 rounded-full text-sm font-medium"
+                                        style={{ backgroundColor: '#e8f0e8', color: '#5a7a5a' }}
+                                    >
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </Modal>

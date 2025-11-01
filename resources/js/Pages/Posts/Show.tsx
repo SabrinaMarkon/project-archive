@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Post } from '@/types/post';
 import PortfolioLayout from '@/Layouts/PortfolioLayout';
 import ContactSection from '@/Components/Portfolio/ContactSection';
+import PostContent from '@/Components/PostContent';
 import { ArrowLeft, Code2 } from 'lucide-react';
 
 export default function Show({ post }: { post: Post }) {
@@ -36,20 +37,17 @@ export default function Show({ post }: { post: Post }) {
             <section className="py-12 pb-24 px-6" style={{ backgroundColor: '#d4e5c8' }}>
                 <div className="max-w-4xl mx-auto">
                     <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg" style={{ borderColor: '#c0d8b4', borderWidth: '1px' }}>
-                        <h2 className="text-2xl font-bold mb-6" style={{ color: '#2d2d2d' }}>
-                            {post.title ? post.title : 'Untitled Post'}
-                        </h2>
-                        <div className="prose prose-lg max-w-none" style={{ color: '#5a5a5a' }}>
-                            {post.description ? (
-                                <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                                    {post.description}
+                        {post.excerpt && (
+                            <div className="mb-6 pb-6 border-b" style={{ borderColor: '#e5e3df' }}>
+                                <p className="text-xl italic" style={{ color: '#7a7a7a' }}>
+                                    {post.excerpt}
                                 </p>
-                            ) : (
-                                <p className="text-lg leading-relaxed italic">
-                                    No content is available for this post yet.
-                                </p>
-                            )}
-                        </div>
+                            </div>
+                        )}
+                        <PostContent
+                            content={post.description || ''}
+                            format={post.format}
+                        />
                     </div>
                 </div>
             </section>
