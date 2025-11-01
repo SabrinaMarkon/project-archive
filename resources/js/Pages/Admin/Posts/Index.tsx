@@ -3,6 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import DangerButton from "@/Components/DangerButton";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Modal from "@/Components/Modal";
+import PostContent from "@/Components/PostContent";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { Head, Link, router } from "@inertiajs/react";
 import { Post } from "@/types/post";
@@ -137,12 +138,12 @@ export default function Index({ posts }: { posts: Post[] }) {
                                                 {post.excerpt}
                                             </div>
                                         )}
-                                        <div className="text-sm mb-3" style={{ color: '#5a5a5a' }}>
-                                            {post.description ? (
-                                                <div className="line-clamp-3">{post.description.substring(0, 200)}...</div>
-                                            ) : (
-                                                <em>No description available</em>
-                                            )}
+                                        <div className="text-sm mb-3 prose prose-sm max-w-none">
+                                            <PostContent
+                                                content={post.description?.substring(0, 500) || ''}
+                                                format={post.format}
+                                                className="line-clamp-6"
+                                            />
                                         </div>
                                         <div className="flex flex-wrap gap-2 text-xs" style={{ color: '#7a7a7a' }}>
                                             <span>Format: <strong>{post.format}</strong></span>

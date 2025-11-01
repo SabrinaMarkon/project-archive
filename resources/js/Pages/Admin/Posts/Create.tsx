@@ -356,8 +356,8 @@ export default function Create({ post }: { post: Post | null }) {
             </Modal>
 
             <Modal show={showingPreview} onClose={() => setShowingPreview(false)} maxWidth="2xl">
-                <div className="p-6">
-                    <div className="flex items-center justify-between mb-6">
+                <div className="p-6 max-h-screen overflow-y-auto">
+                    <div className="flex items-center justify-between mb-6 sticky top-0 bg-white pb-4 z-10">
                         <h2 className="text-2xl font-bold" style={{ color: '#3d3d3d' }}>
                             Preview
                         </h2>
@@ -366,7 +366,7 @@ export default function Create({ post }: { post: Post | null }) {
                         </SecondaryButton>
                     </div>
 
-                    <div className="border rounded-lg p-6" style={{ borderColor: '#e5e3df', backgroundColor: '#f9f8f6' }}>
+                    <div className="border rounded-lg p-6 overflow-y-auto" style={{ borderColor: '#e5e3df', backgroundColor: '#f9f8f6', maxHeight: 'calc(100vh - 200px)' }}>
                         <h1 className="text-3xl font-bold mb-4" style={{ color: '#2d2d2d' }}>
                             {data.title || 'Untitled Post'}
                         </h1>

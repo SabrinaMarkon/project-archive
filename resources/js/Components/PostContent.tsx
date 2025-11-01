@@ -67,7 +67,10 @@ export default function PostContent({ content, format, className = '' }: PostCon
         <div
             className={`prose prose-lg max-w-none ${className}`}
             dangerouslySetInnerHTML={{ __html: renderedContent }}
-            style={{ color: '#5a5a5a' }}
+            style={{
+                color: '#5a5a5a',
+                lineHeight: '1.75',
+            }}
         />
     );
 }
