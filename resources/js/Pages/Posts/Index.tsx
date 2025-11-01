@@ -30,8 +30,8 @@ export default function Index({ posts }: { posts: Post[] }) {
                                 key={post.slug}
                                 title={post.title}
                                 slug={post.slug}
-                                description={post.description}
-                                format={post.format}
+                                description={post.excerpt || post.description}
+                                format="plaintext"
                                 href={`/posts/${post.slug}`}
                                 linkText="View Post"
                                 tags={post.tags}

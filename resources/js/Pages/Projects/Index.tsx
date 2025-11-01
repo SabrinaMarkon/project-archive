@@ -30,7 +30,8 @@ export default function Index({ projects }: { projects: Project[] }) {
                                 key={project.slug}
                                 title={project.title}
                                 slug={project.slug}
-                                description={project.description}
+                                description={project.excerpt || project.description}
+                                format="plaintext"
                                 href={`/projects/${project.slug}`}
                                 linkText="View Project"
                                 tags={project.tags}

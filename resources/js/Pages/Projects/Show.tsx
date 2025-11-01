@@ -50,6 +50,13 @@ export default function Show({ project }: { project: Project }) {
             <section className="py-12 pb-24 px-6" style={{ backgroundColor: '#d4e5c8' }}>
                 <div className="max-w-4xl mx-auto">
                     <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg" style={{ borderColor: '#c0d8b4', borderWidth: '1px' }}>
+                        {project.excerpt && (
+                            <div className="mb-6 pb-6 border-b" style={{ borderColor: '#e5e3df' }}>
+                                <p className="text-xl italic" style={{ color: '#7a7a7a' }}>
+                                    {project.excerpt}
+                                </p>
+                            </div>
+                        )}
                         <h2 className="text-2xl font-bold mb-6" style={{ color: '#2d2d2d' }}>
                             About This Project
                         </h2>

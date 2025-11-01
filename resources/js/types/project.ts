@@ -3,5 +3,6 @@ export interface Project {
     title: string;
     slug: string;
     description: string | null;
+    excerpt?: string | null;
     tags?: string[];
 }

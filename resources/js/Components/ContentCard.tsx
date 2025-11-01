@@ -36,7 +36,7 @@ export default function ContentCard({
                 <Code2 className="text-white" size={24} />
             </div>
 
-            <h3 className="text-xl font-bold mb-3" style={{ color: '#2d2d2d' }}>
+            <h3 className={`font-bold mb-3 ${title.length > 50 ? 'text-lg' : 'text-xl'}`} style={{ color: '#2d2d2d' }}>
                 {title}
             </h3>
 

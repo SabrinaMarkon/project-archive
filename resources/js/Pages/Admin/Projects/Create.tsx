@@ -22,6 +22,7 @@ export default function Create({ project }: { project: Project | null }) {
         id: project?.id ?? null, // If project exists, use its ID, otherwise null for new
         title: project?.title ?? "",
         slug: project?.slug ?? "",
+        excerpt: project?.excerpt ?? "",
         description: project?.description ?? "",
         tags: project?.tags ?? [],
     });
@@ -104,6 +105,7 @@ export default function Create({ project }: { project: Project | null }) {
                 id: project.id,
                 title: project.title,
                 slug: project.slug,
+                excerpt: project.excerpt ?? "",
                 description: project.description ?? "",
                 tags: project.tags ?? [],
             });
@@ -175,6 +177,36 @@ export default function Create({ project }: { project: Project | null }) {
                         />
                         {errors.slug && (
                             <div className="text-red-600">{errors.slug}</div>
+                        )}
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="excerpt"
+                            className="block font-medium"
+                            style={{ color: '#3d3d3d' }}
+                        >
+                            Excerpt
+                        </label>
+                        <TextareaAutosize
+                            id="excerpt"
+                            name="excerpt"
+                            value={data.excerpt}
+                            onChange={(e) => setData("excerpt", e.target.value)}
+                            minRows={2}
+                            maxRows={5}
+                            className="mt-1 block w-full border rounded-md shadow-sm p-2.5 text-base focus:outline-none focus:ring-2 transition"
+                            style={{ borderColor: '#e5e3df', color: '#3d3d3d' }}
+                            onFocus={(e) => e.target.style.borderColor = '#7a9d7a'}
+                            onBlur={(e) => e.target.style.borderColor = '#e5e3df'}
+                            placeholder="Short summary for project listings"
+                        />
+                        <CharacterCount
+                            value={data.excerpt}
+                            max={500}
+                        />
+                        {errors.excerpt && (
+                            <div className="text-red-600">{errors.excerpt}</div>
                         )}
                     </div>
 
