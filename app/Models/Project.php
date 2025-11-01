@@ -9,7 +9,7 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'slug', 'description', 'tags'];
+    protected $fillable = ['title', 'slug', 'description', 'excerpt', 'tags'];
 
     /**
      * Get the attributes that should be cast.

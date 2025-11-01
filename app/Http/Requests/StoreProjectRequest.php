@@ -43,6 +43,7 @@ class StoreProjectRequest extends FormRequest
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
             ],
             'description' => ['nullable', 'string', 'max:' . $validation['MAX_DESCRIPTION_LENGTH']],
+            'excerpt' => ['nullable', 'string', 'max:500'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['string', 'max:50'],
         ];
