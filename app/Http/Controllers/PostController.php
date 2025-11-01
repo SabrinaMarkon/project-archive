@@ -22,12 +22,12 @@ class PostController extends Controller
     }
 
     /**
-     * Show the details for the selected post (only if published).
+     * Show the details for the selected post (only if published, unless user is admin).
      */
     public function show(Post $post)
     {
-        // Return 404 if the post is not published
-        if ($post->status !== 'published') {
+        // Return 404 if the post is not published and user is not an admin
+        if ($post->status !== 'published' && (!auth()->check() || !auth()->user()->is_admin)) {
             abort(404);
         }
 
