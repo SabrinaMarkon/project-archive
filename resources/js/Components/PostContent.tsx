@@ -8,6 +8,25 @@ interface PostContentProps {
     className?: string;
 }
 
+// Configure marked to escape raw HTML tags
+// This prevents <title>, <script>, etc. from being rendered as HTML
+// but still allows markdown syntax to work (code blocks, links, etc.)
+marked.use({
+    renderer: {
+        html(token: any) {
+            // Escape all raw HTML that appears in markdown
+            // This makes tags like <title> display as text instead of being rendered
+            const html = typeof token === 'string' ? token : token.text || '';
+            return html
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    }
+});
+
 export default function PostContent({ content, format, className = '' }: PostContentProps) {
     const [renderedContent, setRenderedContent] = useState<string>('');
 
