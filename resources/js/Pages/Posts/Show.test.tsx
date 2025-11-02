@@ -48,7 +48,7 @@ describe('Post Show Page (/posts/{slug})', () => {
     it('renders back to posts link', () => {
         render(<Show post={mockPost} />);
 
-        const backLink = screen.getByText('Back to All Posts');
+        const backLink = screen.getByText('Back to All Writing');
         expect(backLink).toBeInTheDocument();
         expect(backLink.closest('a')).toHaveAttribute('href', '/posts');
     });
@@ -163,7 +163,7 @@ describe('Post Show Page (/posts/{slug})', () => {
     it('renders ArrowLeft icon in back link', () => {
         render(<Show post={mockPost} />);
 
-        const backLink = screen.getByText('Back to All Posts').closest('a');
+        const backLink = screen.getByText('Back to All Writing').closest('a');
         expect(backLink).toHaveClass('inline-flex', 'items-center');
     });
 });

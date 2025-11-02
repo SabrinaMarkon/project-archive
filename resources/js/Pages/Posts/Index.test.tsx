@@ -35,13 +35,13 @@ describe('Posts Index Page (/posts)', () => {
     it('sets the correct page title', () => {
         render(<Index posts={mockPosts} />);
 
-        expect(screen.getByText('Posts - Sabrina Markon')).toBeInTheDocument();
+        expect(screen.getByText('Writing - Sabrina Markon')).toBeInTheDocument();
     });
 
     it('renders the page header', () => {
         render(<Index posts={mockPosts} />);
 
-        expect(screen.getByText('All Posts')).toBeInTheDocument();
+        expect(screen.getByText('All Writing')).toBeInTheDocument();
         expect(screen.getByText(/Tutorials, lessons learned/i)).toBeInTheDocument();
     });
 

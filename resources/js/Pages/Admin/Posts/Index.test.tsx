@@ -91,7 +91,7 @@ describe('Admin Posts Index', () => {
 
     it('renders posts list page with header', () => {
         render(<Index posts={mockPosts} />);
-        expect(screen.getByText('Posts List')).toBeInTheDocument();
+        expect(screen.getByText('Writing List')).toBeInTheDocument();
     });
 
     it('displays all posts', () => {
