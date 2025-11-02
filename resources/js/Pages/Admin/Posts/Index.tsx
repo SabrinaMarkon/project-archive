@@ -56,11 +56,11 @@ export default function Index({ posts }: { posts: Post[] }) {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight" style={{ color: '#3d3d3d' }}>
-                    Posts List
+                    Writing List
                 </h2>
             }
         >
-            <Head title="Posts List" />
+            <Head title="Writing List" />
 
             <div className="py-4 px-6 text-gray-900 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div className="space-y-2">
@@ -101,7 +101,7 @@ export default function Index({ posts }: { posts: Post[] }) {
                                             rel="noopener noreferrer"
                                             className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"
                                             style={{ backgroundColor: '#7a9d7a' }}
-                                            title="View post"
+                                            title="View writing"
                                         >
                                             <ExternalLink size={16} />
                                             View
@@ -111,7 +111,7 @@ export default function Index({ posts }: { posts: Post[] }) {
                                             href={`/admin/posts/${post.slug}`}
                                             className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"
                                             style={{ backgroundColor: '#5a8a5a' }}
-                                            title="Update post"
+                                            title="Update writing"
                                         >
                                             <Edit size={16} />
                                             Update
@@ -120,7 +120,7 @@ export default function Index({ posts }: { posts: Post[] }) {
                                         <button
                                             onClick={() => confirmDeletion(post)}
                                             className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-md transition hover:bg-red-700"
-                                            title="Delete post"
+                                            title="Delete writing"
                                         >
                                             <Trash2 size={16} />
                                             Delete
@@ -178,13 +178,13 @@ export default function Index({ posts }: { posts: Post[] }) {
 
                     {posts.length === 0 && (
                         <div className="text-center py-8" style={{ color: '#7a7a7a' }}>
-                            <p>No posts found. Create your first post!</p>
+                            <p>No writing found. Create your first piece!</p>
                             <Link
                                 href="/admin/posts/create"
                                 className="inline-block mt-4 px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 style={{ backgroundColor: '#7a9d7a' }}
                             >
-                                Create Post
+                                Create Writing
                             </Link>
                         </div>
                     )}
@@ -194,7 +194,7 @@ export default function Index({ posts }: { posts: Post[] }) {
             <Modal show={confirmingDeletion} onClose={closeModal}>
                 <div className="p-6">
                     <h2 className="text-lg font-medium" style={{ color: '#3d3d3d' }}>
-                        Are you sure you want to delete this post?
+                        Are you sure you want to delete this writing?
                     </h2>
 
                     <p className="mt-1 text-sm" style={{ color: '#7a7a7a' }}>
@@ -207,7 +207,7 @@ export default function Index({ posts }: { posts: Post[] }) {
                         </SecondaryButton>
 
                         <DangerButton onClick={deletePost}>
-                            Delete Post
+                            Delete Writing
                         </DangerButton>
                     </div>
                 </div>

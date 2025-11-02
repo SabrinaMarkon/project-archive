@@ -40,14 +40,14 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors mt-4"
           >
             <PenSquare size={18} />
-            Create Post
+            Create Writing
           </Link>
           <Link
             href="/admin/posts"
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors"
           >
             <BookText size={18} />
-            Writing
+            Writing List
           </Link>
           <button
             onClick={() => router.post(route('logout'))}

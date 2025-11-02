@@ -7,13 +7,13 @@ import ContentCard from '@/Components/ContentCard';
 export default function Index({ posts }: { posts: Post[] }) {
     return (
         <PortfolioLayout>
-            <Head title="Posts - Sabrina Markon" />
+            <Head title="Writing - Sabrina Markon" />
 
             {/* Posts Header */}
             <section className="pt-32 pb-12 px-6 bg-white">
                 <div className="max-w-6xl mx-auto text-center">
                     <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: '#2d2d2d' }}>
-                        All Posts
+                        All Writing
                     </h1>
                     <p className="text-xl max-w-2xl mx-auto" style={{ color: '#5a5a5a' }}>
                         Tutorials, lessons learned, and deep dives into the tools and techniques behind my full-stack development journey!
