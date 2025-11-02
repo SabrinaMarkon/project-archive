@@ -21,13 +21,20 @@ export default function Show({ project }: { project: Project }) {
                         Back to All Projects
                     </Link>
 
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#7a9d7a' }}>
-                            <Code2 className="text-white" size={32} />
+                    <div className="flex items-start gap-4 mb-6">
+                        <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#7a9d7a' }}>
+                            <Code2 className="text-white" size={24} aria-hidden="true" />
                         </div>
-                        <h1 className="text-5xl md:text-6xl font-bold" style={{ color: '#2d2d2d' }}>
-                            {project.title}
-                        </h1>
+                        <div className="flex-1">
+                            <h1 className="font-bold leading-tight text-2xl sm:text-3xl md:text-4xl" style={{ color: '#2d2d2d' }}>
+                                {project.title}
+                            </h1>
+                            {project.readTime && (
+                                <p className="text-sm mt-2" style={{ color: '#7a7a7a' }}>
+                                    {project.readTime}
+                                </p>
+                            )}
+                        </div>
                     </div>
 
                     {project.tags && project.tags.length > 0 && (

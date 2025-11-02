@@ -19,16 +19,23 @@ export default function Show({ post }: { post: Post }) {
                         style={{ color: '#658965' }}
                     >
                         <ArrowLeft size={20} />
-                        Back to All Posts
+                        Back to All Writing
                     </Link>
 
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#7a9d7a' }}>
-                            <Code2 className="text-white" size={32} />
+                    <div className="flex items-start gap-4 mb-6">
+                        <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#7a9d7a' }}>
+                            <Code2 className="text-white" size={24} aria-hidden="true" />
                         </div>
-                        <h1 className="text-5xl md:text-6xl font-bold" style={{ color: '#2d2d2d' }}>
-                            {post.title}
-                        </h1>
+                        <div className="flex-1">
+                            <h1 className="font-bold leading-tight text-2xl sm:text-3xl md:text-4xl" style={{ color: '#2d2d2d' }}>
+                                {post.title}
+                            </h1>
+                            {post.readTime && (
+                                <p className="text-sm mt-2" style={{ color: '#7a7a7a' }}>
+                                    {post.readTime}
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </section>
