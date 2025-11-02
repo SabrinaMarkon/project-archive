@@ -36,8 +36,13 @@ export default function Login({
         <GuestLayout>
             <Head title="Log in" />
 
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold" style={{ color: '#2d2d2d' }}>Welcome Back</h2>
+                <p className="text-sm mt-1" style={{ color: '#7a7a7a' }}>Sign in to access your admin dashboard</p>
+            </div>
+
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mb-4 text-sm font-medium rounded-lg px-4 py-3" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }}>
                     {status}
                 </div>
             )}
@@ -77,20 +82,20 @@ export default function Login({
                 </div>
 
                 <div className="mt-4 block">
-                    <label className="flex items-center">
+                    <label className="flex items-center cursor-pointer">
                         <Checkbox
                             name="remember"
                             checked={data.remember}
                             onChange={(e) => setData('remember', e.target.checked)}
                         />
-                        <span className="ms-2 text-sm text-gray-600">
+                        <span className="ms-2 text-sm" style={{ color: '#5a5a5a' }}>
                             Remember me
                         </span>
                     </label>
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                <div className="mt-6">
+                    <PrimaryButton className="w-full justify-center py-3 rounded-xl font-semibold" disabled={processing}>
                         Log in
                     </PrimaryButton>
                 </div>

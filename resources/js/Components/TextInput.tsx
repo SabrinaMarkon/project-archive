@@ -32,9 +32,21 @@ export default forwardRef(function TextInput(
             {...props}
             type={type}
             className={
-                'rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ' +
+                'rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all ' +
                 className
             }
+            style={{
+                borderColor: '#e5e3df',
+                borderWidth: '1px'
+            }}
+            onFocus={(e) => {
+                e.target.style.borderColor = '#7a9d7a';
+                e.target.style.boxShadow = '0 0 0 3px rgba(122, 157, 122, 0.1)';
+            }}
+            onBlur={(e) => {
+                e.target.style.borderColor = '#e5e3df';
+                e.target.style.boxShadow = '';
+            }}
             ref={localRef}
         />
     );
