@@ -5,4 +5,5 @@ export interface Project {
     description: string | null;
     excerpt?: string | null;
     tags?: string[];
+    readTime?: string;
 }
