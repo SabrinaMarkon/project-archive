@@ -55,13 +55,37 @@ export default function PostContent({ content, format, className = '' }: PostCon
                     break;
 
                 case 'plaintext':
-                    // Convert line breaks to <br> tags for plaintext
+                    // Convert plaintext with proper paragraph and list formatting
                     const escaped = content
                         .replace(/&/g, '&amp;')
                         .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/\n/g, '<br>');
-                    setRenderedContent(escaped);
+                        .replace(/>/g, '&gt;');
+
+                    // Split into paragraphs (double line breaks)
+                    const paragraphs = escaped.split(/\n\n+/);
+
+                    // Process each paragraph
+                    const formattedParagraphs = paragraphs.map(para => {
+                        // Handle bullet points (lines starting with -, *, or •)
+                        if (/^[-*•]/.test(para.trim())) {
+                            const items = para.split('\n')
+                                .map(line => line.trim())
+                                .filter(line => line.length > 0)
+                                .map(line => {
+                                    // Remove bullet character and trim
+                                    const cleaned = line.replace(/^[-*•]\s*/, '');
+                                    return `<li>${cleaned}</li>`;
+                                })
+                                .join('');
+                            return `<ul class="list-disc pl-6 mb-4 space-y-2">${items}</ul>`;
+                        }
+
+                        // Regular paragraph with line breaks preserved
+                        const withBreaks = para.replace(/\n/g, '<br>');
+                        return `<p class="mb-4 leading-relaxed">${withBreaks}</p>`;
+                    });
+
+                    setRenderedContent(formattedParagraphs.join(''));
                     break;
 
                 default:
