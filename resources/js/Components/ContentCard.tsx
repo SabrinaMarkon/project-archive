@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Code2, ExternalLink } from 'lucide-react';
-import PostContent from './PostContent';
+import DescriptionRenderer from './DescriptionRenderer';
 
 interface ContentCardProps {
     title: string;
@@ -11,6 +11,9 @@ interface ContentCardProps {
     linkText?: string;
     tags?: string[];
     readTime?: string;
+    publishedAt?: string | null;
+    coverImage?: string | null;
+    isFeatured?: boolean;
 }
 
 export default function ContentCard({
@@ -22,35 +25,72 @@ export default function ContentCard({
     linkText = 'View',
     tags,
     readTime,
+    publishedAt,
+    coverImage,
+    isFeatured,
 }: ContentCardProps) {
     return (
         <div
             key={slug}
             className="group bg-white rounded-2xl p-6 border transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-            style={{ borderColor: '#c0d8b4' }}
+            style={{ borderColor: isFeatured ? '#7a9d7a' : '#c0d8b4', borderWidth: isFeatured ? '2px' : '1px' }}
         >
-            <div
-                className="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                style={{ backgroundColor: '#7a9d7a' }}
-            >
-                <Code2 className="text-white" size={24} />
-            </div>
+            {coverImage && (
+                <div className="mb-4 rounded-lg overflow-hidden">
+                    <img
+                        src={coverImage}
+                        alt={title}
+                        className="w-full h-48 object-cover"
+                    />
+                </div>
+            )}
+
+            {!coverImage && (
+                <div
+                    className="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
+                    style={{ backgroundColor: '#7a9d7a' }}
+                >
+                    <Code2 className="text-white" size={24} />
+                </div>
+            )}
+
+            {isFeatured && (
+                <div className="inline-block mb-2">
+                    <span
+                        className="px-3 py-1 text-xs font-bold uppercase rounded-full"
+                        style={{ backgroundColor: '#7a9d7a', color: '#ffffff' }}
+                    >
+                        Featured
+                    </span>
+                </div>
+            )}
 
             <h3 className={`font-bold mb-3 ${title.length > 50 ? 'text-lg' : 'text-xl'}`} style={{ color: '#2d2d2d' }}>
                 {title}
             </h3>
 
-            {readTime && (
-                <div
-                    className="inline-block px-3 py-1 rounded-full text-sm font-semibold mb-3"
-                    style={{ backgroundColor: '#e8ede8', color: '#658965' }}
-                >
-                    {readTime}
+            {(readTime || publishedAt) && (
+                <div className="flex flex-wrap items-center gap-2 mb-3 text-sm" style={{ color: '#7a7a7a' }}>
+                    {publishedAt && (
+                        <span>
+                            {new Date(publishedAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            })}
+                        </span>
+                    )}
+                    {readTime && (
+                        <>
+                            {publishedAt && <span>•</span>}
+                            <span>{readTime}</span>
+                        </>
+                    )}
                 </div>
             )}
 
             <div className="mb-4 leading-relaxed prose prose-sm max-w-none" style={{ color: '#5a5a5a' }}>
-                <PostContent
+                <DescriptionRenderer
                     content={description?.substring(0, 200) || ''}
                     format={format}
                     className="line-clamp-3"

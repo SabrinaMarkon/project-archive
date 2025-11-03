@@ -4,7 +4,7 @@ import CharacterCount from "@/Components/CharacterCount";
 import DangerButton from "@/Components/DangerButton";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Modal from "@/Components/Modal";
-import PostContent from "@/Components/PostContent";
+import DescriptionRenderer from "@/Components/DescriptionRenderer";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextareaAutosize from "react-textarea-autosize";
 import { formatSlug } from "@/utils/validation";
@@ -380,7 +380,7 @@ export default function Create({ post }: { post: Post | null }) {
                         )}
 
                         <div className="prose prose-lg max-w-none">
-                            <PostContent
+                            <DescriptionRenderer
                                 content={data.description}
                                 format={data.format as 'html' | 'markdown' | 'plaintext'}
                             />

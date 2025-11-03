@@ -2,7 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Post } from '@/types/post';
 import PortfolioLayout from '@/Layouts/PortfolioLayout';
 import ContactSection from '@/Components/Portfolio/ContactSection';
-import PostContent from '@/Components/PostContent';
+import DescriptionRenderer from '@/Components/DescriptionRenderer';
 import { ArrowLeft, Code2 } from 'lucide-react';
 
 export default function Show({ post }: { post: Post }) {
@@ -51,7 +51,7 @@ export default function Show({ post }: { post: Post }) {
                                 </p>
                             </div>
                         )}
-                        <PostContent
+                        <DescriptionRenderer
                             content={post.description || ''}
                             format={post.format}
                         />

@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import DangerButton from "@/Components/DangerButton";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Modal from "@/Components/Modal";
-import PostContent from "@/Components/PostContent";
+import DescriptionRenderer from "@/Components/DescriptionRenderer";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { Head, Link, router } from "@inertiajs/react";
 import { Post } from "@/types/post";
@@ -139,7 +139,7 @@ export default function Index({ posts }: { posts: Post[] }) {
                                             </div>
                                         )}
                                         <div className="text-sm mb-3 prose prose-sm max-w-none">
-                                            <PostContent
+                                            <DescriptionRenderer
                                                 content={post.description?.substring(0, 500) || ''}
                                                 format={post.format}
                                                 className="line-clamp-6"

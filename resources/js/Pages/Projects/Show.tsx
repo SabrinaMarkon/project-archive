@@ -2,12 +2,23 @@ import { Head, Link } from '@inertiajs/react';
 import { Project } from '@/types/project';
 import PortfolioLayout from '@/Layouts/PortfolioLayout';
 import ContactSection from '@/Components/Portfolio/ContactSection';
+import DescriptionRenderer from '@/Components/DescriptionRenderer';
 import { ArrowLeft, Code2 } from 'lucide-react';
 
 export default function Show({ project }: { project: Project }) {
+    const metaTitle = project.meta_title || `${project.title} - Sabrina Markon`;
+    const metaDescription = project.meta_description || project.excerpt || `View the ${project.title} project by Sabrina Markon`;
+
     return (
         <PortfolioLayout>
-            <Head title={`${project.title} - Sabrina Markon`} />
+            <Head title={metaTitle}>
+                <meta name="description" content={metaDescription} />
+                <meta property="og:title" content={metaTitle} />
+                <meta property="og:description" content={metaDescription} />
+                {project.cover_image && (
+                    <meta property="og:image" content={project.cover_image} />
+                )}
+            </Head>
 
             {/* Project Header */}
             <section className="pt-32 pb-12 px-6 bg-white">
@@ -21,6 +32,16 @@ export default function Show({ project }: { project: Project }) {
                         Back to All Projects
                     </Link>
 
+                    {project.cover_image && (
+                        <div className="mb-8 rounded-xl overflow-hidden" style={{ borderColor: '#c0d8b4', borderWidth: '1px' }}>
+                            <img
+                                src={project.cover_image}
+                                alt={project.title}
+                                className="w-full h-auto object-cover max-h-96"
+                            />
+                        </div>
+                    )}
+
                     <div className="flex items-start gap-4 mb-6">
                         <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#7a9d7a' }}>
                             <Code2 className="text-white" size={24} aria-hidden="true" />
@@ -29,11 +50,23 @@ export default function Show({ project }: { project: Project }) {
                             <h1 className="font-bold leading-tight text-2xl sm:text-3xl md:text-4xl" style={{ color: '#2d2d2d' }}>
                                 {project.title}
                             </h1>
-                            {project.readTime && (
-                                <p className="text-sm mt-2" style={{ color: '#7a7a7a' }}>
-                                    {project.readTime}
-                                </p>
-                            )}
+                            <div className="flex flex-wrap items-center gap-3 mt-2 text-sm" style={{ color: '#7a7a7a' }}>
+                                {project.published_at && (
+                                    <span>
+                                        Published {new Date(project.published_at).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        })}
+                                    </span>
+                                )}
+                                {project.readTime && (
+                                    <>
+                                        {project.published_at && <span>•</span>}
+                                        <span>{project.readTime}</span>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -67,17 +100,10 @@ export default function Show({ project }: { project: Project }) {
                         <h2 className="text-2xl font-bold mb-6" style={{ color: '#2d2d2d' }}>
                             About This Project
                         </h2>
-                        <div className="prose prose-lg max-w-none" style={{ color: '#5a5a5a' }}>
-                            {project.description ? (
-                                <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                                    {project.description}
-                                </p>
-                            ) : (
-                                <p className="text-lg leading-relaxed italic">
-                                    No description available for this project yet.
-                                </p>
-                            )}
-                        </div>
+                        <DescriptionRenderer
+                            content={project.description || ''}
+                            format={project.format}
+                        />
                     </div>
                 </div>
             </section>
