@@ -73,6 +73,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Test Project',
             'slug' => 'test-project',
             'description' => 'This is a test project.',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertRedirect(route('admin.projects.index'));
@@ -81,6 +83,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Test Project',
             'slug' => 'test-project',
             'description' => 'This is a test project.',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
     }
 
@@ -116,6 +120,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Flash Test Project',
             'slug' => 'flash-test-project',
             'description' => 'Testing flash message',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHas('success', 'Project created successfully!');
@@ -147,6 +153,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Updated Title',
             'slug' => 'updated-title',
             'description' => 'Updated description.',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHas('success', 'Project updated successfully!');
@@ -158,6 +166,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Updated Title',
             'slug' => 'updated-title',
             'description' => 'Updated description.',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertStatus(404);  // This ensures that if the project doesn't exist, a 404 is returned
@@ -172,6 +182,8 @@ class AdminProjectsTest extends TestCase
             'title' => '',
             'slug' => 'test-project',
             'description' => 'Test project with no title',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHasErrors('title');
@@ -183,6 +195,8 @@ class AdminProjectsTest extends TestCase
             'title' => str_repeat('A', 256), // 256 characters
             'slug' => 'test-project',
             'description' => 'Too long title',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHasErrors('title');
@@ -195,6 +209,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Duplicate Title',
             'slug' => 'first-slug',
             'description' => 'First project',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $this->assertDatabaseCount('projects', 1);
@@ -204,6 +220,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Duplicate Title',
             'slug' => 'second-slug',
             'description' => 'Second project',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHasErrors('title');
@@ -218,6 +236,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Test Project',
             'slug' => '',
             'description' => 'Test project with no slug',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHasErrors('slug');
@@ -229,6 +249,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Test Project',
             'slug' => str_repeat('A', 256),
             'description' => 'Too long slug',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHasErrors('slug');
@@ -241,6 +263,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'First Test Project',
             'slug' => 'duplicate-slug',
             'description' => 'First project',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $this->assertDatabaseCount('projects', 1);
@@ -250,6 +274,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Second Test Project',
             'slug' => 'duplicate-slug',
             'description' => 'Second project',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHasErrors('slug');
@@ -261,6 +287,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Test Project',
             'slug' => 'Invalid Slug!!!', // invalid because of spaces/special chars
             'description' => 'Test project with improperly formatted slug.',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHasErrors('slug');
@@ -288,6 +316,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Updated Title',
             'slug' => 'existing-slug', // This should fail because the slug is already taken
             'description' => 'Updated description.',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         // Assert: Validation error for the slug (because it's not unique)
@@ -305,6 +335,8 @@ class AdminProjectsTest extends TestCase
         $response = $this->actingAs($this->admin)->post('/admin/projects', [
             'title' => 'Project Without Description',
             'slug' => 'no-description',
+            'format' => 'markdown',
+            'status' => 'draft',
             // no description field
         ]);
 
@@ -316,10 +348,43 @@ class AdminProjectsTest extends TestCase
         $response = $this->actingAs($this->admin)->post('/admin/projects', [
             'title' => 'Test Project',
             'slug' => 'test-project',
-            'description' => str_repeat('A', 2001),
+            'description' => str_repeat('A', 50001),
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertSessionHasErrors('description');
+    }
+
+
+    /**
+     * Form field validations: format
+     */
+    public function test_project_format_must_be_valid(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => 'test-project',
+            'format' => 'invalid-format',
+            'status' => 'draft',
+        ]);
+
+        $response->assertSessionHasErrors('format');
+    }
+
+    /**
+     * Form field validations: status
+     */
+    public function test_project_status_must_be_valid(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Test Project',
+            'slug' => 'test-project',
+            'format' => 'markdown',
+            'status' => 'invalid-status',
+        ]);
+
+        $response->assertSessionHasErrors('status');
     }
 
     /**
@@ -365,6 +430,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Project with Tags',
             'slug' => 'project-with-tags',
             'description' => 'This project has tags.',
+            'format' => 'markdown',
+            'status' => 'draft',
             'tags' => ['Laravel', 'React', 'TypeScript'],
         ]);
 
@@ -385,6 +452,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Project without Tags',
             'slug' => 'project-without-tags',
             'description' => 'This project has no tags.',
+            'format' => 'markdown',
+            'status' => 'draft',
         ]);
 
         $response->assertRedirect(route('admin.projects.index'));
@@ -403,6 +472,8 @@ class AdminProjectsTest extends TestCase
             'title' => $project->title,
             'slug' => $project->slug,
             'description' => $project->description,
+            'format' => 'markdown',
+            'status' => 'draft',
             'tags' => ['Laravel', 'PostgreSQL', 'Vue'],
         ]);
 
@@ -422,6 +493,8 @@ class AdminProjectsTest extends TestCase
             'title' => $project->title,
             'slug' => $project->slug,
             'description' => $project->description,
+            'format' => 'markdown',
+            'status' => 'draft',
             'tags' => [],
         ]);
 
@@ -437,6 +510,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Test Project',
             'slug' => 'test-project',
             'description' => 'Test',
+            'format' => 'markdown',
+            'status' => 'draft',
             'tags' => 'not-an-array',
         ]);
 
@@ -449,6 +524,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Test Project',
             'slug' => 'test-project',
             'description' => 'Test',
+            'format' => 'markdown',
+            'status' => 'draft',
             'tags' => ['Valid Tag', 123, ['nested']],
         ]);
 
@@ -462,6 +539,8 @@ class AdminProjectsTest extends TestCase
             'title' => 'Test Project',
             'slug' => 'test-project',
             'description' => 'Test',
+            'format' => 'markdown',
+            'status' => 'draft',
             'tags' => [str_repeat('A', 51)],
         ]);
 

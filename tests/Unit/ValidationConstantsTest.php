@@ -16,6 +16,6 @@ class ValidationConstantsTest extends TestCase
 
         $this->assertSame(255, $json['MAX_TITLE_LENGTH']);
         $this->assertSame(100, $json['MAX_SLUG_LENGTH']);
-        $this->assertSame(2000, $json['MAX_DESCRIPTION_LENGTH']);
+        $this->assertSame(50000, $json['MAX_DESCRIPTION_LENGTH']);
     }
 }
