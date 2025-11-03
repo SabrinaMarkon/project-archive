@@ -107,11 +107,11 @@ export default function Create({ post }: { post: Post | null }) {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight" style={{ color: '#3d3d3d' }}>
-                    {post ? "Edit " : "Create "}Post
+                    {post ? "Edit " : "Create "}Writing
                 </h2>
             }
         >
-            <Head title={post ? "Edit Post" : "Create Post"} />
+            <Head title={post ? "Edit Writing" : "Create Writing"} />
 
             <div className="py-6 px-8 overflow-hidden bg-white shadow-sm sm:rounded-lg" style={{ color: '#3d3d3d' }}>
                 <form onSubmit={submit} className="space-y-6 max-w-3xl">
@@ -294,6 +294,87 @@ export default function Create({ post }: { post: Post | null }) {
                         {errors.tags && <div className="text-red-600 text-sm mt-1">{errors.tags}</div>}
                     </div>
 
+                    {/* Cover Image URL */}
+                    <div>
+                        <label htmlFor="cover_image" className="block font-medium" style={{ color: '#3d3d3d' }}>
+                            Cover Image URL
+                        </label>
+                        <input
+                            id="cover_image"
+                            type="text"
+                            value={data.cover_image}
+                            onChange={(e) => setData("cover_image", e.target.value)}
+                            placeholder="https://example.com/image.jpg"
+                            className="mt-1 block w-full border rounded-md p-2.5 focus:outline-none focus:ring-2 transition"
+                            style={{ borderColor: '#e5e3df', color: '#3d3d3d' }}
+                            onFocus={(e) => e.target.style.borderColor = '#7a9d7a'}
+                            onBlur={(e) => e.target.style.borderColor = '#e5e3df'}
+                        />
+                        {errors.cover_image && <div className="text-red-600 text-sm mt-1">{errors.cover_image}</div>}
+                    </div>
+
+                    {/* Published Date */}
+                    <div>
+                        <label htmlFor="published_at" className="block font-medium" style={{ color: '#3d3d3d' }}>
+                            Published Date
+                        </label>
+                        <input
+                            id="published_at"
+                            type="datetime-local"
+                            value={data.published_at}
+                            onChange={(e) => setData("published_at", e.target.value)}
+                            className="mt-1 block w-full border rounded-md p-2.5 focus:outline-none focus:ring-2 transition"
+                            style={{ borderColor: '#e5e3df', color: '#3d3d3d' }}
+                            onFocus={(e) => e.target.style.borderColor = '#7a9d7a'}
+                            onBlur={(e) => e.target.style.borderColor = '#e5e3df'}
+                        />
+                        {errors.published_at && <div className="text-red-600 text-sm mt-1">{errors.published_at}</div>}
+                    </div>
+
+                    {/* SEO Meta Fields */}
+                    <div className="space-y-4 pt-4 border-t" style={{ borderColor: '#e5e3df' }}>
+                        <h3 className="font-semibold text-lg" style={{ color: '#3d3d3d' }}>SEO Meta Tags</h3>
+
+                        <div>
+                            <label htmlFor="meta_title" className="block font-medium" style={{ color: '#3d3d3d' }}>
+                                Meta Title
+                            </label>
+                            <input
+                                id="meta_title"
+                                type="text"
+                                value={data.meta_title}
+                                onChange={(e) => setData("meta_title", e.target.value)}
+                                placeholder="Leave blank to use writing title"
+                                className="mt-1 block w-full border rounded-md p-2.5 focus:outline-none focus:ring-2 transition"
+                                style={{ borderColor: '#e5e3df', color: '#3d3d3d' }}
+                                onFocus={(e) => e.target.style.borderColor = '#7a9d7a'}
+                                onBlur={(e) => e.target.style.borderColor = '#e5e3df'}
+                            />
+                            <CharacterCount value={data.meta_title} max={255} />
+                            {errors.meta_title && <div className="text-red-600 text-sm mt-1">{errors.meta_title}</div>}
+                        </div>
+
+                        <div>
+                            <label htmlFor="meta_description" className="block font-medium" style={{ color: '#3d3d3d' }}>
+                                Meta Description
+                            </label>
+                            <TextareaAutosize
+                                id="meta_description"
+                                value={data.meta_description}
+                                onChange={(e) => setData("meta_description", e.target.value)}
+                                minRows={2}
+                                maxRows={4}
+                                placeholder="Leave blank to use excerpt"
+                                className="mt-1 block w-full border rounded-md p-2.5 focus:outline-none focus:ring-2 transition"
+                                style={{ borderColor: '#e5e3df', color: '#3d3d3d' }}
+                                onFocus={(e) => e.target.style.borderColor = '#7a9d7a'}
+                                onBlur={(e) => e.target.style.borderColor = '#e5e3df'}
+                            />
+                            <CharacterCount value={data.meta_description} max={255} />
+                            {errors.meta_description && <div className="text-red-600 text-sm mt-1">{errors.meta_description}</div>}
+                        </div>
+                    </div>
+
                     {/* Featured Checkbox */}
                     <div className="flex items-center gap-2">
                         <input
@@ -304,7 +385,7 @@ export default function Create({ post }: { post: Post | null }) {
                             className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                         />
                         <label htmlFor="is_featured" className="font-medium" style={{ color: '#3d3d3d' }}>
-                            Featured Post
+                            Featured Writing
                         </label>
                     </div>
 
@@ -316,7 +397,7 @@ export default function Create({ post }: { post: Post | null }) {
                             className="text-white px-6 py-2.5 rounded-md hover:opacity-90 transition disabled:opacity-50"
                             style={{ backgroundColor: '#7a9d7a' }}
                         >
-                            {post ? "Update" : "Create"} Post
+                            {post ? "Update" : "Create"} Writing
                         </button>
 
                         <button
@@ -341,15 +422,15 @@ export default function Create({ post }: { post: Post | null }) {
             <Modal show={confirmingDeletion} onClose={closeModal}>
                 <div className="p-6">
                     <h2 className="text-lg font-medium" style={{ color: '#3d3d3d' }}>
-                        Are you sure you want to delete this post?
+                        Are you sure you want to delete this writing?
                     </h2>
                     <p className="mt-1 text-sm" style={{ color: '#7a7a7a' }}>
-                        Once this post is deleted, all of its data will be permanently removed. This action cannot be undone.
+                        Once this writing is deleted, all of its data will be permanently removed. This action cannot be undone.
                     </p>
                     <div className="mt-6 flex justify-end gap-3">
                         <SecondaryButton onClick={closeModal}>Cancel</SecondaryButton>
                         <DangerButton onClick={deletePost} disabled={processing}>
-                            Delete Post
+                            Delete Writing
                         </DangerButton>
                     </div>
                 </div>

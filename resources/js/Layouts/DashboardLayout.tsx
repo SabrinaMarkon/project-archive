@@ -11,7 +11,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
       <aside className="w-64 text-white p-6 space-y-6" style={{ backgroundColor: '#5a7a5a' }}>
         <div className="flex items-center gap-2 mb-8">
           <Leaf style={{ color: '#ffffff' }} size={32} />
-          <h2 className="text-xl font-bold">Project Archive</h2>
+          <a href="/" target="_blank"><h2 className="text-xl font-bold">Project Archive</h2></a>
         </div>
         <nav className="flex flex-col space-y-3">
           <Link
