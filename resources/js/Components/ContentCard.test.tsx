@@ -42,13 +42,13 @@ describe('ContentCard', () => {
     it('renders fallback when description is null', () => {
         render(<ContentCard {...defaultProps} description={null} />);
 
-        expect(screen.getByText('No description available.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
     });
 
     it('renders fallback when description is empty string', () => {
         render(<ContentCard {...defaultProps} description="" />);
 
-        expect(screen.getByText('No description available.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
     });
 
     it('renders tags when provided', () => {

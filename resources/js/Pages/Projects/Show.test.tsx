@@ -67,7 +67,7 @@ describe('Project Show Page (/projects/{slug})', () => {
 
         render(<Show project={projectWithoutDescription} />);
 
-        expect(screen.getByText('No description available for this project yet.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
     });
 
     it('shows default message when description is empty string', () => {
@@ -78,7 +78,7 @@ describe('Project Show Page (/projects/{slug})', () => {
 
         render(<Show project={projectWithEmptyDescription} />);
 
-        expect(screen.getByText('No description available for this project yet.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
     });
 
     it('renders "About This Project" section header', () => {
@@ -96,9 +96,11 @@ describe('Project Show Page (/projects/{slug})', () => {
     it('renders Code2 icon in header', () => {
         const { container } = render(<Show project={mockProject} />);
 
-        // Check for icon container with specific styling
-        const iconContainer = container.querySelector('.w-16.h-16.rounded-xl');
+        // Check for icon container with responsive sizing
+        const iconContainer = container.querySelector('.rounded-xl');
         expect(iconContainer).toBeInTheDocument();
+        // Verify it has the flex center classes
+        expect(iconContainer).toHaveClass('flex', 'items-center', 'justify-center');
     });
 
     it('applies correct section backgrounds', () => {
@@ -116,14 +118,17 @@ describe('Project Show Page (/projects/{slug})', () => {
     it('preserves whitespace in description', () => {
         const projectWithMultilineDescription = {
             ...mockProject,
+            format: 'plaintext' as const,
             description: 'Line 1\n\nLine 2\n\nLine 3',
         };
 
         const { container } = render(<Show project={projectWithMultilineDescription} />);
 
-        // Check for whitespace-pre-wrap class which preserves newlines
-        const descriptionElement = container.querySelector('.whitespace-pre-wrap');
+        // DescriptionRenderer converts line breaks to <p> tags for plaintext
+        const descriptionElement = container.querySelector('.prose');
         expect(descriptionElement).toBeInTheDocument();
+
+        // Check that all lines are present in the rendered content
         expect(descriptionElement?.textContent).toContain('Line 1');
         expect(descriptionElement?.textContent).toContain('Line 2');
         expect(descriptionElement?.textContent).toContain('Line 3');

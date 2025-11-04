@@ -15,7 +15,7 @@ describe('Checkbox', () => {
         render(<Checkbox />);
 
         const checkbox = screen.getByRole('checkbox');
-        expect(checkbox).toHaveClass('rounded', 'border-gray-300', 'text-indigo-600', 'shadow-sm');
+        expect(checkbox).toHaveClass('rounded', 'shadow-sm', 'focus:ring-2', 'focus:outline-none', 'transition-all');
     });
 
     it('merges custom className with defaults', () => {

@@ -91,7 +91,7 @@ describe('Admin Posts Index', () => {
 
     it('renders posts list page with header', () => {
         render(<Index posts={mockPosts} />);
-        expect(screen.getByText('Writing List')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Writing List' })).toBeInTheDocument();
     });
 
     it('displays all posts', () => {
@@ -222,8 +222,8 @@ describe('Admin Posts Index', () => {
         const deleteButtons = screen.getAllByRole('button', { name: /Delete/ });
         fireEvent.click(deleteButtons[0]);
 
-        expect(screen.getByText('Are you sure you want to delete this post?')).toBeInTheDocument();
-        expect(screen.getByText(/Test Post 1/)).toBeInTheDocument();
+        expect(screen.getByText('Are you sure you want to delete this writing?')).toBeInTheDocument();
+        expect(screen.getByText('Once deleted, "Test Post 1" will be permanently removed. This action cannot be undone.')).toBeInTheDocument();
     });
 
     it('closes delete modal when cancel is clicked', async () => {
@@ -233,14 +233,14 @@ describe('Admin Posts Index', () => {
         const deleteButtons = screen.getAllByRole('button', { name: /Delete/ });
         fireEvent.click(deleteButtons[0]);
 
-        expect(screen.getByText('Are you sure you want to delete this post?')).toBeInTheDocument();
+        expect(screen.getByText('Are you sure you want to delete this writing?')).toBeInTheDocument();
 
         // Click cancel
         const cancelButton = screen.getByRole('button', { name: /Cancel/ });
         fireEvent.click(cancelButton);
 
         await waitFor(() => {
-            expect(screen.queryByText('Are you sure you want to delete this post?')).not.toBeInTheDocument();
+            expect(screen.queryByText('Are you sure you want to delete this writing?')).not.toBeInTheDocument();
         });
     });
 
@@ -252,7 +252,7 @@ describe('Admin Posts Index', () => {
         fireEvent.click(deleteButtons[0]);
 
         // Click delete in modal
-        const confirmButtons = screen.getAllByRole('button', { name: /Delete Post/ });
+        const confirmButtons = screen.getAllByRole('button', { name: /Delete Writing/ });
         fireEvent.click(confirmButtons[0]);
 
         await waitFor(() => {
@@ -262,12 +262,12 @@ describe('Admin Posts Index', () => {
 
     it('shows empty state message when no posts', () => {
         render(<Index posts={[]} />);
-        expect(screen.getByText('No posts found. Create your first post!')).toBeInTheDocument();
+        expect(screen.getByText('No writing found. Create your first piece!')).toBeInTheDocument();
     });
 
     it('shows create post link in empty state', () => {
         render(<Index posts={[]} />);
-        const createLink = screen.getByRole('link', { name: /Create Post/ });
+        const createLink = screen.getByRole('link', { name: /Create Writing/ });
         expect(createLink).toHaveAttribute('href', '/admin/posts/create');
     });
 
@@ -294,7 +294,7 @@ describe('Admin Posts Index', () => {
         fireEvent.click(postButton);
 
         await waitFor(() => {
-            expect(screen.getByText('No description available')).toBeInTheDocument();
+            expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
         });
     });
 

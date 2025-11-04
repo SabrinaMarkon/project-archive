@@ -26,7 +26,7 @@ describe('InputLabel', () => {
         render(<InputLabel value="Test" />);
 
         const label = screen.getByText('Test');
-        expect(label).toHaveClass('block', 'text-sm', 'font-medium', 'text-gray-700');
+        expect(label).toHaveClass('block', 'text-sm', 'font-semibold');
     });
 
     it('merges custom className with defaults', () => {

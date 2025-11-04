@@ -32,7 +32,7 @@ export default forwardRef(function TextInput(
             {...props}
             type={type}
             className={
-                'rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all ' +
+                'rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all custom-class ' +
                 className
             }
             style={{

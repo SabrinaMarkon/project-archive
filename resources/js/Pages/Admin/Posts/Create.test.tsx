@@ -88,7 +88,7 @@ vi.mock('react-textarea-autosize', () => ({
 describe('Admin Posts Create/Edit Form', () => {
     it('renders create form with correct header', () => {
         render(<Create post={null} />);
-        expect(screen.getByRole('heading', { name: 'Create Post' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Create Writing' })).toBeInTheDocument();
     });
 
     it('renders edit form when post is provided', () => {
@@ -109,7 +109,7 @@ describe('Admin Posts Create/Edit Form', () => {
         };
 
         render(<Create post={mockPost} />);
-        expect(screen.getByRole('heading', { name: 'Edit Post' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Edit Writing' })).toBeInTheDocument();
     });
 
     it('displays all form fields', () => {
@@ -122,7 +122,7 @@ describe('Admin Posts Create/Edit Form', () => {
         expect(screen.getByLabelText('Excerpt')).toBeInTheDocument();
         expect(screen.getByLabelText('Content')).toBeInTheDocument();
         expect(screen.getByLabelText('Tags')).toBeInTheDocument();
-        expect(screen.getByLabelText('Featured Post')).toBeInTheDocument();
+        expect(screen.getByLabelText('Featured Writing')).toBeInTheDocument();
     });
 
     it('displays status dropdown with all options', () => {
@@ -192,7 +192,7 @@ describe('Admin Posts Create/Edit Form', () => {
     it('displays featured checkbox', () => {
         render(<Create post={null} />);
 
-        const checkbox = screen.getByLabelText('Featured Post') as HTMLInputElement;
+        const checkbox = screen.getByLabelText('Featured Writing') as HTMLInputElement;
         expect(checkbox).toBeInTheDocument();
         expect(checkbox.type).toBe('checkbox');
     });
@@ -200,7 +200,7 @@ describe('Admin Posts Create/Edit Form', () => {
     it('displays create button in create mode', () => {
         render(<Create post={null} />);
 
-        const submitButton = screen.getByRole('button', { name: /Create Post/i });
+        const submitButton = screen.getByRole('button', { name: /Create Writing/i });
         expect(submitButton).toBeInTheDocument();
     });
 
@@ -223,7 +223,7 @@ describe('Admin Posts Create/Edit Form', () => {
 
         render(<Create post={mockPost} />);
 
-        const submitButton = screen.getByRole('button', { name: /Update Post/i });
+        const submitButton = screen.getByRole('button', { name: /Update Writing/i });
         expect(submitButton).toBeInTheDocument();
     });
 
@@ -248,7 +248,7 @@ describe('Admin Posts Create/Edit Form', () => {
 
         const deleteButton = screen.getByTestId('danger-button');
         expect(deleteButton).toBeInTheDocument();
-        expect(deleteButton).toHaveTextContent('Delete Post');
+        expect(deleteButton).toHaveTextContent('Delete Writing');
     });
 
     it('does not display delete button in create mode', () => {

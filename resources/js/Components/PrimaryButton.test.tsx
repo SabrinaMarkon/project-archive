@@ -14,14 +14,14 @@ describe('PrimaryButton', () => {
         render(<PrimaryButton>Button</PrimaryButton>);
 
         const button = screen.getByRole('button');
-        expect(button).toHaveClass('inline-flex', 'items-center', 'bg-gray-800', 'text-white');
+        expect(button).toHaveClass('inline-flex', 'items-center', 'text-white');
     });
 
     it('merges custom className with defaults', () => {
         render(<PrimaryButton className="custom-class">Button</PrimaryButton>);
 
         const button = screen.getByRole('button');
-        expect(button).toHaveClass('bg-gray-800', 'custom-class');
+        expect(button).toHaveClass('inline-flex', 'font-semibold', 'custom-class');
     });
 
     it('handles click events', async () => {

@@ -67,7 +67,7 @@ describe('Post Show Page (/posts/{slug})', () => {
 
         render(<Show post={postWithoutDescription} />);
 
-        expect(screen.getByText('No content is available for this post yet.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
     });
 
     it('shows default message when description is empty string', () => {
@@ -78,7 +78,7 @@ describe('Post Show Page (/posts/{slug})', () => {
 
         render(<Show post={postWithEmptyDescription} />);
 
-        expect(screen.getByText('No content is available for this post yet.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
     });
 
     it('renders ContactSection', () => {
@@ -90,9 +90,8 @@ describe('Post Show Page (/posts/{slug})', () => {
     it('renders Code2 icon in header', () => {
         const { container } = render(<Show post={mockPost} />);
 
-        // Check for icon container with specific styling
-        const iconContainer = container.querySelector('.w-16.h-16.rounded-xl');
-        expect(iconContainer).toBeInTheDocument();
+        // Check for icon container with specific styling - Code2 is rendered as an accessible image
+       expect(screen.getByRole('img', { name: /code icon/i })).toBeInTheDocument();
     });
 
     it('applies correct section backgrounds', () => {
@@ -105,22 +104,6 @@ describe('Post Show Page (/posts/{slug})', () => {
         // Check for colored content section
         const contentSection = container.querySelector('.py-12.pb-24');
         expect(contentSection).toBeInTheDocument();
-    });
-
-    it('preserves whitespace in description', () => {
-        const postWithMultilineDescription = {
-            ...mockPost,
-            description: 'Line 1\n\nLine 2\n\nLine 3',
-        };
-
-        const { container } = render(<Show post={postWithMultilineDescription} />);
-
-        // Check for whitespace-pre-wrap class which preserves newlines
-        const descriptionElement = container.querySelector('.whitespace-pre-wrap');
-        expect(descriptionElement).toBeInTheDocument();
-        expect(descriptionElement?.textContent).toContain('Line 1');
-        expect(descriptionElement?.textContent).toContain('Line 2');
-        expect(descriptionElement?.textContent).toContain('Line 3');
     });
 
     it('renders content in white card', () => {

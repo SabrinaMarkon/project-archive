@@ -63,7 +63,7 @@ describe('Posts Index Page (/posts)', () => {
     it('shows default text when description is null', () => {
         render(<Index posts={mockPosts} />);
 
-        expect(screen.getByText('No description available.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
     });
 
     it('renders links to individual post pages', () => {

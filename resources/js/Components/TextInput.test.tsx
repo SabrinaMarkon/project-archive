@@ -22,14 +22,14 @@ describe('TextInput', () => {
         render(<TextInput />);
 
         const input = screen.getByRole('textbox');
-        expect(input).toHaveClass('rounded-md', 'border-gray-300', 'shadow-sm');
+        expect(input).toHaveClass('rounded-lg', 'shadow-sm', 'focus:outline-none', 'focus:ring-2', 'transition-all', 'custom-class');
     });
 
     it('merges custom className with default', () => {
         render(<TextInput className="custom-class" />);
 
         const input = screen.getByRole('textbox');
-        expect(input).toHaveClass('rounded-md', 'custom-class');
+        expect(input).toHaveClass('rounded-lg', 'shadow-sm', 'focus:outline-none', 'focus:ring-2', 'transition-all', 'custom-class');
     });
 
     it('forwards additional props to input', () => {

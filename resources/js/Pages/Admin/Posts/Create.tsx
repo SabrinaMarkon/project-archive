@@ -412,7 +412,7 @@ export default function Create({ post }: { post: Post | null }) {
 
                         {post && (
                             <DangerButton type="button" onClick={confirmDeletion}>
-                                Delete Post
+                                Delete Writing
                             </DangerButton>
                         )}
                     </div>

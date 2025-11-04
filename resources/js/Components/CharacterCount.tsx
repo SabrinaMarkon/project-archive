@@ -1,10 +1,10 @@
 interface CharacterCountProps {
-    value: string;
+    value: string | undefined;
     max: number;
 }
 
 export default function CharacterCount({ value, max }: CharacterCountProps) {
-    const length = value.length;
+    const length = (value || '').length;
     const overLimit = length > max;
 
     return (

@@ -63,7 +63,20 @@ describe('Projects Index Page (/projects)', () => {
     it('shows default text when description is null', () => {
         render(<Index projects={mockProjects} />);
 
-        expect(screen.getByText('No description available.')).toBeInTheDocument();
+        expect(screen.getByText('No content is available yet.')).toBeInTheDocument();
+    });
+
+    it('renders links to individual project pages', () => {
+        render(<Index projects={mockProjects} />);
+
+        const links = screen.getAllByText('View Project');
+        expect(links).toHaveLength(3);
+
+        // Check href attributes
+        const linkElements = screen.getAllByRole('link', { name: /View Project/i });
+        expect(linkElements[0]).toHaveAttribute('href', '/projects/project-1');
+        expect(linkElements[1]).toHaveAttribute('href', '/projects/project-2');
+        expect(linkElements[2]).toHaveAttribute('href', '/projects/project-3');
     });
 
     it('renders links to individual project pages', () => {
