@@ -12,7 +12,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::query()->inRandomOrder()->get();
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,

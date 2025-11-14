@@ -14,7 +14,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::orderBy('title', 'asc')->get();
 
         return Inertia::render('Admin/Projects/Index', [
             'projects' => $projects,
