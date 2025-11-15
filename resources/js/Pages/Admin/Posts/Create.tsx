@@ -8,6 +8,7 @@ import DescriptionRenderer from "@/Components/DescriptionRenderer";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextareaAutosize from "react-textarea-autosize";
 import { formatSlug } from "@/utils/validation";
+import { formatDateTimeLocal } from "@/utils/date";
 import { Head, useForm } from "@inertiajs/react";
 import { Post } from "@/types/post";
 import { Eye } from "lucide-react";
@@ -27,7 +28,7 @@ export default function Create({ post }: { post: Post | null }) {
         format: post?.format ?? "markdown",
         excerpt: post?.excerpt ?? "",
         status: post?.status ?? "draft",
-        published_at: post?.publishedAt ?? "",
+        published_at: formatDateTimeLocal(post?.publishedAt),
         cover_image: post?.coverImage ?? "",
         tags: post?.tags ?? [],
         meta_title: post?.metaTitle ?? "",

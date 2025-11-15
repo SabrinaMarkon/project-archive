@@ -9,6 +9,7 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import TextareaAutosize from "react-textarea-autosize";
 import * as validation from "@/constants/validation";
 import { formatSlug } from "@/utils/validation";
+import { formatDateTimeLocal } from "@/utils/date";
 import { Head, useForm } from "@inertiajs/react";
 import { Project } from "@/types/project";
 import { Eye } from "lucide-react";
@@ -28,12 +29,12 @@ export default function Create({ project }: { project: Project | null }) {
         format: project?.format ?? "markdown",
         excerpt: project?.excerpt ?? "",
         status: project?.status ?? "draft",
-        published_at: project?.published_at ?? "",
-        cover_image: project?.cover_image ?? "",
+        published_at: formatDateTimeLocal(project?.publishedAt),
+        cover_image: project?.coverImage ?? "",
         tags: project?.tags ?? [],
-        meta_title: project?.meta_title ?? "",
-        meta_description: project?.meta_description ?? "",
-        is_featured: project?.is_featured ?? false,
+        meta_title: project?.metaTitle ?? "",
+        meta_description: project?.metaDescription ?? "",
+        is_featured: project?.isFeatured ?? false,
     });
 
     const submit = (e: React.FormEvent) => {
