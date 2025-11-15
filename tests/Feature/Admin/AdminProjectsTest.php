@@ -567,6 +567,7 @@ class AdminProjectsTest extends TestCase
     {
         $project = Project::factory()->create([
             'tags' => ['Laravel', 'React'],
+            'status' => 'published',
         ]);
 
         $response = $this->get('/projects');
@@ -594,5 +595,440 @@ class AdminProjectsTest extends TestCase
             $page->component('Projects/Show')
                 ->where('project.tags', ['TypeScript', 'Node.js'])
         );
+    }
+
+    /**
+     * is_featured field tests
+     */
+    public function test_admin_can_create_featured_project(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Featured Project',
+            'slug' => 'featured-project',
+            'description' => 'This is a featured project.',
+            'format' => 'markdown',
+            'status' => 'draft',
+            'is_featured' => true,
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $this->assertDatabaseHas('projects', [
+            'slug' => 'featured-project',
+            'is_featured' => true,
+        ]);
+    }
+
+    public function test_admin_can_create_non_featured_project(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Non-Featured Project',
+            'slug' => 'non-featured-project',
+            'description' => 'This is not a featured project.',
+            'format' => 'markdown',
+            'status' => 'draft',
+            'is_featured' => false,
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $this->assertDatabaseHas('projects', [
+            'slug' => 'non-featured-project',
+            'is_featured' => false,
+        ]);
+    }
+
+    public function test_is_featured_defaults_to_false_when_not_provided(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Default Featured Project',
+            'slug' => 'default-featured',
+            'format' => 'markdown',
+            'status' => 'draft',
+            // is_featured not provided
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project = Project::where('slug', 'default-featured')->first();
+        $this->assertFalse($project->is_featured);
+    }
+
+    public function test_admin_can_update_project_to_featured(): void
+    {
+        $project = Project::factory()->create([
+            'is_featured' => false,
+        ]);
+
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'description' => $project->description,
+            'format' => 'markdown',
+            'status' => 'draft',
+            'is_featured' => true,
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertTrue($project->is_featured);
+    }
+
+    public function test_admin_can_update_project_to_not_featured(): void
+    {
+        $project = Project::factory()->create([
+            'is_featured' => true,
+        ]);
+
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'description' => $project->description,
+            'format' => 'markdown',
+            'status' => 'draft',
+            'is_featured' => false,
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertFalse($project->is_featured);
+    }
+
+    public function test_project_edit_form_includes_is_featured_value(): void
+    {
+        $project = Project::factory()->create([
+            'is_featured' => true,
+        ]);
+
+        $response = $this->actingAs($this->admin)->get("/admin/projects/{$project->slug}");
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn($page) =>
+            $page->component('Admin/Projects/Create')
+                ->where('project.isFeatured', true)
+        );
+    }
+
+    /**
+     * published_at field tests
+     */
+    public function test_admin_can_create_project_with_published_date(): void
+    {
+        $publishedDate = '2025-11-14T10:30:00';
+
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Published Project',
+            'slug' => 'published-project',
+            'format' => 'markdown',
+            'status' => 'published',
+            'published_at' => $publishedDate,
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project = Project::where('slug', 'published-project')->first();
+        $this->assertNotNull($project->published_at);
+        $this->assertEquals('2025-11-14 10:30:00', $project->published_at->format('Y-m-d H:i:s'));
+    }
+
+    public function test_admin_can_update_project_published_date(): void
+    {
+        $project = Project::factory()->create([
+            'published_at' => '2025-01-01 00:00:00',
+        ]);
+
+        $newDate = '2025-11-14T15:45:00';
+
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'format' => 'markdown',
+            'status' => 'published',
+            'published_at' => $newDate,
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertEquals('2025-11-14 15:45:00', $project->published_at->format('Y-m-d H:i:s'));
+    }
+
+    public function test_published_at_can_be_null(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Draft Project',
+            'slug' => 'draft-project',
+            'format' => 'markdown',
+            'status' => 'draft',
+            // published_at not provided
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project = Project::where('slug', 'draft-project')->first();
+        $this->assertNull($project->published_at);
+    }
+
+    public function test_project_edit_form_includes_published_at_value(): void
+    {
+        $project = Project::factory()->create([
+            'published_at' => '2025-11-14 10:30:00',
+        ]);
+
+        $response = $this->actingAs($this->admin)->get("/admin/projects/{$project->slug}");
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn($page) =>
+            $page->component('Admin/Projects/Create')
+                ->where('project.publishedAt', $project->published_at->toISOString())
+        );
+    }
+
+    /**
+     * cover_image, meta_title, meta_description field tests
+     */
+    public function test_admin_can_create_project_with_cover_image(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Project with Cover',
+            'slug' => 'project-with-cover',
+            'format' => 'markdown',
+            'status' => 'draft',
+            'cover_image' => 'https://example.com/image.jpg',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $this->assertDatabaseHas('projects', [
+            'slug' => 'project-with-cover',
+            'cover_image' => 'https://example.com/image.jpg',
+        ]);
+    }
+
+    public function test_admin_can_update_project_cover_image(): void
+    {
+        $project = Project::factory()->create([
+            'cover_image' => 'https://example.com/old.jpg',
+        ]);
+
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'format' => 'markdown',
+            'status' => 'draft',
+            'cover_image' => 'https://example.com/new.jpg',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertEquals('https://example.com/new.jpg', $project->cover_image);
+    }
+
+    public function test_admin_can_create_project_with_meta_fields(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'SEO Project',
+            'slug' => 'seo-project',
+            'format' => 'markdown',
+            'status' => 'draft',
+            'meta_title' => 'Custom SEO Title',
+            'meta_description' => 'Custom SEO description for search engines.',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $this->assertDatabaseHas('projects', [
+            'slug' => 'seo-project',
+            'meta_title' => 'Custom SEO Title',
+            'meta_description' => 'Custom SEO description for search engines.',
+        ]);
+    }
+
+    public function test_admin_can_update_project_meta_fields(): void
+    {
+        $project = Project::factory()->create([
+            'meta_title' => 'Old Title',
+            'meta_description' => 'Old description',
+        ]);
+
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'format' => 'markdown',
+            'status' => 'draft',
+            'meta_title' => 'New SEO Title',
+            'meta_description' => 'New SEO description.',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertEquals('New SEO Title', $project->meta_title);
+        $this->assertEquals('New SEO description.', $project->meta_description);
+    }
+
+    public function test_project_edit_form_includes_all_camelcase_converted_fields(): void
+    {
+        $project = Project::factory()->create([
+            'cover_image' => 'https://example.com/test.jpg',
+            'meta_title' => 'Test Meta Title',
+            'meta_description' => 'Test meta description',
+            'is_featured' => true,
+        ]);
+
+        $response = $this->actingAs($this->admin)->get("/admin/projects/{$project->slug}");
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn($page) =>
+            $page->component('Admin/Projects/Create')
+                ->where('project.coverImage', 'https://example.com/test.jpg')
+                ->where('project.metaTitle', 'Test Meta Title')
+                ->where('project.metaDescription', 'Test meta description')
+                ->where('project.isFeatured', true)
+        );
+    }
+
+    /**
+     * published_at auto-set behavior tests
+     */
+    public function test_published_at_is_auto_set_when_creating_published_project(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Auto Published Project',
+            'slug' => 'auto-published',
+            'format' => 'markdown',
+            'status' => 'published',
+            // published_at not provided
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project = Project::where('slug', 'auto-published')->first();
+        $this->assertNotNull($project->published_at);
+        $this->assertTrue($project->published_at->isToday());
+    }
+
+    public function test_published_at_is_not_set_when_creating_draft_project(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Draft Project',
+            'slug' => 'draft-project',
+            'format' => 'markdown',
+            'status' => 'draft',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project = Project::where('slug', 'draft-project')->first();
+        $this->assertNull($project->published_at);
+    }
+
+    public function test_published_at_can_be_manually_set_when_creating(): void
+    {
+        $customDate = '2025-01-15T10:30';
+
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Custom Date Project',
+            'slug' => 'custom-date',
+            'format' => 'markdown',
+            'status' => 'published',
+            'published_at' => $customDate,
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project = Project::where('slug', 'custom-date')->first();
+        $this->assertNotNull($project->published_at);
+        $this->assertEquals('2025-01-15 10:30:00', $project->published_at->format('Y-m-d H:i:s'));
+    }
+
+    public function test_published_at_is_preserved_when_updating_published_project(): void
+    {
+        $originalDate = '2025-01-01 12:00:00';
+
+        $project = Project::factory()->create([
+            'status' => 'published',
+            'published_at' => $originalDate,
+        ]);
+
+        // Update the project (change title, keep status published)
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => 'Updated Title',
+            'slug' => $project->slug,
+            'format' => 'markdown',
+            'status' => 'published',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertEquals($originalDate, $project->published_at->format('Y-m-d H:i:s'));
+    }
+
+    public function test_published_at_is_preserved_when_unpublishing_project(): void
+    {
+        $originalDate = '2025-01-01 12:00:00';
+
+        $project = Project::factory()->create([
+            'status' => 'published',
+            'published_at' => $originalDate,
+        ]);
+
+        // Change status to draft
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'format' => 'markdown',
+            'status' => 'draft', // Unpublish
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        // Should preserve the original published date (NOT clear it)
+        $this->assertEquals($originalDate, $project->published_at->format('Y-m-d H:i:s'));
+    }
+
+    public function test_published_at_is_auto_set_when_publishing_draft_for_first_time(): void
+    {
+        $project = Project::factory()->create([
+            'status' => 'draft',
+            'published_at' => null,
+        ]);
+
+        // Publish the project
+        $response = $this->actingAs($this->admin)->put("/admin/projects/{$project->slug}", [
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'format' => 'markdown',
+            'status' => 'published',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project->refresh();
+        $this->assertNotNull($project->published_at);
+        $this->assertTrue($project->published_at->isToday());
+    }
+
+    public function test_author_id_is_set_to_current_user_when_creating_project(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/projects', [
+            'title' => 'Author Test Project',
+            'slug' => 'author-test',
+            'format' => 'markdown',
+            'status' => 'draft',
+        ]);
+
+        $response->assertRedirect(route('admin.projects.index'));
+
+        $project = Project::where('slug', 'author-test')->first();
+        $this->assertEquals($this->admin->id, $project->author_id);
     }
 }
