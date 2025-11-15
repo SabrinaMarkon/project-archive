@@ -6,9 +6,19 @@ import DescriptionRenderer from '@/Components/DescriptionRenderer';
 import { ArrowLeft, Code2 } from 'lucide-react';
 
 export default function Show({ post }: { post: Post }) {
+    const metaTitle = post.metaTitle || `${post.title} - Sabrina Markon`;
+    const metaDescription = post.metaDescription || post.excerpt || `Read ${post.title} by Sabrina Markon`;
+
     return (
         <PortfolioLayout>
-            <Head title={`${post.title} - Sabrina Markon`} />
+            <Head title={metaTitle}>
+                <meta name="description" content={metaDescription} />
+                <meta property="og:title" content={metaTitle} />
+                <meta property="og:description" content={metaDescription} />
+                {post.coverImage && (
+                    <meta property="og:image" content={post.coverImage} />
+                )}
+            </Head>
 
             {/* Post Header */}
             <section className="pt-32 pb-12 px-6 bg-white">
@@ -30,11 +40,35 @@ export default function Show({ post }: { post: Post }) {
                             <h1 className="font-bold leading-tight text-2xl sm:text-3xl md:text-4xl" style={{ color: '#2d2d2d' }}>
                                 {post.title}
                             </h1>
-                            {post.readTime && (
-                                <p className="text-sm mt-2" style={{ color: '#7a7a7a' }}>
-                                    {post.readTime}
-                                </p>
-                            )}
+                            <div className="flex flex-wrap items-center gap-3 mt-2 text-sm" style={{ color: '#7a7a7a' }}>
+                                {post.authorName && (
+                                    <span>By {post.authorName}</span>
+                                )}
+                                {post.publishedAt && (
+                                    <>
+                                        {post.authorName && <span>•</span>}
+                                        <span>
+                                            {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </span>
+                                    </>
+                                )}
+                                {post.readTime && (
+                                    <>
+                                        {(post.authorName || post.publishedAt) && <span>•</span>}
+                                        <span>{post.readTime}</span>
+                                    </>
+                                )}
+                                {post.viewCount !== undefined && post.viewCount > 0 && (
+                                    <>
+                                        {(post.authorName || post.publishedAt || post.readTime) && <span>•</span>}
+                                        <span>{post.viewCount.toLocaleString()} {post.viewCount === 1 ? 'view' : 'views'}</span>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -24,10 +24,14 @@ export default function WritingSection({ posts = [] }: WritingSectionProps) {
                             title={post.title}
                             slug={post.slug}
                             description={post.excerpt || post.description}
+                            format={post.format}
                             href={`/posts/${post.slug}`}
                             linkText="Read More"
                             tags={post.tags}
                             readTime={post.readTime}
+                            publishedAt={post.publishedAt}
+                            coverImage={post.coverImage}
+                            isFeatured={post.isFeatured}
                         />
                     ))}
                 </div>

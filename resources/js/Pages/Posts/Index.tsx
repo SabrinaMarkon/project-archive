@@ -31,11 +31,14 @@ export default function Index({ posts }: { posts: Post[] }) {
                                 title={post.title}
                                 slug={post.slug}
                                 description={post.excerpt || post.description}
-                                format="plaintext"
+                                format={post.format}
                                 href={`/posts/${post.slug}`}
-                                linkText="View Post"
+                                linkText="Read Post"
                                 tags={post.tags}
                                 readTime={post.readTime}
+                                publishedAt={post.publishedAt}
+                                coverImage={post.coverImage}
+                                isFeatured={post.isFeatured}
                             />
                         ))}
                     </div>

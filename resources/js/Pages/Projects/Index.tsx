@@ -31,10 +31,14 @@ export default function Index({ projects }: { projects: Project[] }) {
                                 title={project.title}
                                 slug={project.slug}
                                 description={project.excerpt || project.description}
-                                format="plaintext"
+                                format={project.format}
                                 href={`/projects/${project.slug}`}
                                 linkText="View Project"
                                 tags={project.tags}
+                                readTime={project.readTime}
+                                publishedAt={project.publishedAt}
+                                coverImage={project.coverImage}
+                                isFeatured={project.isFeatured}
                             />
                         ))}
                     </div>

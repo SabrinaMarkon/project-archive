@@ -6,8 +6,8 @@ import DescriptionRenderer from '@/Components/DescriptionRenderer';
 import { ArrowLeft, Code2 } from 'lucide-react';
 
 export default function Show({ project }: { project: Project }) {
-    const metaTitle = project.meta_title || `${project.title} - Sabrina Markon`;
-    const metaDescription = project.meta_description || project.excerpt || `View the ${project.title} project by Sabrina Markon`;
+    const metaTitle = project.metaTitle || `${project.title} - Sabrina Markon`;
+    const metaDescription = project.metaDescription || project.excerpt || `View the ${project.title} project by Sabrina Markon`;
 
     return (
         <PortfolioLayout>
@@ -15,8 +15,8 @@ export default function Show({ project }: { project: Project }) {
                 <meta name="description" content={metaDescription} />
                 <meta property="og:title" content={metaTitle} />
                 <meta property="og:description" content={metaDescription} />
-                {project.cover_image && (
-                    <meta property="og:image" content={project.cover_image} />
+                {project.coverImage && (
+                    <meta property="og:image" content={project.coverImage} />
                 )}
             </Head>
 
@@ -32,10 +32,10 @@ export default function Show({ project }: { project: Project }) {
                         Back to All Projects
                     </Link>
 
-                    {project.cover_image && (
+                    {project.coverImage && (
                         <div className="mb-8 rounded-xl overflow-hidden" style={{ borderColor: '#c0d8b4', borderWidth: '1px' }}>
                             <img
-                                src={project.cover_image}
+                                src={project.coverImage}
                                 alt={project.title}
                                 className="w-full h-auto object-cover max-h-96"
                             />
@@ -51,19 +51,31 @@ export default function Show({ project }: { project: Project }) {
                                 {project.title}
                             </h1>
                             <div className="flex flex-wrap items-center gap-3 mt-2 text-sm" style={{ color: '#7a7a7a' }}>
-                                {project.published_at && (
-                                    <span>
-                                        Published {new Date(project.published_at).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
-                                    </span>
+                                {project.authorName && (
+                                    <span>By {project.authorName}</span>
+                                )}
+                                {project.publishedAt && (
+                                    <>
+                                        {project.authorName && <span>•</span>}
+                                        <span>
+                                            {new Date(project.publishedAt).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </span>
+                                    </>
                                 )}
                                 {project.readTime && (
                                     <>
-                                        {project.published_at && <span>•</span>}
+                                        {(project.authorName || project.publishedAt) && <span>•</span>}
                                         <span>{project.readTime}</span>
+                                    </>
+                                )}
+                                {project.viewCount !== undefined && project.viewCount > 0 && (
+                                    <>
+                                        {(project.authorName || project.publishedAt || project.readTime) && <span>•</span>}
+                                        <span>{project.viewCount.toLocaleString()} {project.viewCount === 1 ? 'view' : 'views'}</span>
                                     </>
                                 )}
                             </div>

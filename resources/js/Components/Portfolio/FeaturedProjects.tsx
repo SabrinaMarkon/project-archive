@@ -26,9 +26,14 @@ export default function FeaturedProjects({ projects = [], limit = 3 }: FeaturedP
                             title={project.title}
                             slug={project.slug}
                             description={project.description}
+                            format={project.format}
                             href={`/projects/${project.slug}`}
                             linkText="View Project"
                             tags={project.tags}
+                            readTime={project.readTime}
+                            publishedAt={project.publishedAt}
+                            coverImage={project.coverImage}
+                            isFeatured={project.isFeatured}
                         />
                     ))}
                 </div>
