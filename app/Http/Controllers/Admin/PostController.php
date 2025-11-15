@@ -51,7 +51,7 @@ class PostController extends Controller
         // Set author_id to current user
         $data['author_id'] = auth()->id();
 
-        // Handle published_at based on status
+        // Auto-set published_at when publishing for the first time (if not manually set)
         if ($data['status'] === 'published' && empty($data['published_at'])) {
             $data['published_at'] = now();
         }
@@ -68,11 +68,11 @@ class PostController extends Controller
     {
         $data = $request->validated();
 
-        // Handle published_at based on status
-        if ($data['status'] === 'published' && empty($post->published_at)) {
+        // Auto-set published_at when publishing for the first time (if not manually set)
+        // Preserve existing published_at to maintain original publish date
+        // NOTE: When unpublishing (draft/archived), we KEEP the published_at to preserve history
+        if ($data['status'] === 'published' && empty($post->published_at) && empty($data['published_at'])) {
             $data['published_at'] = now();
-        } elseif ($data['status'] !== 'published') {
-            $data['published_at'] = null;
         }
 
         $post->update($data);
