@@ -45,3 +45,6 @@ yarn-error.log
 # SQL Exports - NEVER commit database dumps
 /storage/exports/*.sql
 /storage/exports/*.dump
+
+# Claude Code instructions - Private configuration
+CLAUDE.md
