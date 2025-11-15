@@ -13,12 +13,53 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+    // Get featured projects first
+    $featuredProjects = Project::with('author')
+        ->where('is_featured', true)
+        ->where('status', 'published')
+        ->orderBy('published_at', 'desc')
+        ->take(3)
+        ->get();
+
+    // If we have less than 3 featured, fill with random published projects
+    if ($featuredProjects->count() < 3) {
+        $needed = 3 - $featuredProjects->count();
+        $randomProjects = Project::with('author')
+            ->where('status', 'published')
+            ->where('is_featured', false)
+            ->inRandomOrder()
+            ->take($needed)
+            ->get();
+        $projects = $featuredProjects->merge($randomProjects);
+    } else {
+        $projects = $featuredProjects;
+    }
+
+    // Get featured posts first
+    $featuredPosts = Post::with('author')
+        ->where('is_featured', true)
+        ->where('status', 'published')
+        ->orderBy('published_at', 'desc')
+        ->take(3)
+        ->get();
+
+    // If we have less than 3 featured, fill with random published posts
+    if ($featuredPosts->count() < 3) {
+        $needed = 3 - $featuredPosts->count();
+        $randomPosts = Post::with('author')
+            ->where('status', 'published')
+            ->where('is_featured', false)
+            ->inRandomOrder()
+            ->take($needed)
+            ->get();
+        $posts = $featuredPosts->merge($randomPosts);
+    } else {
+        $posts = $featuredPosts;
+    }
+
     return Inertia::render('Welcome', [
-        'projects' => Project::all(),
-        'posts' => Post::where('status', 'published')
-            ->orderBy('published_at', 'desc')
-            ->take(3)
-            ->get(),
+        'projects' => $projects,
+        'posts' => $posts,
     ]);
 });
 
