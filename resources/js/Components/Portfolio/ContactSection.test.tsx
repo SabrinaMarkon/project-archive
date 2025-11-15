@@ -20,7 +20,7 @@ describe('ContactSection', () => {
 
         const emailLinks = container.querySelectorAll('a[href^="mailto:"]');
         expect(emailLinks.length).toBeGreaterThan(0);
-        expect(emailLinks[0]).toHaveAttribute('href', 'mailto:phpsitescripts@outlook.com');
+        expect(emailLinks[0]).toHaveAttribute('href', 'mailto:sabrina@sabrinamarkon.com');
     });
 
     it('renders GitHub link', () => {
@@ -41,7 +41,7 @@ describe('ContactSection', () => {
         render(<ContactSection />);
 
         const button = screen.getByRole('link', { name: /Get In Touch/i });
-        expect(button).toHaveAttribute('href', 'mailto:phpsitescripts@outlook.com');
+        expect(button).toHaveAttribute('href', 'mailto:sabrina@sabrinamarkon.com');
     });
 
     it('has correct section id', () => {

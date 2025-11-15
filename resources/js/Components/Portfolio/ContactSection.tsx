@@ -20,7 +20,7 @@ export default function ContactSection() {
                         <Linkedin size={28} style={{ color: '#658965' }} />
                     </a>
                 </div>
-                <a href="mailto:phpsitescripts@outlook.com" className="inline-block px-8 py-4 text-white rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 font-bold text-lg" style={{ backgroundColor: '#7a9d7a' }}>
+                <a href="mailto:sabrina@sabrinamarkon.com" className="inline-block px-8 py-4 text-white rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 font-bold text-lg" style={{ backgroundColor: '#7a9d7a' }}>
                     Get In Touch
                 </a>
             </div>
