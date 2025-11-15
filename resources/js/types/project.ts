@@ -6,13 +6,14 @@ export interface Project {
     format: "html" | "markdown" | "plaintext";
     excerpt?: string | null;
     status: "draft" | "published" | "archived";
-    published_at?: string;
-    author_id?: number;
-    cover_image?: string;
+    publishedAt?: string;
+    authorId?: number;
+    authorName?: string;
+    coverImage?: string;
     tags?: string[];
-    meta_title?: string;
-    meta_description?: string;
-    view_count?: number;
-    is_featured?: boolean;
+    metaTitle?: string;
+    metaDescription?: string;
+    viewCount?: number;
+    isFeatured?: boolean;
     readTime?: string;
 }

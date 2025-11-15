@@ -7,7 +7,8 @@ export interface Post {
     excerpt?: string;
     status: "draft" | "published" | "archived";
     publishedAt?: string;
-    authorId: number;
+    authorId?: number;
+    authorName?: string;
     coverImage?: string;
     tags?: string[];
     metaTitle?: string;
