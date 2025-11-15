@@ -12,7 +12,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::where('status', 'published')
+        $posts = Post::with('author')
+            ->where('status', 'published')
             ->orderBy('published_at', 'desc')
             ->get();
 
@@ -30,6 +31,8 @@ class PostController extends Controller
         if ($post->status !== 'published' && (!auth()->check() || !auth()->user()->is_admin)) {
             abort(404);
         }
+
+        $post->load('author');
 
         return Inertia::render('Posts/Show', [
             'post' => $post,

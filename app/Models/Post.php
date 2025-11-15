@@ -57,6 +57,14 @@ class Post extends Model
     }
 
     /**
+     * Get the author of the post.
+     */
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /**
      * Convert model to array with camelCase keys for frontend consistency.
      */
     public function toArray(): array
@@ -66,6 +74,11 @@ class Post extends Model
 
         foreach ($array as $key => $value) {
             $camelCased[Str::camel($key)] = $value;
+        }
+
+        // Add author name if relationship is loaded
+        if ($this->relationLoaded('author') && $this->author) {
+            $camelCased['authorName'] = $this->author->name;
         }
 
         return $camelCased;

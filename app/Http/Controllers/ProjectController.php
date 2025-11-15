@@ -12,7 +12,10 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::query()->inRandomOrder()->get();
+        $projects = Project::with('author')
+            ->where('status', 'published')
+            ->inRandomOrder()
+            ->get();
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
@@ -24,6 +27,8 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $project->load('author');
+
         return Inertia::render('Projects/Show', [
             'project' => $project,
         ]);
