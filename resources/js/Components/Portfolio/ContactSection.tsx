@@ -10,7 +10,7 @@ export default function ContactSection() {
                     Let's create something amazing together.
                 </p>
                 <div className="flex justify-center gap-6 mb-8">
-                    <a href="mailto:phpsitescripts@outlook.com" className="p-4 bg-white rounded-xl transition-all hover:scale-110 duration-300 shadow-md" style={{ border: '2px solid #7a9d7a' }}>
+                    <a href="mailto:sabrina@sabrinamarkon.com" className="p-4 bg-white rounded-xl transition-all hover:scale-110 duration-300 shadow-md" style={{ border: '2px solid #7a9d7a' }}>
                         <Mail size={28} style={{ color: '#658965' }} />
                     </a>
                     <a href="https://github.com/sabrinamarkon" className="p-4 bg-white rounded-xl transition-all hover:scale-110 duration-300 shadow-md" style={{ border: '2px solid #7a9d7a' }}>

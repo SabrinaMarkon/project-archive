@@ -75,7 +75,7 @@ export default function Show({ post }: { post: Post }) {
             </section>
 
             {/* Post Content */}
-            <section className="py-12 pb-24 px-6" style={{ backgroundColor: '#d4e5c8' }}>
+            <section className="py-12 pb-24 px-6" style={{ backgroundColor: '#d8e5b8' }}>
                 <div className="max-w-4xl mx-auto">
                     <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg" style={{ borderColor: '#c0d8b4', borderWidth: '1px' }}>
                         {post.excerpt && (

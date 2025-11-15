@@ -22,7 +22,7 @@ export default function Index({ posts }: { posts: Post[] }) {
             </section>
 
             {/* Posts Grid */}
-            <section className="py-12 pb-24 px-6" style={{ backgroundColor: '#d4e5c8' }}>
+            <section className="py-12 pb-24 px-6" style={{ backgroundColor: '#d8e5b8' }}>
                 <div className="max-w-6xl mx-auto">
                     <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
                         {posts.map((post) => (
