@@ -25,7 +25,7 @@ export default function FeaturedProjects({ projects = [], limit = 3 }: FeaturedP
                             key={project.slug}
                             title={project.title}
                             slug={project.slug}
-                            description={project.description}
+                            description={project.excerpt || project.description}
                             format={project.format}
                             href={`/projects/${project.slug}`}
                             linkText="View Project"
