@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class PublicPostsTest extends TestCase
@@ -231,5 +232,116 @@ class PublicPostsTest extends TestCase
         $this->assertNotFalse($newerPos, 'Newer Post should be in the response');
         $this->assertNotFalse($olderPos, 'Older Post should be in the response');
         $this->assertLessThan($olderPos, $newerPos, 'Newer Post should appear before Older Post');
+    }
+
+    public function test_posts_index_can_filter_by_tag(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        // Create posts with different tags
+        $laravelPost = Post::factory()->create([
+            'title' => 'Laravel Tips',
+            'status' => 'published',
+            'tags' => ['Laravel', 'PHP'],
+            'author_id' => $admin->id,
+        ]);
+
+        $reactPost = Post::factory()->create([
+            'title' => 'React Tutorial',
+            'status' => 'published',
+            'tags' => ['React', 'JavaScript'],
+            'author_id' => $admin->id,
+        ]);
+
+        // Filter by 'Laravel' tag
+        $response = $this->get('/posts?tag=Laravel');
+
+        $response->assertOk();
+        $response->assertSee('Laravel Tips');
+        $response->assertDontSee('React Tutorial');
+    }
+
+    public function test_posts_index_tag_filter_is_case_sensitive(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        Post::factory()->create([
+            'title' => 'Laravel Tips',
+            'status' => 'published',
+            'tags' => ['Laravel'],
+            'author_id' => $admin->id,
+        ]);
+
+        // 'laravel' (lowercase) should not match 'Laravel'
+        $response = $this->get('/posts?tag=laravel');
+
+        $response->assertOk();
+        $response->assertDontSee('Laravel Tips');
+    }
+
+    public function test_posts_index_with_nonexistent_tag_shows_no_results(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        Post::factory()->create([
+            'title' => 'Laravel Tips',
+            'status' => 'published',
+            'tags' => ['Laravel'],
+            'author_id' => $admin->id,
+        ]);
+
+        $response = $this->get('/posts?tag=NonExistentTag');
+
+        $response->assertOk();
+        $response->assertDontSee('Laravel Tips');
+    }
+
+    public function test_posts_index_passes_selected_tag_to_view(): void
+    {
+        $response = $this->get('/posts?tag=Laravel');
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn(AssertableInertia $page) =>
+            $page->component('Posts/Index')
+                ->where('selectedTag', 'Laravel')
+        );
+    }
+
+    public function test_posts_index_rejects_tag_longer_than_50_characters(): void
+    {
+        $longTag = str_repeat('a', 51);
+
+        $response = $this->get('/posts?tag=' . $longTag);
+
+        $response->assertStatus(302);
+    }
+
+    public function test_posts_index_rejects_array_tag_parameter(): void
+    {
+        $response = $this->get('/posts?tag[]=foo&tag[]=bar');
+
+        $response->assertStatus(302);
+    }
+
+    public function test_posts_index_handles_special_characters_in_tag(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        Post::factory()->create([
+            'title' => 'Test Post',
+            'status' => 'published',
+            'tags' => ['Laravel', '<script>alert("xss")</script>'],
+            'author_id' => $admin->id,
+        ]);
+
+        $response = $this->get('/posts?tag=' . urlencode('<script>alert("xss")</script>'));
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn(AssertableInertia $page) =>
+            $page->component('Posts/Index')
+                ->where('selectedTag', '<script>alert("xss")</script>')
+        );
     }
 }

@@ -12,13 +12,27 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::with('author')
-            ->where('status', 'published')
-            ->inRandomOrder()
-            ->get();
+        // Validate tag input
+        $validated = request()->validate([
+            'tag' => 'nullable|string|max:50',
+        ]);
+
+        $selectedTag = $validated['tag'] ?? null;
+
+        // Build the query
+        $query = Project::with('author')
+            ->where('status', 'published');
+
+        // Filter by tag if provided
+        if ($selectedTag) {
+            $query->whereJsonContains('tags', $selectedTag);
+        }
+
+        $projects = $query->inRandomOrder()->get();
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
+            'selectedTag' => $selectedTag,
         ]);
     }
 

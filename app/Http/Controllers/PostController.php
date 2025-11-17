@@ -12,13 +12,27 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('author')
-            ->where('status', 'published')
-            ->orderBy('published_at', 'desc')
-            ->get();
+        // Validate tag input
+        $validated = request()->validate([
+            'tag' => 'nullable|string|max:50',
+        ]);
+
+        $selectedTag = $validated['tag'] ?? null;
+
+        // Build the query
+        $query = Post::with('author')
+            ->where('status', 'published');
+
+        // Filter by tag if provided
+        if ($selectedTag) {
+            $query->whereJsonContains('tags', $selectedTag);
+        }
+
+        $posts = $query->orderBy('published_at', 'desc')->get();
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
+            'selectedTag' => $selectedTag,
         ]);
     }
 
