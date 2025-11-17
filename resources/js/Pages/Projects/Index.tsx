@@ -1,10 +1,10 @@
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { Project } from "@/types/project";
 import PortfolioLayout from '@/Layouts/PortfolioLayout';
 import ContactSection from '@/Components/Portfolio/ContactSection';
 import ContentCard from '@/Components/ContentCard';
 
-export default function Index({ projects }: { projects: Project[] }) {
+export default function Index({ projects, selectedTag }: { projects: Project[]; selectedTag?: string | null }) {
     return (
         <PortfolioLayout>
             <Head title="Projects - Sabrina Markon" />
@@ -18,6 +18,21 @@ export default function Index({ projects }: { projects: Project[] }) {
                     <p className="text-xl max-w-2xl mx-auto" style={{ color: '#5a5a5a' }}>
                         A comprehensive collection of my work showcasing full-stack development with Laravel, React, and more.
                     </p>
+
+                    {selectedTag && (
+                        <div className="mt-6">
+                            <p className="text-lg" style={{ color: '#5a5a5a' }}>
+                                Showing projects tagged: <span className="font-semibold">{selectedTag}</span>
+                            </p>
+                            <Link
+                                href="/projects"
+                                className="inline-block mt-2 text-sm underline hover:no-underline"
+                                style={{ color: '#658965' }}
+                            >
+                                View All Projects
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </section>
 
@@ -39,13 +54,16 @@ export default function Index({ projects }: { projects: Project[] }) {
                                 publishedAt={project.publishedAt}
                                 coverImage={project.coverImage}
                                 isFeatured={project.isFeatured}
+                                tagFilterPath="/projects"
                             />
                         ))}
                     </div>
 
                     {projects.length === 0 && (
                         <div className="text-center py-12">
-                            <p className="text-xl" style={{ color: '#5a5a5a' }}>No projects available yet.</p>
+                            <p className="text-xl" style={{ color: '#5a5a5a' }}>
+                                {selectedTag ? `No projects found with tag "${selectedTag}".` : 'No projects available yet.'}
+                            </p>
                         </div>
                     )}
                 </div>

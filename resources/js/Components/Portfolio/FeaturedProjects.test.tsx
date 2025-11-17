@@ -107,4 +107,17 @@ describe('FeaturedProjects', () => {
         expect(screen.getByText('React')).toBeInTheDocument();
         expect(screen.getByText('TypeScript')).toBeInTheDocument();
     });
+
+    it('renders tags as clickable links with correct filter path', () => {
+        render(<FeaturedProjects projects={[mockProjects[0]]} />);
+
+        const reactLink = screen.getByRole('link', { name: 'React' });
+        const typescriptLink = screen.getByRole('link', { name: 'TypeScript' });
+
+        expect(reactLink).toBeInTheDocument();
+        expect(typescriptLink).toBeInTheDocument();
+
+        expect(reactLink).toHaveAttribute('href', '/projects?tag=React');
+        expect(typescriptLink).toHaveAttribute('href', '/projects?tag=TypeScript');
+    });
 });

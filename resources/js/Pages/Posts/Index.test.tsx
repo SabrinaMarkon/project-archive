@@ -69,11 +69,11 @@ describe('Posts Index Page (/posts)', () => {
     it('renders links to individual post pages', () => {
         render(<Index posts={mockPosts} />);
 
-        const links = screen.getAllByText('View Post');
+        const links = screen.getAllByText('Read Post');
         expect(links).toHaveLength(3);
 
         // Check href attributes
-        const linkElements = screen.getAllByRole('link', { name: /View Post/i });
+        const linkElements = screen.getAllByRole('link', { name: /Read Post/i });
         expect(linkElements[0]).toHaveAttribute('href', '/posts/post-1');
         expect(linkElements[1]).toHaveAttribute('href', '/posts/post-2');
         expect(linkElements[2]).toHaveAttribute('href', '/posts/post-3');
@@ -124,7 +124,54 @@ describe('Posts Index Page (/posts)', () => {
         expect(screen.getByText('Post 0')).toBeInTheDocument();
         expect(screen.getByText('Post 19')).toBeInTheDocument();
 
-        const viewPostLinks = screen.getAllByText('View Post');
+        const viewPostLinks = screen.getAllByText('Read Post');
         expect(viewPostLinks).toHaveLength(20);
+    });
+
+    it('renders tags as clickable links when posts have tags', () => {
+        const postsWithTags = [
+            { slug: 'post-1', title: 'Post 1', description: 'Test', tags: ['Laravel', 'PHP'] },
+            { slug: 'post-2', title: 'Post 2', description: 'Test', tags: ['React'] },
+        ];
+
+        render(<Index posts={postsWithTags} />);
+
+        const laravelLink = screen.getByRole('link', { name: 'Laravel' });
+        const phpLink = screen.getByRole('link', { name: 'PHP' });
+        const reactLink = screen.getByRole('link', { name: 'React' });
+
+        expect(laravelLink).toBeInTheDocument();
+        expect(phpLink).toBeInTheDocument();
+        expect(reactLink).toBeInTheDocument();
+
+        expect(laravelLink).toHaveAttribute('href', '/posts?tag=Laravel');
+        expect(phpLink).toHaveAttribute('href', '/posts?tag=PHP');
+        expect(reactLink).toHaveAttribute('href', '/posts?tag=React');
+    });
+
+    it('does not render tags when posts have no tags', () => {
+        const postsWithoutTags = [
+            { slug: 'post-1', title: 'Post 1', description: 'Test', tags: [] },
+        ];
+
+        const { container } = render(<Index posts={postsWithoutTags} />);
+
+        const tagLinks = container.querySelectorAll('a[href*="?tag="]');
+        expect(tagLinks.length).toBe(0);
+    });
+
+    it('displays selected tag filter message when selectedTag prop is provided', () => {
+        render(<Index posts={mockPosts} selectedTag="Laravel" />);
+
+        expect(screen.getByText(/Showing posts tagged:/i)).toBeInTheDocument();
+        expect(screen.getByText('Laravel')).toBeInTheDocument();
+    });
+
+    it('displays "View All Posts" link when filtering by tag', () => {
+        render(<Index posts={mockPosts} selectedTag="Laravel" />);
+
+        const viewAllLink = screen.getByText('View All Posts');
+        expect(viewAllLink).toBeInTheDocument();
+        expect(viewAllLink.closest('a')).toHaveAttribute('href', '/posts');
     });
 });

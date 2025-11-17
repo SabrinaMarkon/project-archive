@@ -140,4 +140,54 @@ describe('Projects Index Page (/projects)', () => {
         const viewProjectLinks = screen.getAllByText('View Project');
         expect(viewProjectLinks).toHaveLength(20);
     });
+
+    it('renders tags as clickable links when projects have tags', () => {
+        const projectsWithTags = [
+            { slug: 'project-1', title: 'Project 1', description: 'Test', tags: ['Laravel', 'PHP'] },
+            { slug: 'project-2', title: 'Project 2', description: 'Test', tags: ['React'] },
+        ];
+
+        render(<Index projects={projectsWithTags} />);
+
+        // Check that tags are rendered as links
+        const laravelLink = screen.getByRole('link', { name: 'Laravel' });
+        const phpLink = screen.getByRole('link', { name: 'PHP' });
+        const reactLink = screen.getByRole('link', { name: 'React' });
+
+        expect(laravelLink).toBeInTheDocument();
+        expect(phpLink).toBeInTheDocument();
+        expect(reactLink).toBeInTheDocument();
+
+        // Check href attributes
+        expect(laravelLink).toHaveAttribute('href', '/projects?tag=Laravel');
+        expect(phpLink).toHaveAttribute('href', '/projects?tag=PHP');
+        expect(reactLink).toHaveAttribute('href', '/projects?tag=React');
+    });
+
+    it('does not render tags when projects have no tags', () => {
+        const projectsWithoutTags = [
+            { slug: 'project-1', title: 'Project 1', description: 'Test', tags: [] },
+        ];
+
+        const { container } = render(<Index projects={projectsWithoutTags} />);
+
+        // No tag elements should exist
+        const tagLinks = container.querySelectorAll('a[href*="?tag="]');
+        expect(tagLinks.length).toBe(0);
+    });
+
+    it('displays selected tag filter message when selectedTag prop is provided', () => {
+        render(<Index projects={mockProjects} selectedTag="Laravel" />);
+
+        expect(screen.getByText(/Showing projects tagged:/i)).toBeInTheDocument();
+        expect(screen.getByText('Laravel')).toBeInTheDocument();
+    });
+
+    it('displays "View All Projects" link when filtering by tag', () => {
+        render(<Index projects={mockProjects} selectedTag="Laravel" />);
+
+        const viewAllLink = screen.getByText('View All Projects');
+        expect(viewAllLink).toBeInTheDocument();
+        expect(viewAllLink.closest('a')).toHaveAttribute('href', '/projects');
+    });
 });

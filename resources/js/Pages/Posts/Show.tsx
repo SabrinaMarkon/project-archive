@@ -75,13 +75,14 @@ export default function Show({ post }: { post: Post }) {
                     {post.tags && post.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2">
                             {post.tags.map((tag) => (
-                                <span
+                                <Link
                                     key={tag}
-                                    className="px-4 py-1.5 rounded-full text-sm font-medium"
+                                    href={`/posts?tag=${encodeURIComponent(tag)}`}
+                                    className="px-4 py-1.5 rounded-full text-sm font-medium transition hover:opacity-80"
                                     style={{ backgroundColor: '#e8f0e8', color: '#5a7a5a' }}
                                 >
                                     {tag}
-                                </span>
+                                </Link>
                             ))}
                         </div>
                     )}

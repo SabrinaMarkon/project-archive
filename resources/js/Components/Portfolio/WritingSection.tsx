@@ -32,6 +32,7 @@ export default function WritingSection({ posts = [] }: WritingSectionProps) {
                             publishedAt={post.publishedAt}
                             coverImage={post.coverImage}
                             isFeatured={post.isFeatured}
+                            tagFilterPath="/posts"
                         />
                     ))}
                 </div>

@@ -176,4 +176,37 @@ describe('Project Show Page (/projects/{slug})', () => {
         const backLink = screen.getByText('Back to All Projects').closest('a');
         expect(backLink).toHaveClass('inline-flex', 'items-center');
     });
+
+    it('renders tags as clickable links when project has tags', () => {
+        const projectWithTags = {
+            ...mockProject,
+            tags: ['Laravel', 'PHP', 'TypeScript'],
+        };
+
+        render(<Show project={projectWithTags} />);
+
+        const laravelLink = screen.getByRole('link', { name: 'Laravel' });
+        const phpLink = screen.getByRole('link', { name: 'PHP' });
+        const typescriptLink = screen.getByRole('link', { name: 'TypeScript' });
+
+        expect(laravelLink).toBeInTheDocument();
+        expect(phpLink).toBeInTheDocument();
+        expect(typescriptLink).toBeInTheDocument();
+
+        expect(laravelLink).toHaveAttribute('href', '/projects?tag=Laravel');
+        expect(phpLink).toHaveAttribute('href', '/projects?tag=PHP');
+        expect(typescriptLink).toHaveAttribute('href', '/projects?tag=TypeScript');
+    });
+
+    it('does not render tags section when project has no tags', () => {
+        const projectWithoutTags = {
+            ...mockProject,
+            tags: [],
+        };
+
+        const { container } = render(<Show project={projectWithoutTags} />);
+
+        const tagLinks = container.querySelectorAll('a[href*="?tag="]');
+        expect(tagLinks.length).toBe(0);
+    });
 });

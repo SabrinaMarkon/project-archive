@@ -14,6 +14,7 @@ interface ContentCardProps {
     publishedAt?: string | null;
     coverImage?: string | null;
     isFeatured?: boolean;
+    tagFilterPath?: string;
 }
 
 export default function ContentCard({
@@ -28,6 +29,7 @@ export default function ContentCard({
     publishedAt,
     coverImage,
     isFeatured,
+    tagFilterPath,
 }: ContentCardProps) {
     return (
         <div
@@ -100,13 +102,24 @@ export default function ContentCard({
             {tags && tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-4">
                     {tags.map((tag, index) => (
-                        <span
-                            key={index}
-                            className="px-3 py-1 text-sm rounded-full font-medium"
-                            style={{ backgroundColor: '#e8ede8', color: '#658965' }}
-                        >
-                            {tag}
-                        </span>
+                        tagFilterPath ? (
+                            <Link
+                                key={index}
+                                href={`${tagFilterPath}?tag=${encodeURIComponent(tag)}`}
+                                className="px-3 py-1 text-sm rounded-full font-medium transition hover:opacity-80"
+                                style={{ backgroundColor: '#e8ede8', color: '#658965' }}
+                            >
+                                {tag}
+                            </Link>
+                        ) : (
+                            <span
+                                key={index}
+                                className="px-3 py-1 text-sm rounded-full font-medium"
+                                style={{ backgroundColor: '#e8ede8', color: '#658965' }}
+                            >
+                                {tag}
+                            </span>
+                        )
                     ))}
                 </div>
             )}

@@ -34,6 +34,7 @@ export default function FeaturedProjects({ projects = [], limit = 3 }: FeaturedP
                             publishedAt={project.publishedAt}
                             coverImage={project.coverImage}
                             isFeatured={project.isFeatured}
+                            tagFilterPath="/projects"
                         />
                     ))}
                 </div>

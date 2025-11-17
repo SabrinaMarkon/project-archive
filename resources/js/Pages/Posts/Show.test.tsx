@@ -90,8 +90,13 @@ describe('Post Show Page (/posts/{slug})', () => {
     it('renders Code2 icon in header', () => {
         const { container } = render(<Show post={mockPost} />);
 
-        // Check for icon container with specific styling - Code2 is rendered as an accessible image
-       expect(screen.getByRole('img', { name: /code icon/i })).toBeInTheDocument();
+        // Check for icon container with specific background color
+        const iconContainer = container.querySelector('[style*="background-color: rgb(122, 157, 122)"]');
+        expect(iconContainer).toBeInTheDocument();
+
+        // Check that it contains an SVG
+        const svg = iconContainer?.querySelector('svg');
+        expect(svg).toBeInTheDocument();
     });
 
     it('applies correct section backgrounds', () => {
@@ -148,5 +153,38 @@ describe('Post Show Page (/posts/{slug})', () => {
 
         const backLink = screen.getByText('Back to All Writing').closest('a');
         expect(backLink).toHaveClass('inline-flex', 'items-center');
+    });
+
+    it('renders tags as clickable links when post has tags', () => {
+        const postWithTags = {
+            ...mockPost,
+            tags: ['Laravel', 'PHP', 'TypeScript'],
+        };
+
+        render(<Show post={postWithTags} />);
+
+        const laravelLink = screen.getByRole('link', { name: 'Laravel' });
+        const phpLink = screen.getByRole('link', { name: 'PHP' });
+        const typescriptLink = screen.getByRole('link', { name: 'TypeScript' });
+
+        expect(laravelLink).toBeInTheDocument();
+        expect(phpLink).toBeInTheDocument();
+        expect(typescriptLink).toBeInTheDocument();
+
+        expect(laravelLink).toHaveAttribute('href', '/posts?tag=Laravel');
+        expect(phpLink).toHaveAttribute('href', '/posts?tag=PHP');
+        expect(typescriptLink).toHaveAttribute('href', '/posts?tag=TypeScript');
+    });
+
+    it('does not render tags section when post has no tags', () => {
+        const postWithoutTags = {
+            ...mockPost,
+            tags: [],
+        };
+
+        const { container } = render(<Show post={postWithoutTags} />);
+
+        const tagLinks = container.querySelectorAll('a[href*="?tag="]');
+        expect(tagLinks.length).toBe(0);
     });
 });

@@ -1,10 +1,10 @@
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { Post } from "@/types/post";
 import PortfolioLayout from '@/Layouts/PortfolioLayout';
 import ContactSection from '@/Components/Portfolio/ContactSection';
 import ContentCard from '@/Components/ContentCard';
 
-export default function Index({ posts }: { posts: Post[] }) {
+export default function Index({ posts, selectedTag }: { posts: Post[]; selectedTag?: string | null }) {
     return (
         <PortfolioLayout>
             <Head title="Writing - Sabrina Markon" />
@@ -18,6 +18,21 @@ export default function Index({ posts }: { posts: Post[] }) {
                     <p className="text-xl max-w-2xl mx-auto" style={{ color: '#5a5a5a' }}>
                         Tutorials, lessons learned, and deep dives into the tools and techniques behind my full-stack development journey!
                     </p>
+
+                    {selectedTag && (
+                        <div className="mt-6">
+                            <p className="text-lg" style={{ color: '#5a5a5a' }}>
+                                Showing posts tagged: <span className="font-semibold">{selectedTag}</span>
+                            </p>
+                            <Link
+                                href="/posts"
+                                className="inline-block mt-2 text-sm underline hover:no-underline"
+                                style={{ color: '#658965' }}
+                            >
+                                View All Posts
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </section>
 
@@ -39,13 +54,16 @@ export default function Index({ posts }: { posts: Post[] }) {
                                 publishedAt={post.publishedAt}
                                 coverImage={post.coverImage}
                                 isFeatured={post.isFeatured}
+                                tagFilterPath="/posts"
                             />
                         ))}
                     </div>
 
                     {posts.length === 0 && (
                         <div className="text-center py-12">
-                            <p className="text-xl" style={{ color: '#5a5a5a' }}>No posts available yet.</p>
+                            <p className="text-xl" style={{ color: '#5a5a5a' }}>
+                                {selectedTag ? `No posts found with tag "${selectedTag}".` : 'No posts available yet.'}
+                            </p>
                         </div>
                     )}
                 </div>
