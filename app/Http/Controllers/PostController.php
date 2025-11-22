@@ -28,7 +28,7 @@ class PostController extends Controller
             $query->whereJsonContains('tags', $selectedTag);
         }
 
-        $posts = $query->orderBy('published_at', 'desc')->get();
+        $posts = $query->orderBy('is_featured', 'desc')->orderBy('published_at', 'desc')->get();
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts,

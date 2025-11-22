@@ -28,7 +28,7 @@ class ProjectController extends Controller
             $query->whereJsonContains('tags', $selectedTag);
         }
 
-        $projects = $query->inRandomOrder()->get();
+        $projects = $query->orderBy('is_featured', 'desc')->inRandomOrder()->get();
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
