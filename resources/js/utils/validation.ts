@@ -3,5 +3,6 @@ export const formatSlug = (value: string): string => {
         .toLowerCase()
         .replace(/\s+/g, '-')       // spaces → dash
         .replace(/[^a-z0-9-]/g, '') // remove anything else
-        .replace(/-+/g, '-');       // collapse dashes
+        .replace(/-+/g, '-')        // collapse dashes
+        .replace(/^-+|-+$/g, '');   // trim leading/trailing dashes
 };
