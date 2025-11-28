@@ -8,7 +8,7 @@ interface DescriptionRendererProps {
     className?: string;
 }
 
-// Configure marked to escape raw HTML tags
+// Configure marked to escape raw HTML tags and generate heading IDs
 // This prevents <title>, <script>, etc. from being rendered as HTML
 // but still allows markdown syntax to work (code blocks, links, etc.)
 marked.use({
@@ -23,6 +23,19 @@ marked.use({
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        },
+        heading(token: any) {
+            const text = token.text;
+            const level = token.depth;
+            // Generate ID from heading text (lowercase, replace spaces with hyphens, remove special chars)
+            const id = text
+                .toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim();
+
+            return `<h${level} id="${id}">${text}</h${level}>`;
         }
     }
 });
