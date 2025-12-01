@@ -1,12 +1,36 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import PortfolioLayout from './PortfolioLayout';
 
-// Mock Inertia Link
+// Mock Inertia
+const mockPost = vi.fn();
+const mockSetData = vi.fn();
+
 vi.mock('@inertiajs/react', () => ({
     Link: ({ href, children, ...props }: any) => (
         <a href={href} {...props}>{children}</a>
     ),
+    useForm: () => ({
+        data: { email: '' },
+        setData: mockSetData,
+        post: mockPost,
+        processing: false,
+        errors: {},
+    }),
+    usePage: () => ({
+        props: {
+            flash: {},
+        },
+    }),
+}));
+
+// Mock newsletter components to avoid complex dependencies
+vi.mock('@/Components/NewsletterModal', () => ({
+    default: () => null,
+}));
+
+vi.mock('@/Components/NewsletterSignup', () => ({
+    default: () => null,
 }));
 
 describe('PortfolioLayout', () => {
