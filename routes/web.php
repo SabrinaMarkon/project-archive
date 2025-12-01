@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Controllers\Admin\NewsletterSubscriberController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AdminOnly;
 use App\Models\Post;
 use App\Models\Project;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -63,17 +64,28 @@ Route::get('/', function () {
     ]);
 });
 
+// Project Routes
 Route::get('/projects', [ProjectController::class, 'index']);
 Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
+
+// Post Routes
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
+
+// CV Routes
 Route::get('/resume', function () {
     return Inertia::render('Resume');
 });
 
+// Newsletter Routes
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::post('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+
 Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
     Route::get('/admin', fn () => Inertia::render('Admin'))->name('admin');
+
+    // Admin Projects Routes
     Route::get('/admin/projects/create', function () {
         return Inertia::render('Admin/Projects/Create');
     });
@@ -94,6 +106,11 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/admin/posts/{post:slug}', [AdminPostController::class, 'show'])->name('admin.posts.show');
     Route::put('/admin/posts/{post:slug}', [AdminPostController::class, 'update'])->name('admin.posts.update');
     Route::delete('/admin/posts/{post:slug}', [AdminPostController::class, 'destroy'])->name('admin.posts.destroy');
+
+    // Admin Newsletter Routes
+    Route::get('/admin/newsletter-subscribers', [NewsletterSubscriberController::class, 'index'])->name('admin.newsletter.index');
+    Route::get('/admin/newsletter-subscribers/export', [NewsletterSubscriberController::class, 'export'])->name('admin.newsletter.export');
+    Route::delete('/admin/newsletter-subscribers/{subscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('admin.newsletter.destroy');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

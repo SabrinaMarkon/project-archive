@@ -1,9 +1,12 @@
 import { useState, PropsWithChildren } from 'react';
 import { Menu, X, Leaf } from 'lucide-react';
 import { Link } from '@inertiajs/react';
+import NewsletterModal from '@/Components/NewsletterModal';
+import NewsletterSignup from '@/Components/NewsletterSignup';
 
 export default function PortfolioLayout({ children }: PropsWithChildren) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [showNewsletterModal, setShowNewsletterModal] = useState(false);
 
     return (
         <div className="min-h-screen bg-white">
@@ -23,6 +26,13 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                             <Link href="/posts" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Writing</Link>
                             <Link href="/#about" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>About</Link>
                             <Link href="/resume" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>CV</Link>
+                            <button
+                                onClick={() => setShowNewsletterModal(true)}
+                                className="font-medium transition hover:opacity-70"
+                                style={{ color: '#5a5a5a' }}
+                            >
+                                Newsletter
+                            </button>
                             <Link href="/#contact" className="px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300" style={{ backgroundColor: '#7a9d7a' }}>
                                 Contact
                             </Link>
@@ -46,6 +56,16 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                             <Link href="/posts" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Writing</Link>
                             <Link href="/#about" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>About</Link>
                             {/* <Link href="/resume" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>CV</Link> */}
+                            <button
+                                onClick={() => {
+                                    setShowNewsletterModal(true);
+                                    setMobileMenuOpen(false);
+                                }}
+                                className="block py-2 font-medium text-left w-full"
+                                style={{ color: '#5a5a5a' }}
+                            >
+                                Newsletter
+                            </button>
                             <Link href="/#contact" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Contact</Link>
                         </div>
                     )}
@@ -57,6 +77,9 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                 {children}
             </main>
 
+            {/* Newsletter Signup Footer */}
+            <NewsletterSignup variant="footer" />
+
             {/* Footer */}
             <footer className="py-8 px-6 bg-white">
                 <div className="max-w-6xl mx-auto border-t pt-8" style={{ borderColor: '#e5e3df' }}>
@@ -65,6 +88,12 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                     </div>
                 </div>
             </footer>
+
+            {/* Newsletter Modal */}
+            <NewsletterModal
+                externalShow={showNewsletterModal}
+                onExternalClose={() => setShowNewsletterModal(false)}
+            />
         </div>
     );
 }
