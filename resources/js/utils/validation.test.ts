@@ -22,7 +22,7 @@ describe('formatSlug', () => {
         expect(formatSlug('Project-2025')).toBe('project-2025');
     });
 
-    it('does not trim leading/trailing hyphens (handled elsewhere)', () => {
-        expect(formatSlug(' -slug- ')).toBe('-slug-');
+    it('trims leading/trailing hyphens ()', () => {
+        expect(formatSlug(' -slug- ')).toBe('slug');
     });
 });

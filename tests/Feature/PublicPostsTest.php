@@ -209,6 +209,7 @@ class PublicPostsTest extends TestCase
             'slug' => 'older-post',
             'status' => 'published',
             'published_at' => now()->subWeek(),
+            'is_featured' => false,
             'author_id' => $admin->id,
         ]);
 
@@ -217,6 +218,7 @@ class PublicPostsTest extends TestCase
             'slug' => 'newer-post',
             'status' => 'published',
             'published_at' => now(),
+            'is_featured' => false,
             'author_id' => $admin->id,
         ]);
 

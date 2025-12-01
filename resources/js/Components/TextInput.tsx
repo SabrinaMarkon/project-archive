@@ -11,6 +11,8 @@ export default forwardRef(function TextInput(
         type = 'text',
         className = '',
         isFocused = false,
+        onFocus,
+        onBlur,
         ...props
     }: InputHTMLAttributes<HTMLInputElement> & { isFocused?: boolean },
     ref,
@@ -42,10 +44,12 @@ export default forwardRef(function TextInput(
             onFocus={(e) => {
                 e.target.style.borderColor = '#7a9d7a';
                 e.target.style.boxShadow = '0 0 0 3px rgba(122, 157, 122, 0.1)';
+                onFocus?.(e);
             }}
             onBlur={(e) => {
                 e.target.style.borderColor = '#e5e3df';
                 e.target.style.boxShadow = '';
+                onBlur?.(e);
             }}
             ref={localRef}
         />
