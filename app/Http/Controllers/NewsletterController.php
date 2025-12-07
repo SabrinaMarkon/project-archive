@@ -44,17 +44,17 @@ class NewsletterController extends Controller
 
         $email = $request->email;
 
-        // Check if already confirmed
+        // Check if already confirmed AND not unsubscribed
         $existing = NewsletterSubscriber::where('email', $email)->first();
 
-        if ($existing && $existing->confirmed_at) {
+        if ($existing && $existing->confirmed_at && !$existing->unsubscribed_at) {
             return Inertia::render('Newsletter/Confirmed', [
                 'success' => true,
                 'message' => 'You are already subscribed!',
             ]);
         }
 
-        // Create or update subscriber as confirmed
+        // Create or update subscriber as confirmed (clears unsubscribed_at if resubscribing)
         NewsletterSubscriber::updateOrCreate(
             ['email' => $email],
             [
@@ -71,22 +71,28 @@ class NewsletterController extends Controller
 
     public function unsubscribe(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
+        // Validate the signed URL
+        if (!$request->hasValidSignature()) {
+            return Inertia::render('Newsletter/Unsubscribed', [
+                'success' => false,
+                'message' => 'This unsubscribe link is invalid.',
+            ]);
+        }
+
+        $email = $request->email;
+
+        // Find subscriber
+        $subscriber = NewsletterSubscriber::where('email', $email)->first();
+
+        if ($subscriber) {
+            // Mark as unsubscribed (even if already unsubscribed - idempotent)
+            $subscriber->update(['unsubscribed_at' => now()]);
+        }
+
+        // Always show success to avoid revealing if email exists (privacy)
+        return Inertia::render('Newsletter/Unsubscribed', [
+            'success' => true,
+            'message' => 'You have been successfully unsubscribed from the newsletter.',
         ]);
-
-        $subscriber = NewsletterSubscriber::where('email', $request->email)->first();
-
-        if (!$subscriber) {
-            return back()->with('error', 'Email address not found.');
-        }
-
-        if ($subscriber->unsubscribed_at) {
-            return back()->with('error', 'You are already unsubscribed.');
-        }
-
-        $subscriber->update(['unsubscribed_at' => now()]);
-
-        return back()->with('success', 'You have been unsubscribed from the newsletter.');
     }
 }
