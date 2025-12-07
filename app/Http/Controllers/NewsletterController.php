@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewsletterConfirmation;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
+use Inertia\Inertia;
 
 class NewsletterController extends Controller
 {
@@ -15,23 +19,54 @@ class NewsletterController extends Controller
 
         $email = $request->email;
 
-        // Check if subscriber already exists
-        $subscriber = NewsletterSubscriber::where('email', $email)->first();
+        // Generate signed URL (expires in 24 hours)
+        $confirmationUrl = URL::temporarySignedRoute(
+            'newsletter.confirm',
+            now()->addHours(24),
+            ['email' => $email]
+        );
 
-        if ($subscriber) {
-            if ($subscriber->isSubscribed()) {
-                return back()->with('error', 'You are already subscribed to the newsletter.');
-            } else {
-                // Resubscribe if previously unsubscribed
-                $subscriber->resubscribe();
-                return back()->with('success', 'Welcome back! You have been resubscribed to the newsletter.');
-            }
+        // Send confirmation email via Resend
+        Mail::to($email)->send(new NewsletterConfirmation($confirmationUrl));
+
+        return back()->with('success', 'Please check your email to confirm your subscription!');
+    }
+
+    public function confirm(Request $request)
+    {
+        // Validate the signed URL
+        if (!$request->hasValidSignature()) {
+            return Inertia::render('Newsletter/Confirmed', [
+                'success' => false,
+                'message' => 'This confirmation link is invalid or has expired.',
+            ]);
         }
 
-        // Create new subscriber
-        NewsletterSubscriber::create(['email' => $email]);
+        $email = $request->email;
 
-        return back()->with('success', 'Successfully subscribed!');
+        // Check if already confirmed
+        $existing = NewsletterSubscriber::where('email', $email)->first();
+
+        if ($existing && $existing->confirmed_at) {
+            return Inertia::render('Newsletter/Confirmed', [
+                'success' => true,
+                'message' => 'You are already subscribed!',
+            ]);
+        }
+
+        // Create or update subscriber as confirmed
+        NewsletterSubscriber::updateOrCreate(
+            ['email' => $email],
+            [
+                'confirmed_at' => now(),
+                'unsubscribed_at' => null,
+            ]
+        );
+
+        return Inertia::render('Newsletter/Confirmed', [
+            'success' => true,
+            'message' => 'Thank you! Your subscription is confirmed.',
+        ]);
     }
 
     public function unsubscribe(Request $request)
@@ -46,11 +81,11 @@ class NewsletterController extends Controller
             return back()->with('error', 'Email address not found.');
         }
 
-        if (!$subscriber->isSubscribed()) {
+        if ($subscriber->unsubscribed_at) {
             return back()->with('error', 'You are already unsubscribed.');
         }
 
-        $subscriber->unsubscribe();
+        $subscriber->update(['unsubscribed_at' => now()]);
 
         return back()->with('success', 'You have been unsubscribed from the newsletter.');
     }
