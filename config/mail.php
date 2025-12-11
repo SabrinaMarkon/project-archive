@@ -115,4 +115,21 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Global "Reply-To" Address
+    |--------------------------------------------------------------------------
+    |
+    | You may specify a global reply-to address for all emails sent by your
+    | application. This is useful when your sending domain (MAIL_FROM_ADDRESS)
+    | must be a verified domain on your email service, but you want replies
+    | to go to a different email address (like your personal inbox).
+    |
+    */
+
+    'reply_to' => [
+        'address' => env('MAIL_REPLY_TO_ADDRESS'),
+        'name' => env('MAIL_REPLY_TO_NAME'),
+    ],
+
 ];
