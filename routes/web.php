@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\NewsletterHistoryController;
 use App\Http\Controllers\Admin\NewsletterSubscriberController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
@@ -111,7 +112,13 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     // Admin Newsletter Routes
     Route::get('/admin/newsletter-subscribers', [NewsletterSubscriberController::class, 'index'])->name('admin.newsletter.index');
     Route::get('/admin/newsletter-subscribers/export', [NewsletterSubscriberController::class, 'export'])->name('admin.newsletter.export');
+    Route::patch('/admin/newsletter-subscribers/{subscriber}/unsubscribe', [NewsletterSubscriberController::class, 'unsubscribe'])->name('admin.newsletter.unsubscribe');
     Route::delete('/admin/newsletter-subscribers/{subscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('admin.newsletter.destroy');
+    Route::get('/admin/newsletter/compose', [NewsletterSubscriberController::class, 'compose'])->name('admin.newsletter.compose');
+    Route::post('/admin/newsletter/send', [NewsletterSubscriberController::class, 'send'])->name('admin.newsletter.send');
+    Route::get('/admin/newsletter/history', [NewsletterHistoryController::class, 'index'])->name('admin.newsletter.history');
+    Route::get('/admin/newsletter/history/{newsletterSend}', [NewsletterHistoryController::class, 'show'])->name('admin.newsletter.history.show');
+    Route::delete('/admin/newsletter/history/{newsletterSend}', [NewsletterHistoryController::class, 'destroy'])->name('admin.newsletter.history.destroy');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
