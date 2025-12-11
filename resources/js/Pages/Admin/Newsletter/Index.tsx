@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import DangerButton from "@/Components/DangerButton";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
-import { Head, Link, router } from "@inertiajs/react";
-import { Download, Trash2, Mail, MailOpen, BarChart } from "lucide-react";
+import { Head, Link, router, usePage } from "@inertiajs/react";
+import { Download, Trash2, Mail, MailOpen, BarChart, PenSquare, CheckCircle, XCircle } from "lucide-react";
 
 Index.layout = (page: React.ReactNode) => <DashboardLayout children={page} />;
 
@@ -19,20 +19,31 @@ interface NewsletterSubscriber {
 
 interface NewsletterStats {
     total: number;
-    subscribed: number;
+    active: number;
     unsubscribed: number;
+    pending: number;
+}
+
+interface PaginatedSubscribers {
+    data: NewsletterSubscriber[];
+    links: any[];
+    current_page: number;
+    per_page: number;
+    total: number;
 }
 
 export default function Index({
     subscribers,
     stats,
 }: {
-    subscribers: NewsletterSubscriber[];
+    subscribers: PaginatedSubscribers;
     stats: NewsletterStats;
 }) {
     const [confirmingDeletion, setConfirmingDeletion] = useState(false);
     const [subscriberToDelete, setSubscriberToDelete] = useState<NewsletterSubscriber | null>(null);
     const [filter, setFilter] = useState<'all' | 'subscribed' | 'unsubscribed'>('all');
+    const [showFlash, setShowFlash] = useState(true);
+    const { flash } = usePage().props as any;
 
     const confirmDeletion = (subscriber: NewsletterSubscriber) => {
         setSubscriberToDelete(subscriber);
@@ -46,10 +57,19 @@ export default function Index({
 
     const deleteSubscriber = () => {
         if (subscriberToDelete) {
-            router.delete(`/admin/newsletter-subscribers/${subscriberToDelete.id}`, {
-                preserveScroll: true,
-                onSuccess: () => closeModal(),
-            });
+            if (subscriberToDelete.unsubscribed_at) {
+                // Already unsubscribed, delete permanently
+                router.delete(`/admin/newsletter-subscribers/${subscriberToDelete.id}`, {
+                    preserveScroll: true,
+                    onSuccess: () => closeModal(),
+                });
+            } else {
+                // Active subscriber, just unsubscribe
+                router.patch(`/admin/newsletter-subscribers/${subscriberToDelete.id}/unsubscribe`, {}, {
+                    preserveScroll: true,
+                    onSuccess: () => closeModal(),
+                });
+            }
         }
     };
 
@@ -57,7 +77,7 @@ export default function Index({
         window.location.href = '/admin/newsletter-subscribers/export';
     };
 
-    const filteredSubscribers = subscribers.filter((subscriber) => {
+    const filteredSubscribers = subscribers.data.filter((subscriber) => {
         if (filter === 'subscribed') return !subscriber.unsubscribed_at;
         if (filter === 'unsubscribed') return subscriber.unsubscribed_at;
         return true;
@@ -71,6 +91,14 @@ export default function Index({
         });
     };
 
+    useEffect(() => {
+        if (flash?.success || flash?.error) {
+            setShowFlash(true);
+            const timer = setTimeout(() => setShowFlash(false), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash]);
+
     return (
         <AuthenticatedLayout
             header={
@@ -80,6 +108,27 @@ export default function Index({
             }
         >
             <Head title="Newsletter Subscribers" />
+
+            {/* Flash Messages */}
+            {showFlash && flash?.success && (
+                <div className="mb-4 p-4 rounded-lg flex items-center gap-3" style={{ backgroundColor: '#d1f2eb', borderLeft: '4px solid #28a745' }}>
+                    <CheckCircle size={24} style={{ color: '#28a745' }} />
+                    <div className="flex-1">
+                        <p className="font-medium" style={{ color: '#155724' }}>{flash.success}</p>
+                    </div>
+                    <button onClick={() => setShowFlash(false)} className="text-2xl font-bold" style={{ color: '#155724' }}>×</button>
+                </div>
+            )}
+
+            {showFlash && flash?.error && (
+                <div className="mb-4 p-4 rounded-lg flex items-center gap-3" style={{ backgroundColor: '#f8d7da', borderLeft: '4px solid #dc3545' }}>
+                    <XCircle size={24} style={{ color: '#dc3545' }} />
+                    <div className="flex-1">
+                        <p className="font-medium" style={{ color: '#721c24' }}>{flash.error}</p>
+                    </div>
+                    <button onClick={() => setShowFlash(false)} className="text-2xl font-bold" style={{ color: '#721c24' }}>×</button>
+                </div>
+            )}
 
             <div className="py-4 px-6 text-gray-900 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 {/* Stats */}
@@ -100,11 +149,11 @@ export default function Index({
                         <div className="flex items-center gap-2 mb-2">
                             <MailOpen size={20} style={{ color: '#7a9d7a' }} />
                             <span className="text-sm font-medium" style={{ color: '#7a7a7a' }}>
-                                Subscribed
+                                Active
                             </span>
                         </div>
                         <div className="text-2xl font-bold" style={{ color: '#3d3d3d' }}>
-                            {stats.subscribed}
+                            {stats.active}
                         </div>
                     </div>
 
@@ -159,14 +208,34 @@ export default function Index({
                         </button>
                     </div>
 
-                    <button
-                        onClick={handleExport}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"
-                        style={{ backgroundColor: '#7a9d7a' }}
-                    >
-                        <Download size={16} />
-                        Export CSV
-                    </button>
+                    <div className="flex gap-2">
+                        <Link
+                            href="/admin/newsletter/compose"
+                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"
+                            style={{ backgroundColor: '#7a9d7a' }}
+                        >
+                            <PenSquare size={16} />
+                            Compose Newsletter
+                        </Link>
+
+                        <Link
+                            href="/admin/newsletter/history"
+                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"
+                            style={{ backgroundColor: '#7a9d7a' }}
+                        >
+                            <Mail size={16} />
+                            History
+                        </Link>
+
+                        <button
+                            onClick={handleExport}
+                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"
+                            style={{ backgroundColor: '#7a9d7a' }}
+                        >
+                            <Download size={16} />
+                            Export CSV
+                        </button>
+                    </div>
                 </div>
 
                 {/* Subscribers List */}
