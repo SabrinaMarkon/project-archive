@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Leaf, LayoutDashboard, Plus, List, LogOut, PenSquare, BookText, Mail } from 'lucide-react';
+import { Leaf, LayoutDashboard, Plus, List, LogOut, PenSquare, BookText, Mail, GraduationCap } from 'lucide-react';
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const { auth } = usePage().props as any;
@@ -55,6 +55,20 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
           >
             <Mail size={18} />
             Newsletter
+          </Link>
+          <Link
+            href="/admin/courses/create"
+            className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors mt-4"
+          >
+            <Plus size={18} />
+            Create Course
+          </Link>
+          <Link
+            href="/admin/courses"
+            className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors"
+          >
+            <GraduationCap size={18} />
+            Courses
           </Link>
           <button
             onClick={() => router.post(route('logout'))}
