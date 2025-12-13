@@ -170,6 +170,10 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     // Admin Purchase Routes
     Route::get('/admin/purchases', [AdminPurchaseController::class, 'index'])->name('admin.purchases.index');
 
+    // Admin Settings Routes
+    Route::get('/admin/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings');
+    Route::put('/admin/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('admin.settings.update');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
