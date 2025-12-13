@@ -40,14 +40,13 @@ class StorePostRequest extends FormRequest
             'excerpt' => ['nullable', 'string', 'max:500'],
             'status' => ['required', 'in:draft,published,archived'],
             'published_at' => ['nullable', 'date'],
-            'author_id' => ['required', 'exists:users,id'],
+            'author_id' => ['sometimes', 'exists:users,id'],
             'cover_image' => ['nullable', 'string', 'max:255'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['string', 'max:50'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:255'],
             'is_featured' => ['boolean'],
-            'is_paid' => ['boolean'],
         ];
     }
 }

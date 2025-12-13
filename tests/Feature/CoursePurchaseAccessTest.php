@@ -51,7 +51,7 @@ class CoursePurchaseAccessTest extends TestCase
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
             ->has('modules', 1)
-            ->where('modules.0.isFree', true)
+            ->where('modules.0.is_free', true)
         );
     }
 
@@ -73,7 +73,7 @@ class CoursePurchaseAccessTest extends TestCase
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
             ->has('modules', 1)
-            ->where('modules.0.isFree', false)
+            ->where('modules.0.is_free', false)
             ->where('hasPurchased', false)
             ->has('course.price')
         );
@@ -93,7 +93,7 @@ class CoursePurchaseAccessTest extends TestCase
         ]);
 
         // Create purchase
-        Purchase::create([
+        Purchase::factory()->create([
             'user_id' => $user->id,
             'course_id' => $course->id,
             'amount' => $course->price,
@@ -136,8 +136,8 @@ class CoursePurchaseAccessTest extends TestCase
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
             ->has('modules', 2)
-            ->where('modules.0.isFree', true)
-            ->where('modules.1.isFree', false)
+            ->where('modules.0.is_free', true)
+            ->where('modules.1.is_free', false)
             ->where('hasPurchased', false)
         );
     }
@@ -149,7 +149,7 @@ class CoursePurchaseAccessTest extends TestCase
         $course = Course::factory()->create(['price' => 99.00]);
 
         // Only one user purchases
-        Purchase::create([
+        Purchase::factory()->create([
             'user_id' => $purchaser->id,
             'course_id' => $course->id,
             'amount' => $course->price,

@@ -41,6 +41,16 @@ class ProjectController extends Controller
     {
         $data = $request->validated();
 
+        // Set author_id to current user if not provided
+        if (!isset($data['author_id'])) {
+            $data['author_id'] = auth()->id();
+        }
+
+        // Auto-set published_at when status is published and published_at is not set
+        if (isset($data['status']) && $data['status'] === 'published' && !isset($data['published_at'])) {
+            $data['published_at'] = now();
+        }
+
         $project = Project::create($data);
 
         return redirect()->route('admin.projects.index')->with('success', 'Project created successfully!');
@@ -52,6 +62,11 @@ class ProjectController extends Controller
     public function update(StoreProjectRequest $request, Project $project) // Validation is done automatically by StoreProjectRequest
     {
         $data = $request->validated();
+
+        // Auto-set published_at when publishing a draft for the first time
+        if (isset($data['status']) && $data['status'] === 'published' && !$project->published_at && !isset($data['published_at'])) {
+            $data['published_at'] = now();
+        }
 
         // Use validated data to update the project record
         $project->update($data);
