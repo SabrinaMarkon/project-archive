@@ -50,7 +50,9 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-        $course->load('modules.post');
+        $course->load(['modules.post' => function ($query) {
+            $query->select('id', 'title', 'slug', 'excerpt', 'description');
+        }]);
 
         $posts = Post::where('status', 'published')
             ->orderBy('title')

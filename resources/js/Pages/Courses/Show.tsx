@@ -1,12 +1,15 @@
 import { Head, Link } from "@inertiajs/react";
+import { useState } from 'react';
 import PortfolioLayout from '@/Layouts/PortfolioLayout';
 import ContactSection from '@/Components/Portfolio/ContactSection';
-import { ArrowLeft, Lock, Unlock, Clock, DollarSign } from 'lucide-react';
+import { ArrowLeft, Lock, Unlock, Clock, DollarSign, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Post {
     id: number;
     title: string;
     slug: string;
+    excerpt?: string | null;
+    description?: string | null;
 }
 
 interface CourseModule {
@@ -29,6 +32,20 @@ interface Course {
 }
 
 export default function Show({ course }: { course: Course }) {
+    const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
+
+    const toggleModule = (moduleId: number) => {
+        setExpandedModules(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(moduleId)) {
+                newSet.delete(moduleId);
+            } else {
+                newSet.add(moduleId);
+            }
+            return newSet;
+        });
+    };
+
     const formatPaymentType = (type: string) => {
         switch (type) {
             case 'one_time':
@@ -119,51 +136,90 @@ export default function Show({ course }: { course: Course }) {
 
                     {course.modules.length > 0 ? (
                         <div className="space-y-3">
-                            {course.modules.map((module, index) => (
-                                <div
-                                    key={module.id}
-                                    className="bg-white rounded-lg shadow-md overflow-hidden"
-                                >
-                                    {module.is_free ? (
-                                        <Link
-                                            href={`/posts/${module.post.slug}`}
-                                            className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-lg font-semibold" style={{ color: '#7a7a7a' }}>
-                                                    {index + 1}.
-                                                </span>
-                                                <span className="text-lg font-medium" style={{ color: '#2d2d2d' }}>
-                                                    {module.post.title}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="px-3 py-1 rounded text-sm font-medium" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }}>
-                                                    <Unlock size={14} className="inline mr-1" />
-                                                    Free
-                                                </span>
-                                            </div>
-                                        </Link>
-                                    ) : (
+                            {course.modules.map((module, index) => {
+                                const isExpanded = expandedModules.has(module.id);
+                                const modulePreview = module.post.excerpt || module.post.description?.substring(0, 200) || 'No preview available';
+
+                                return (
+                                    <div
+                                        key={module.id}
+                                        className="bg-white rounded-lg shadow-md overflow-hidden"
+                                    >
                                         <div className="flex items-center justify-between p-4">
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-3 flex-1">
                                                 <span className="text-lg font-semibold" style={{ color: '#7a7a7a' }}>
                                                     {index + 1}.
                                                 </span>
-                                                <span className="text-lg font-medium" style={{ color: '#2d2d2d' }}>
-                                                    {module.post.title}
-                                                </span>
+                                                <div className="flex-1">
+                                                    {module.is_free ? (
+                                                        <Link
+                                                            href={`/posts/${module.post.slug}`}
+                                                            className="text-lg font-medium hover:underline"
+                                                            style={{ color: '#2d2d2d' }}
+                                                        >
+                                                            {module.post.title}
+                                                        </Link>
+                                                    ) : (
+                                                        <span className="text-lg font-medium" style={{ color: '#2d2d2d' }}>
+                                                            {module.post.title}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="px-3 py-1 rounded text-sm font-medium" style={{ backgroundColor: '#fff3e0', color: '#e65100' }}>
-                                                    <Lock size={14} className="inline mr-1" />
-                                                    Locked
+                                            <div className="flex items-center gap-3">
+                                                <span className="px-3 py-1 rounded text-sm font-medium" style={
+                                                    module.is_free
+                                                        ? { backgroundColor: '#e8f5e9', color: '#2e7d32' }
+                                                        : { backgroundColor: '#fff3e0', color: '#e65100' }
+                                                }>
+                                                    {module.is_free ? (
+                                                        <>
+                                                            <Unlock size={14} className="inline mr-1" />
+                                                            Free
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Lock size={14} className="inline mr-1" />
+                                                            Locked
+                                                        </>
+                                                    )}
                                                 </span>
+                                                <button
+                                                    onClick={() => toggleModule(module.id)}
+                                                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                                    aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                                                >
+                                                    {isExpanded ? (
+                                                        <ChevronUp size={20} style={{ color: '#658965' }} />
+                                                    ) : (
+                                                        <ChevronDown size={20} style={{ color: '#658965' }} />
+                                                    )}
+                                                </button>
                                             </div>
                                         </div>
-                                    )}
-                                </div>
-                            ))}
+
+                                        {isExpanded && (
+                                            <div className="px-4 pb-4 pt-2 border-t" style={{ borderColor: '#e5e3df' }}>
+                                                <h4 className="text-sm font-semibold mb-2" style={{ color: '#658965' }}>
+                                                    What you'll learn:
+                                                </h4>
+                                                <p className="text-sm leading-relaxed" style={{ color: '#5a5a5a' }}>
+                                                    {modulePreview}
+                                                </p>
+                                                {module.is_free && (
+                                                    <Link
+                                                        href={`/posts/${module.post.slug}`}
+                                                        className="inline-block mt-3 text-sm font-semibold hover:underline"
+                                                        style={{ color: '#658965' }}
+                                                    >
+                                                        Read this free module →
+                                                    </Link>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="text-center py-12 bg-white rounded-lg">

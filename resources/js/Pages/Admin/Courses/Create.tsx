@@ -7,11 +7,14 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextareaAutosize from "react-textarea-autosize";
 import { Head, useForm, router } from "@inertiajs/react";
-import { Lock, Unlock, Trash2, Plus } from "lucide-react";
+import { Lock, Unlock, Trash2, Plus, ChevronDown, ChevronUp } from "lucide-react";
 
 interface Post {
     id: number;
     title: string;
+    slug?: string;
+    excerpt?: string | null;
+    description?: string | null;
 }
 
 interface CourseModule {
@@ -46,6 +49,7 @@ export default function Create({
     const [confirmingDeletion, setConfirmingDeletion] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
     const [newModuleIsFree, setNewModuleIsFree] = useState(true);
+    const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
 
     const { data, setData, post, put, processing, errors } = useForm({
         title: course?.title ?? "",
@@ -122,6 +126,18 @@ export default function Create({
 
         const usedPostIds = course.modules.map(m => m.post_id);
         return availablePosts.filter(post => !usedPostIds.includes(post.id));
+    };
+
+    const toggleModule = (moduleId: number) => {
+        setExpandedModules(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(moduleId)) {
+                newSet.delete(moduleId);
+            } else {
+                newSet.add(moduleId);
+            }
+            return newSet;
+        });
     };
 
     return (
@@ -278,50 +294,79 @@ export default function Create({
                         {/* Current Modules */}
                         {course.modules.length > 0 ? (
                             <div className="space-y-2 mb-6">
-                                {course.modules.map((module, index) => (
-                                    <div
-                                        key={module.id}
-                                        className="flex items-center justify-between p-3 border rounded-md"
-                                        style={{ borderColor: '#e5e3df' }}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-sm font-medium" style={{ color: '#7a7a7a' }}>
-                                                {index + 1}.
-                                            </span>
-                                            <span style={{ color: '#3d3d3d' }}>{module.post.title}</span>
-                                            {module.is_free ? (
-                                                <span className="px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }}>
-                                                    <Unlock size={12} className="inline mr-1" />
-                                                    Free
-                                                </span>
-                                            ) : (
-                                                <span className="px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#fff3e0', color: '#e65100' }}>
-                                                    <Lock size={12} className="inline mr-1" />
-                                                    Paid
-                                                </span>
+                                {course.modules.map((module, index) => {
+                                    const isExpanded = expandedModules.has(module.id);
+                                    const modulePreview = module.post.excerpt || module.post.description?.substring(0, 200) || 'No preview available';
+
+                                    return (
+                                        <div
+                                            key={module.id}
+                                            className="border rounded-md overflow-hidden"
+                                            style={{ borderColor: '#e5e3df' }}
+                                        >
+                                            <div className="flex items-center justify-between p-3">
+                                                <div className="flex items-center gap-3 flex-1">
+                                                    <span className="text-sm font-medium" style={{ color: '#7a7a7a' }}>
+                                                        {index + 1}.
+                                                    </span>
+                                                    <span style={{ color: '#3d3d3d' }}>{module.post.title}</span>
+                                                    {module.is_free ? (
+                                                        <span className="px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }}>
+                                                            <Unlock size={12} className="inline mr-1" />
+                                                            Free
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#fff3e0', color: '#e65100' }}>
+                                                            <Lock size={12} className="inline mr-1" />
+                                                            Paid
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => toggleModuleFree(module.id, module.is_free, module.order)}
+                                                        className="px-3 py-1 text-sm rounded-md transition"
+                                                        style={{ backgroundColor: '#f0f0f0', color: '#3d3d3d' }}
+                                                    >
+                                                        {module.is_free ? 'Make Paid' : 'Make Free'}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeModule(module.id)}
+                                                        className="px-3 py-1 text-sm text-white bg-red-600 rounded-md hover:bg-red-700 transition"
+                                                    >
+                                                        <Trash2 size={14} className="inline mr-1" />
+                                                        Remove
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => toggleModule(module.id)}
+                                                        className="p-1.5 hover:bg-gray-100 rounded transition"
+                                                    >
+                                                        {isExpanded ? (
+                                                            <ChevronUp size={18} style={{ color: '#7a9d7a' }} />
+                                                        ) : (
+                                                            <ChevronDown size={18} style={{ color: '#7a9d7a' }} />
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {isExpanded && (
+                                                <div className="px-3 pb-3 pt-2 border-t" style={{ borderColor: '#e5e3df', backgroundColor: '#f9f9f9' }}>
+                                                    <h5 className="text-xs font-semibold mb-1" style={{ color: '#7a9d7a' }}>
+                                                        What students will learn:
+                                                    </h5>
+                                                    <p className="text-sm" style={{ color: '#5a5a5a' }}>
+                                                        {modulePreview}
+                                                    </p>
+                                                </div>
                                             )}
                                         </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => toggleModuleFree(module.id, module.is_free, module.order)}
-                                                className="px-3 py-1 text-sm rounded-md transition"
-                                                style={{ backgroundColor: '#f0f0f0', color: '#3d3d3d' }}
-                                            >
-                                                {module.is_free ? 'Make Paid' : 'Make Free'}
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeModule(module.id)}
-                                                className="px-3 py-1 text-sm text-white bg-red-600 rounded-md hover:bg-red-700 transition"
-                                            >
-                                                <Trash2 size={14} className="inline mr-1" />
-                                                Remove
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         ) : (
                             <p className="text-sm mb-6" style={{ color: '#7a7a7a' }}>
