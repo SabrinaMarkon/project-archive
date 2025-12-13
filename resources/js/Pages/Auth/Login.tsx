@@ -38,7 +38,7 @@ export default function Login({
 
             <div className="mb-6">
                 <h2 className="text-2xl font-bold" style={{ color: '#2d2d2d' }}>Welcome Back</h2>
-                <p className="text-sm mt-1" style={{ color: '#7a7a7a' }}>Sign in to access your admin dashboard</p>
+                <p className="text-sm mt-1" style={{ color: '#7a7a7a' }}>Sign in to your account</p>
             </div>
 
             {status && (
