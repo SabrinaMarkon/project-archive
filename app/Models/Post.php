@@ -64,6 +64,64 @@ class Post extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    /**
+     * Get course modules this post belongs to.
+     */
+    public function courseModules()
+    {
+        return $this->hasMany(CourseModule::class);
+    }
+
+    /**
+     * Check if this post is premium content (paid module in a course).
+     */
+    public function isPremiumContent(): bool
+    {
+        return $this->courseModules()->where('is_free', false)->exists();
+    }
+
+    /**
+     * Get the first course where this post is a paid module.
+     */
+    public function getPremiumCourse()
+    {
+        $module = $this->courseModules()->where('is_free', false)->with('course')->first();
+        return $module ? $module->course : null;
+    }
+
+    /**
+     * Check if a user can access this premium content.
+     */
+    public function canUserAccess($user): bool
+    {
+        // Admins can access everything
+        if ($user && $user->is_admin) {
+            return true;
+        }
+
+        // Non-premium posts are accessible to everyone
+        if (!$this->isPremiumContent()) {
+            return true;
+        }
+
+        // For premium posts, check if user has purchased any course containing this post
+        if (!$user) {
+            return false;
+        }
+
+        $paidModuleCourseIds = $this->courseModules()
+            ->where('is_free', false)
+            ->pluck('course_id');
+
+        foreach ($paidModuleCourseIds as $courseId) {
+            if ($user->hasPurchased(\App\Models\Course::find($courseId))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * Convert model to array with camelCase keys for frontend consistency.
