@@ -1,9 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\NewsletterHistoryController;
 use App\Http\Controllers\Admin\NewsletterSubscriberController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\Admin\PurchaseController as AdminPurchaseController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -59,9 +64,16 @@ Route::get('/', function () {
         $posts = $featuredPosts;
     }
 
+    // Get latest courses
+    $courses = \App\Models\Course::withCount('modules')
+        ->latest()
+        ->take(3)
+        ->get();
+
     return Inertia::render('Welcome', [
         'projects' => $projects,
         'posts' => $posts,
+        'courses' => $courses,
     ]);
 });
 
@@ -73,6 +85,17 @@ Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
+// Course Routes
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+Route::post('/courses/{course}/checkout', [\App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])
+    ->middleware('auth')
+    ->name('courses.checkout');
+
+// Stripe Webhook (no CSRF protection needed)
+Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::class, 'handleWebhook'])
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
 // CV Routes
 Route::get('/resume', function () {
     return Inertia::render('Resume');
@@ -82,6 +105,11 @@ Route::get('/resume', function () {
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/newsletter/confirm', [NewsletterController::class, 'confirm'])->name('newsletter.confirm');
 Route::get('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    // User Dashboard Routes (non-admin) - require email verification
+    Route::get('/dashboard/purchases', [DashboardController::class, 'purchases'])->name('dashboard.purchases');
+});
 
 Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
@@ -119,6 +147,28 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/admin/newsletter/history', [NewsletterHistoryController::class, 'index'])->name('admin.newsletter.history');
     Route::get('/admin/newsletter/history/{newsletterSend}', [NewsletterHistoryController::class, 'show'])->name('admin.newsletter.history.show');
     Route::delete('/admin/newsletter/history/{newsletterSend}', [NewsletterHistoryController::class, 'destroy'])->name('admin.newsletter.history.destroy');
+
+    // Admin Course Routes
+    Route::get('/admin/courses', [AdminCourseController::class, 'index'])->name('admin.courses.index');
+    Route::get('/admin/courses/create', [AdminCourseController::class, 'create'])->name('admin.courses.create');
+    Route::post('/admin/courses', [AdminCourseController::class, 'store'])->name('admin.courses.store');
+    Route::get('/admin/courses/{course}', [AdminCourseController::class, 'show'])->name('admin.courses.show');
+    Route::put('/admin/courses/{course}', [AdminCourseController::class, 'update'])->name('admin.courses.update');
+    Route::delete('/admin/courses/{course}', [AdminCourseController::class, 'destroy'])->name('admin.courses.destroy');
+    Route::post('/admin/courses/{course}/modules', [AdminCourseController::class, 'addModule'])->name('admin.courses.modules.add');
+    Route::patch('/admin/courses/{course}/modules/{module}', [AdminCourseController::class, 'updateModule'])->name('admin.courses.modules.update');
+    Route::delete('/admin/courses/{course}/modules/{module}', [AdminCourseController::class, 'removeModule'])->name('admin.courses.modules.remove');
+
+    // Admin User Routes
+    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
+    Route::patch('/admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::post('/admin/users/{user}/enrollments', [AdminUserController::class, 'addEnrollment'])->name('admin.users.enrollments.add');
+    Route::delete('/admin/users/{user}/enrollments/{enrollment}', [AdminUserController::class, 'removeEnrollment'])->name('admin.users.enrollments.remove');
+
+    // Admin Purchase Routes
+    Route::get('/admin/purchases', [AdminPurchaseController::class, 'index'])->name('admin.purchases.index');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

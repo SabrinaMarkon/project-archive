@@ -38,6 +38,7 @@ class PostController extends Controller
 
     /**
      * Show the details for the selected post (only if published, unless user is admin).
+     * All posts are freely accessible - courses are the paid products.
      */
     public function show(Post $post)
     {
