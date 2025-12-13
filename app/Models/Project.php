@@ -16,13 +16,12 @@ class Project extends Model
         'title',
         'slug',
         'description',
+        'tags',
         'format',
-        'excerpt',
         'status',
         'published_at',
         'author_id',
         'cover_image',
-        'tags',
         'meta_title',
         'meta_description',
         'is_featured',
@@ -47,6 +46,14 @@ class Project extends Model
     protected $appends = ['read_time'];
 
     /**
+     * Get the author of the project.
+     */
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /**
      * Calculate reading time based on description content.
      */
     protected function readTime(): Attribute
@@ -54,14 +61,6 @@ class Project extends Model
         return Attribute::make(
             get: fn () => ReadingTime::calculate($this->description ?? '')
         );
-    }
-
-    /**
-     * Get the author of the project.
-     */
-    public function author()
-    {
-        return $this->belongsTo(User::class, 'author_id');
     }
 
     /**
