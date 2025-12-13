@@ -16,4 +16,10 @@ export interface Post {
     viewCount?: number;
     isFeatured?: boolean;
     readTime?: string; // Server-computed reading time via Eloquent accessor, e.g., "5 min read"
+    isPremium?: boolean;
+    premiumCourse?: {
+        id: number;
+        title: string;
+        price: number;
+    } | null;
 }

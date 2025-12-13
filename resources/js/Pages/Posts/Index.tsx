@@ -55,6 +55,8 @@ export default function Index({ posts, selectedTag }: { posts: Post[]; selectedT
                                 coverImage={post.coverImage}
                                 isFeatured={post.isFeatured}
                                 tagFilterPath="/posts"
+                                isPremium={post.isPremium}
+                                premiumCourse={post.premiumCourse}
                             />
                         ))}
                     </div>

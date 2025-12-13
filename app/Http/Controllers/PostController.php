@@ -30,6 +30,21 @@ class PostController extends Controller
 
         $posts = $query->orderBy('is_featured', 'desc')->orderBy('published_at', 'desc')->get();
 
+        // Add premium information to each post
+        $posts = $posts->map(function ($post) {
+            $isPremium = $post->isPremiumContent();
+            $premiumCourse = $isPremium ? $post->getPremiumCourse() : null;
+
+            return array_merge($post->toArray(), [
+                'isPremium' => $isPremium,
+                'premiumCourse' => $premiumCourse ? [
+                    'id' => $premiumCourse->id,
+                    'title' => $premiumCourse->title,
+                    'price' => $premiumCourse->price,
+                ] : null,
+            ]);
+        });
+
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
             'selectedTag' => $selectedTag,

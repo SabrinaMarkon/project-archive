@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Code2, ExternalLink } from 'lucide-react';
+import { Code2, ExternalLink, Lock, Sparkles } from 'lucide-react';
 import DescriptionRenderer from './DescriptionRenderer';
 
 interface ContentCardProps {
@@ -15,6 +15,12 @@ interface ContentCardProps {
     coverImage?: string | null;
     isFeatured?: boolean;
     tagFilterPath?: string;
+    isPremium?: boolean;
+    premiumCourse?: {
+        id: number;
+        title: string;
+        price: number;
+    } | null;
 }
 
 export default function ContentCard({
@@ -30,11 +36,13 @@ export default function ContentCard({
     coverImage,
     isFeatured,
     tagFilterPath,
+    isPremium,
+    premiumCourse,
 }: ContentCardProps) {
     return (
         <div
             key={slug}
-            className="group bg-white rounded-2xl p-6 border transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            className="group bg-white rounded-2xl p-6 border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative"
             style={{ borderColor: isFeatured ? '#7a9d7a' : '#c0d8b4', borderWidth: isFeatured ? '2px' : '1px' }}
         >
             {coverImage && (
@@ -56,16 +64,28 @@ export default function ContentCard({
                 </div>
             )}
 
-            {isFeatured && (
-                <div className="inline-block mb-2">
+            <div className="flex flex-wrap gap-2 mb-2">
+                {isFeatured && (
                     <span
                         className="px-3 py-1 text-xs font-bold uppercase rounded-full"
                         style={{ backgroundColor: '#7a9d7a', color: '#ffffff' }}
                     >
                         Featured
                     </span>
-                </div>
-            )}
+                )}
+                {isPremium && premiumCourse && (
+                    <span
+                        className="px-3 py-1 text-xs font-bold uppercase rounded-full flex items-center gap-1.5"
+                        style={{
+                            background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                            color: '#ffffff'
+                        }}
+                    >
+                        <Lock size={12} />
+                        Premium
+                    </span>
+                )}
+            </div>
 
             <h3 className={`font-bold mb-3 ${title.length > 50 ? 'text-lg' : 'text-xl'}`} style={{ color: '#2d2d2d' }}>
                 {title}
@@ -124,12 +144,35 @@ export default function ContentCard({
                 </div>
             )}
 
+            {isPremium && premiumCourse && (
+                <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: '#fef3c7', borderLeft: '3px solid #f59e0b' }}>
+                    <p className="text-xs font-semibold mb-1" style={{ color: '#92400e' }}>
+                        Exclusive Course Content
+                    </p>
+                    <p className="text-sm font-medium" style={{ color: '#b45309' }}>
+                        Unlock in <span className="font-bold">{premiumCourse.title}</span>
+                    </p>
+                    <p className="text-xs mt-1" style={{ color: '#92400e' }}>
+                        Only ${premiumCourse.price}
+                    </p>
+                </div>
+            )}
+
             <Link
                 href={href}
                 className="font-semibold flex items-center gap-1 group-hover:gap-2 transition-all"
                 style={{ color: '#658965' }}
             >
-                {linkText} <ExternalLink size={16} />
+                {isPremium ? (
+                    <>
+                        <Lock size={16} />
+                        View Details
+                    </>
+                ) : (
+                    <>
+                        {linkText} <ExternalLink size={16} />
+                    </>
+                )}
             </Link>
         </div>
     );
