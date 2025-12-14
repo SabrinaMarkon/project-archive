@@ -64,6 +64,21 @@ Route::get('/', function () {
         $posts = $featuredPosts;
     }
 
+    // Add premium information to posts
+    $posts = $posts->map(function ($post) {
+        $isPremium = $post->isPremiumContent();
+        $premiumCourse = $isPremium ? $post->getPremiumCourse() : null;
+
+        return array_merge($post->toArray(), [
+            'isPremium' => $isPremium,
+            'premiumCourse' => $premiumCourse ? [
+                'id' => $premiumCourse->id,
+                'title' => $premiumCourse->title,
+                'price' => $premiumCourse->price,
+            ] : null,
+        ]);
+    });
+
     // Get latest courses
     $courses = \App\Models\Course::withCount('modules')
         ->latest()
@@ -109,6 +124,13 @@ Route::get('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe
 Route::middleware(['auth', 'verified'])->group(function () {
     // User Dashboard Routes (non-admin) - require email verification
     Route::get('/dashboard/purchases', [DashboardController::class, 'purchases'])->name('dashboard.purchases');
+});
+
+Route::middleware('auth')->group(function () {
+    // Profile Routes - available to all authenticated users
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 Route::middleware(['auth', AdminOnly::class])->group(function () {
@@ -173,10 +195,6 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     // Admin Settings Routes
     Route::get('/admin/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings');
     Route::put('/admin/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('admin.settings.update');
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';

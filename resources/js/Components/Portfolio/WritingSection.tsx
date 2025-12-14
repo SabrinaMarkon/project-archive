@@ -26,13 +26,15 @@ export default function WritingSection({ posts = [] }: WritingSectionProps) {
                             description={post.excerpt || post.description}
                             format={post.format}
                             href={`/posts/${post.slug}`}
-                            linkText="Read More"
+                            linkText={post.isPremium ? "View Details" : "Read Free!"}
                             tags={post.tags}
                             readTime={post.readTime}
                             publishedAt={post.publishedAt}
                             coverImage={post.coverImage}
                             isFeatured={post.isFeatured}
                             tagFilterPath="/posts"
+                            isPremium={post.isPremium}
+                            premiumCourse={post.premiumCourse}
                         />
                     ))}
                 </div>
