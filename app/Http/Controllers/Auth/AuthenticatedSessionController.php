@@ -33,12 +33,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Redirect admin users to dashboard, regular users to home
+        // Redirect admin users to admin dashboard, regular users to their courses
         if (Auth::user()->is_admin) {
             return redirect()->intended('/dashboard');
         }
 
-        return redirect()->intended('/');
+        return redirect()->intended('/dashboard/courses');
     }
 
     /**

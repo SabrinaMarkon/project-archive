@@ -103,6 +103,11 @@ Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.s
 // Course Routes
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+Route::get('/courses/{course}/checkout', function (\App\Models\Course $course) {
+    return Inertia::render('Checkout/SelectPayment', [
+        'course' => $course,
+    ]);
+})->middleware('auth')->name('courses.checkout.select');
 Route::post('/courses/{course}/checkout', [\App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])
     ->middleware('auth')
     ->name('courses.checkout');
@@ -121,8 +126,22 @@ Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
 Route::get('/newsletter/confirm', [NewsletterController::class, 'confirm'])->name('newsletter.confirm');
 Route::get('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
+Route::middleware('auth')->group(function () {
+    // User Dashboard Routes - accessible immediately after registration
+    Route::get('/dashboard/courses', function () {
+        $user = auth()->user();
+        $purchases = $user->purchases()->with(['course' => function ($query) {
+            $query->withCount('modules');
+        }])->latest()->get();
+
+        return Inertia::render('Dashboard/Courses', [
+            'purchases' => $purchases,
+        ]);
+    })->name('dashboard.courses');
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    // User Dashboard Routes (non-admin) - require email verification
+    // User Dashboard Routes requiring email verification
     Route::get('/dashboard/purchases', [DashboardController::class, 'purchases'])->name('dashboard.purchases');
 });
 

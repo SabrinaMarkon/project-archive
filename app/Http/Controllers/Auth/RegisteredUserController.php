@@ -45,6 +45,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect('/');
+        // Redirect new users to their courses dashboard
+        return redirect('/dashboard/courses');
     }
 }
