@@ -37,7 +37,9 @@ class StripePaymentTest extends TestCase
         $course = Course::factory()->create(['stripe_enabled' => false]);
 
         $response = $this->actingAs($user)
-            ->post("/courses/{$course->id}/checkout");
+            ->post("/courses/{$course->id}/checkout", [
+                'payment_method' => 'stripe',
+            ]);
 
         $response->assertStatus(403);
     }
@@ -54,7 +56,9 @@ class StripePaymentTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->post("/courses/{$course->id}/checkout");
+            ->post("/courses/{$course->id}/checkout", [
+                'payment_method' => 'stripe',
+            ]);
 
         $response->assertStatus(403);
     }

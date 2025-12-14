@@ -1,13 +1,14 @@
 import { useState, PropsWithChildren } from 'react';
-import { Menu, X, Leaf, User } from 'lucide-react';
+import { Menu, X, Leaf, User, LogOut, Settings } from 'lucide-react';
 import { Link, usePage } from '@inertiajs/react';
 import NewsletterModal from '@/Components/NewsletterModal';
 import NewsletterSignup from '@/Components/NewsletterSignup';
+import Dropdown from '@/Components/Dropdown';
 
 export default function PortfolioLayout({ children }: PropsWithChildren) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showNewsletterModal, setShowNewsletterModal] = useState(false);
-    const { auth } = usePage().props as { auth: { user: { name: string } | null } };
+    const { auth } = usePage().props as { auth: { user: { name: string; is_admin: boolean } | null } };
 
     return (
         <div className="min-h-screen bg-white">
@@ -36,10 +37,30 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                                 Newsletter
                             </button>
                             {auth.user ? (
-                                <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300" style={{ backgroundColor: '#7a9d7a' }}>
-                                    <User size={16} />
-                                    {auth.user.name}
-                                </Link>
+                                <Dropdown>
+                                    <Dropdown.Trigger>
+                                        <button className="flex items-center gap-2 px-4 py-2 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300" style={{ backgroundColor: '#7a9d7a' }}>
+                                            <User size={16} />
+                                            {auth.user.name}
+                                        </button>
+                                    </Dropdown.Trigger>
+                                    <Dropdown.Content>
+                                        {auth.user.is_admin && (
+                                            <Dropdown.Link href="/dashboard">
+                                                Admin Dashboard
+                                            </Dropdown.Link>
+                                        )}
+                                        <Dropdown.Link href="/dashboard/courses">
+                                            My Courses
+                                        </Dropdown.Link>
+                                        <Dropdown.Link href="/profile">
+                                            Profile
+                                        </Dropdown.Link>
+                                        <Dropdown.Link href="/logout" method="post" as="button">
+                                            Log Out
+                                        </Dropdown.Link>
+                                    </Dropdown.Content>
+                                </Dropdown>
                             ) : (
                                 <>
                                     <Link href="/login" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Login</Link>
@@ -80,9 +101,22 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                                 Newsletter
                             </button>
                             {auth.user ? (
-                                <Link href="/dashboard" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
-                                    My Account ({auth.user.name})
-                                </Link>
+                                <>
+                                    {auth.user.is_admin && (
+                                        <Link href="/dashboard" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
+                                            Admin Dashboard
+                                        </Link>
+                                    )}
+                                    <Link href="/dashboard/courses" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
+                                        My Courses
+                                    </Link>
+                                    <Link href="/profile" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
+                                        Profile ({auth.user.name})
+                                    </Link>
+                                    <Link href="/logout" method="post" as="button" className="block py-2 font-medium text-left w-full" style={{ color: '#5a5a5a' }}>
+                                        Log Out
+                                    </Link>
+                                </>
                             ) : (
                                 <>
                                     <Link href="/login" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Login</Link>

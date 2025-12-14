@@ -27,7 +27,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect('/');
+        $response->assertRedirect('/dashboard/courses');
     }
 
     public function test_new_users_are_not_admin_by_default(): void

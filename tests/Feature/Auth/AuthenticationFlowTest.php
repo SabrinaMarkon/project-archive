@@ -36,7 +36,7 @@ class AuthenticationFlowTest extends TestCase
         $response->assertInertia(fn ($page) => $page->component('Auth/Login'));
     }
 
-    public function test_non_admin_users_are_redirected_to_home_after_registration(): void
+    public function test_non_admin_users_are_redirected_to_courses_dashboard_after_registration(): void
     {
         $response = $this->post('/register', [
             'name' => 'Regular User',
@@ -45,7 +45,7 @@ class AuthenticationFlowTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
-        $response->assertRedirect('/');
+        $response->assertRedirect('/dashboard/courses');
 
         // Verify user was created and is not an admin
         $this->assertDatabaseHas('users', [
