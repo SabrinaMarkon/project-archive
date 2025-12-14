@@ -9,6 +9,7 @@ interface User {
     id: number;
     name: string;
     email: string;
+    email_verified_at: string | null;
     is_admin: boolean;
     created_at: string;
 }
@@ -81,6 +82,26 @@ export default function Show({ user, enrollments, purchases, availableCourses }:
                         <div>
                             <h1 className="text-3xl font-bold" style={{ color: '#2d2d2d' }}>{user.name}</h1>
                             <p className="mt-1" style={{ color: '#7a7a7a' }}>{user.email}</p>
+                            <div className="mt-3 flex gap-2">
+                                {!user.email_verified_at && (
+                                    <button
+                                        type="button"
+                                        onClick={() => router.post(`/admin/users/${user.id}/resend-verification`)}
+                                        className="text-sm px-3 py-1 rounded border hover:bg-gray-50"
+                                        style={{ borderColor: '#658965', color: '#658965' }}
+                                    >
+                                        Resend Verification Email
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => router.post(`/admin/users/${user.id}/resend-password-reset`)}
+                                    className="text-sm px-3 py-1 rounded border hover:bg-gray-50"
+                                    style={{ borderColor: '#658965', color: '#658965' }}
+                                >
+                                    Send Password Reset
+                                </button>
+                            </div>
                         </div>
                         <DangerButton onClick={deleteUser}>
                             <Trash2 size={16} className="mr-2" />
