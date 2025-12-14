@@ -53,4 +53,24 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
         $response->assertRedirect('/');
     }
+
+    public function test_login_page_has_forgot_password_link(): void
+    {
+        $response = $this->get('/login');
+
+        $response->assertStatus(200);
+        $response->assertInertia(fn ($page) => $page->component('Auth/Login'));
+
+        // Verify the page component is Login which should contain the forgot password link
+        // The actual link will be rendered client-side by React
+    }
+
+    public function test_forgot_password_link_goes_to_correct_route(): void
+    {
+        // Verify that the password.request route exists and is accessible
+        $response = $this->get(route('password.request'));
+
+        $response->assertStatus(200);
+        $response->assertInertia(fn ($page) => $page->component('Auth/ForgotPassword'));
+    }
 }

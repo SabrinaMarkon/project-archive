@@ -81,7 +81,7 @@ export default function Login({
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="mt-4 block">
+                <div className="mt-4 flex items-center justify-between">
                     <label className="flex items-center cursor-pointer">
                         <Checkbox
                             name="remember"
@@ -92,6 +92,14 @@ export default function Login({
                             Remember me
                         </span>
                     </label>
+
+                    <Link
+                        href={route('password.request')}
+                        className="text-sm hover:underline"
+                        style={{ color: '#658965' }}
+                    >
+                        Forgot password?
+                    </Link>
                 </div>
 
                 <div className="mt-6">
