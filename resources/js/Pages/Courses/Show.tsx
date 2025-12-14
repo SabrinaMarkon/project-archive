@@ -115,12 +115,15 @@ export default function Show({ course }: { course: Course }) {
                         )}
                     </div>
 
-                    <button
+                    <Link
+                        href={route('courses.checkout', course.id)}
+                        method="post"
+                        as="button"
                         className="px-8 py-4 rounded-lg font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105"
                         style={{ backgroundColor: '#658965' }}
                     >
                         Purchase Course
-                    </button>
+                    </Link>
                 </div>
             </section>
 
