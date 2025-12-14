@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,6 +26,32 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
         ]);
+    }
+
+    public function create(): Response
+    {
+        return Inertia::render('Admin/Users/Create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'is_admin' => 'boolean',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'is_admin' => $validated['is_admin'] ?? false,
+            'email_verified_at' => now(), // Auto-verify admin-created users
+        ]);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User created successfully.');
     }
 
     public function show(User $user): Response
@@ -90,5 +120,22 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.show', $user)
             ->with('success', 'Enrollment removed successfully.');
+    }
+
+    public function resendVerification(User $user): RedirectResponse
+    {
+        $user->notify(new VerifyEmail);
+
+        return redirect()->route('admin.users.show', $user)
+            ->with('success', 'Verification email sent successfully.');
+    }
+
+    public function resendPasswordReset(User $user): RedirectResponse
+    {
+        $token = app('auth.password.broker')->createToken($user);
+        $user->notify(new ResetPassword($token));
+
+        return redirect()->route('admin.users.show', $user)
+            ->with('success', 'Password reset email sent successfully.');
     }
 }

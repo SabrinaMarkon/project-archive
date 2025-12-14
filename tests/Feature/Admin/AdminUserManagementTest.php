@@ -95,4 +95,141 @@ class AdminUserManagementTest extends TestCase
             ->has('users.0.enrollments_count')
         );
     }
+
+    public function test_admin_can_access_create_user_form(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->get('/admin/users/create');
+
+        $response->assertStatus(200);
+        $response->assertInertia(fn ($page) => $page
+            ->component('Admin/Users/Create')
+        );
+    }
+
+    public function test_non_admin_cannot_access_create_user_form(): void
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+
+        $response = $this->actingAs($user)->get('/admin/users/create');
+
+        $response->assertStatus(403);
+    }
+
+    public function test_admin_can_create_new_user(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->post('/admin/users', [
+            'name' => 'Test User',
+            'email' => 'testuser@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'is_admin' => false,
+        ]);
+
+        $response->assertRedirect('/admin/users');
+        $this->assertDatabaseHas('users', [
+            'name' => 'Test User',
+            'email' => 'testuser@example.com',
+            'is_admin' => false,
+        ]);
+
+        // Verify password was hashed
+        $user = User::where('email', 'testuser@example.com')->first();
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('password123', $user->password));
+    }
+
+    public function test_user_creation_requires_name(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->post('/admin/users', [
+            'email' => 'testuser@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors('name');
+    }
+
+    public function test_user_creation_requires_valid_email(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->post('/admin/users', [
+            'name' => 'Test User',
+            'email' => 'invalid-email',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+    }
+
+    public function test_user_creation_requires_unique_email(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $existingUser = User::factory()->create(['email' => 'existing@example.com']);
+
+        $response = $this->actingAs($admin)->post('/admin/users', [
+            'name' => 'Test User',
+            'email' => 'existing@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+    }
+
+    public function test_user_creation_requires_password_confirmation(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->post('/admin/users', [
+            'name' => 'Test User',
+            'email' => 'testuser@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors('password');
+    }
+
+    public function test_admin_can_resend_verification_email(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $user = User::factory()->create(['email_verified_at' => null]);
+
+        \Illuminate\Support\Facades\Notification::fake();
+
+        $response = $this->actingAs($admin)->post("/admin/users/{$user->id}/resend-verification");
+
+        $response->assertRedirect("/admin/users/{$user->id}");
+        $response->assertSessionHas('success', 'Verification email sent successfully.');
+
+        \Illuminate\Support\Facades\Notification::assertSentTo(
+            $user,
+            \Illuminate\Auth\Notifications\VerifyEmail::class
+        );
+    }
+
+    public function test_admin_can_resend_password_reset_email(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $user = User::factory()->create();
+
+        \Illuminate\Support\Facades\Notification::fake();
+
+        $response = $this->actingAs($admin)->post("/admin/users/{$user->id}/resend-password-reset");
+
+        $response->assertRedirect("/admin/users/{$user->id}");
+        $response->assertSessionHas('success', 'Password reset email sent successfully.');
+
+        \Illuminate\Support\Facades\Notification::assertSentTo(
+            $user,
+            \Illuminate\Auth\Notifications\ResetPassword::class
+        );
+    }
 }

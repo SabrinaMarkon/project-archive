@@ -202,9 +202,13 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
 
     // Admin User Routes
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/create', [AdminUserController::class, 'create'])->name('admin.users.create');
+    Route::post('/admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');
     Route::get('/admin/users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
     Route::patch('/admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::post('/admin/users/{user}/resend-verification', [AdminUserController::class, 'resendVerification'])->name('admin.users.resend-verification');
+    Route::post('/admin/users/{user}/resend-password-reset', [AdminUserController::class, 'resendPasswordReset'])->name('admin.users.resend-password-reset');
     Route::post('/admin/users/{user}/enrollments', [AdminUserController::class, 'addEnrollment'])->name('admin.users.enrollments.add');
     Route::delete('/admin/users/{user}/enrollments/{enrollment}', [AdminUserController::class, 'removeEnrollment'])->name('admin.users.enrollments.remove');
 
