@@ -5,7 +5,7 @@ import DashboardLayout from "@/Layouts/DashboardLayout";
 import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { Head, Link, router } from "@inertiajs/react";
-import { Edit, Trash2, ChevronDown, ChevronRight, Book } from "lucide-react";
+import { Edit, Trash2, ChevronDown, ChevronRight, Book, Eye } from "lucide-react";
 
 interface Course {
     id: number;
@@ -125,6 +125,16 @@ export default function Index({ courses }: { courses: Course[] }) {
                                 </div>
 
                                 <div className="flex items-center gap-2">
+                                    <Link
+                                        href={`/courses/${course.id}`}
+                                        className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"
+                                        style={{ backgroundColor: '#658965' }}
+                                        title="View course as visitor"
+                                    >
+                                        <Eye size={16} />
+                                        View
+                                    </Link>
+
                                     <Link
                                         href={`/admin/courses/${course.id}`}
                                         className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"

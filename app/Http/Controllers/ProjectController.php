@@ -25,7 +25,8 @@ class ProjectController extends Controller
 
         // Filter by tag if provided
         if ($selectedTag) {
-            $query->whereJsonContains('tags', $selectedTag);
+            // $query->whereJsonContains('tags', $selectedTag);
+            $query->whereRaw('EXISTS (SELECT 1 FROM json_each(tags) WHERE json_each.value = ?)', [$selectedTag]);
         }
 
         $projects = $query->orderBy('is_featured', 'desc')->inRandomOrder()->get();

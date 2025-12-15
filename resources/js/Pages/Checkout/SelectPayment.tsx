@@ -14,9 +14,11 @@ interface Course {
 
 interface Props {
     course: Course;
+    stripeConfigured: boolean;
+    paypalConfigured: boolean;
 }
 
-export default function SelectPayment({ course }: Props) {
+export default function SelectPayment({ course, stripeConfigured, paypalConfigured }: Props) {
     const [processing, setProcessing] = useState(false);
 
     const handleCheckout = (method: 'stripe' | 'paypal') => {
@@ -30,9 +32,13 @@ export default function SelectPayment({ course }: Props) {
         );
     };
 
+    // Payment method is enabled only if BOTH course has it enabled AND global settings are configured
+    const stripeEnabled = course.stripe_enabled && stripeConfigured;
+    const paypalEnabled = course.paypal_enabled && paypalConfigured;
+
     const enabledMethods = [
-        course.stripe_enabled && 'stripe',
-        course.paypal_enabled && 'paypal',
+        stripeEnabled && 'stripe',
+        paypalEnabled && 'paypal',
     ].filter(Boolean);
 
     // If only one method enabled, redirect automatically
@@ -82,7 +88,7 @@ export default function SelectPayment({ course }: Props) {
                             </h2>
 
                             <div className="space-y-4">
-                                {course.stripe_enabled && (
+                                {stripeEnabled && (
                                     <button
                                         onClick={() => handleCheckout('stripe')}
                                         disabled={processing}
@@ -120,7 +126,7 @@ export default function SelectPayment({ course }: Props) {
                                     </button>
                                 )}
 
-                                {course.paypal_enabled && (
+                                {paypalEnabled && (
                                     <button
                                         onClick={() => handleCheckout('paypal')}
                                         disabled={processing}
@@ -158,7 +164,7 @@ export default function SelectPayment({ course }: Props) {
                                     </button>
                                 )}
 
-                                {!course.stripe_enabled && !course.paypal_enabled && (
+                                {!stripeEnabled && !paypalEnabled && (
                                     <div className="rounded-lg bg-red-50 p-6 text-center">
                                         <p className="font-semibold text-red-900">
                                             Payment methods not configured

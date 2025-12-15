@@ -104,8 +104,14 @@ Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.s
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
 Route::get('/courses/{course}/checkout', function (\App\Models\Course $course) {
+    // Check if payment gateways are configured in site-wide settings
+    $stripeConfigured = !empty(\App\Models\Setting::get('stripe_secret_key'));
+    $paypalConfigured = !empty(\App\Models\Setting::get('paypal_client_id')) && !empty(\App\Models\Setting::get('paypal_secret'));
+
     return Inertia::render('Checkout/SelectPayment', [
         'course' => $course,
+        'stripeConfigured' => $stripeConfigured,
+        'paypalConfigured' => $paypalConfigured,
     ]);
 })->middleware('auth')->name('courses.checkout.select');
 Route::post('/courses/{course}/checkout', [\App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])

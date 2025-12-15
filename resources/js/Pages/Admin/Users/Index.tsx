@@ -23,9 +23,18 @@ export default function Index({ users }: Props) {
             <Head title="User Management" />
 
             <div className="p-6">
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold" style={{ color: '#2d2d2d' }}>User Management</h1>
-                    <p className="mt-2" style={{ color: '#7a7a7a' }}>Manage users, enrollments, and permissions</p>
+                <div className="mb-6 flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold" style={{ color: '#2d2d2d' }}>User Management</h1>
+                        <p className="mt-2" style={{ color: '#7a7a7a' }}>Manage users, enrollments, and permissions</p>
+                    </div>
+                    <Link
+                        href="/admin/users/create"
+                        className="px-4 py-2 rounded-lg text-white font-semibold hover:shadow-lg transition"
+                        style={{ backgroundColor: '#658965' }}
+                    >
+                        Create User
+                    </Link>
                 </div>
 
                 <div className="bg-white rounded-lg shadow">
