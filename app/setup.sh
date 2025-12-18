@@ -49,3 +49,30 @@ php-cs-fixer -V
 # php artisan serve
 # \\wsl$\Ubuntu\home\your-windows-username\git-repo-name
 echo "Setup complete! You can now run your Laravel project."
+
+# Remember to set up your .env file with the correct settings, including the new ones for Resend:
+# MAIL_MAILER=resend
+# MAIL_FROM_ADDRESS=
+# MAIL_FROM_NAME=
+# RESEND_API_KEY=
+# RESEND_DOMAIN=
+
+# You may need to install the required PHP SQLite extension for PHP 8.3
+# before running php artisan migrate if your project uses SQLite and you get
+# error "ould not find driver (Connection: sqlite, SQL: select exists 
+# (select 1 from "main".sqlite_master where name = 'migrations' and type = 'table') as "exists")
+
+# sudo apt update
+# sudo apt install php8.3-sqlite3
+
+# After installation, verify the extensions are loaded:
+# php -m | grep -i pdo
+# php -m | grep -i sqlite
+
+# You should see:
+# PDO
+# pdo_sqlite
+# sqlite3
+
+# Then try running your migration again:
+# php artisan migrate
