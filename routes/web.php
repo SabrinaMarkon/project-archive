@@ -14,6 +14,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AdminOnly;
+use App\Http\Middleware\SharedCourseSettings;
+use App\Models\Course;
 use App\Models\Post;
 use App\Models\Project;
 use Illuminate\Support\Facades\Route;
@@ -90,33 +92,30 @@ Route::get('/', function () {
         'posts' => $posts,
         'courses' => $courses,
     ]);
-});
+})->name('home');
 
 // Project Routes
-Route::get('/projects', [ProjectController::class, 'index']);
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
 
 // Post Routes
-Route::get('/posts', [PostController::class, 'index']);
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
 // Course Routes
-Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
-Route::get('/courses/{course}/checkout', function (\App\Models\Course $course) {
-    // Check if payment gateways are configured in site-wide settings
-    $stripeConfigured = !empty(\App\Models\Setting::get('stripe_secret_key'));
-    $paypalConfigured = !empty(\App\Models\Setting::get('paypal_client_id')) && !empty(\App\Models\Setting::get('paypal_secret'));
+Route::middleware(SharedCourseSettings::class)->group(function () {
 
-    return Inertia::render('Checkout/SelectPayment', [
-        'course' => $course,
-        'stripeConfigured' => $stripeConfigured,
-        'paypalConfigured' => $paypalConfigured,
-    ]);
-})->middleware('auth')->name('courses.checkout.select');
-Route::post('/courses/{course}/checkout', [\App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])
-    ->middleware('auth')
-    ->name('courses.checkout');
+    Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('/courses/{course}/checkout', function (Course $course) {
+        // The global payment configuration flags are available via Inertia shared props.
+        return Inertia::render('Checkout/SelectPayment', [
+            'course' => $course,
+        ]);
+    })->name('courses.checkout.select');
+    Route::post('/courses/{course}/checkout', [\App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])
+        ->name('courses.checkout');
+});
 
 // Stripe Webhook (no CSRF protection needed)
 Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::class, 'handleWebhook'])
@@ -125,7 +124,7 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::c
 // CV Routes
 Route::get('/resume', function () {
     return Inertia::render('Resume');
-});
+})->name('resume');
 
 // Newsletter Routes
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
@@ -165,7 +164,7 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     // Admin Projects Routes
     Route::get('/admin/projects/create', function () {
         return Inertia::render('Admin/Projects/Create');
-    });
+    })->name('admin.projects.create');
     Route::get('/admin/projects', [AdminProjectController::class, 'index'])->name('admin.projects.index');
     Route::post('/admin/projects', [AdminProjectController::class, 'store'])->name('admin.projects.store');
     Route::put('/admin/projects/{project:slug}', [AdminProjectController::class, 'update'])->name('admin.projects.update');
@@ -174,7 +173,7 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
         return Inertia::render('Admin/Projects/Create', [
             'project' => $project,
         ]);
-    });
+    })->name('admin.projects.edit');
 
     // Admin Posts Routes
     Route::get('/admin/posts', [AdminPostController::class, 'index'])->name('admin.posts.index');
