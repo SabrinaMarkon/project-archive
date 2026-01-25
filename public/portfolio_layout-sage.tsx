@@ -251,7 +251,7 @@ export default function PortfolioLayout() {
       {/* Footer */}
       <footer className="border-t py-8 px-6 bg-white" style={{ borderColor: '#e5e3df' }}>
         <div className="max-w-6xl mx-auto text-center" style={{ color: '#7a7a7a' }}>
-          <p>© 2024 Sabrina Markon. Crafted with care and code.</p>
+          <p>© 2026 Sabrina Markon. Crafted with care and code.</p>
         </div>
       </footer>
     </div>

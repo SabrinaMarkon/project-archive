@@ -57,14 +57,14 @@ describe('PortfolioLayout', () => {
         const projectsLinks = screen.getAllByRole('link', { name: /Projects/i });
         const writingLinks = screen.getAllByRole('link', { name: /Writing/i });
         const aboutLinks = screen.getAllByRole('link', { name: /About/i });
-        const cvLinks = screen.getAllByRole('link', { name: /CV/i });
+        const resumeLinks = screen.getAllByRole('link', { name: /Resume/i });
         const contactLinks = screen.getAllByRole('link', { name: /Contact/i });
 
         expect(homeLinks.length).toBeGreaterThan(0);
         expect(projectsLinks.length).toBeGreaterThan(0);
         expect(writingLinks.length).toBeGreaterThan(0);
         expect(aboutLinks.length).toBeGreaterThan(0);
-        expect(cvLinks.length).toBeGreaterThan(0);
+        expect(resumeLinks.length).toBeGreaterThan(0);
         expect(contactLinks.length).toBeGreaterThan(0);
     });
 
@@ -78,7 +78,7 @@ describe('PortfolioLayout', () => {
     it('renders footer with copyright', () => {
         render(<PortfolioLayout><div /></PortfolioLayout>);
 
-        expect(screen.getByText(/© 2025 Sabrina Markon/i)).toBeInTheDocument();
+        expect(screen.getByText(/© 2026 Sabrina Markon/i)).toBeInTheDocument();
     });
 
     it('has fixed navigation bar', () => {

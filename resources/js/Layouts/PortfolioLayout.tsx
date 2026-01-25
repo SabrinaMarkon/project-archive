@@ -28,7 +28,7 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                             <Link href={route('posts.index')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Writing</Link>
                             <Link href={route('courses.index')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Courses</Link>
                             <Link href={route('home') + '#about'} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>About</Link>
-                            <Link href={route('resume')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>CV</Link>
+                            <Link href={route('resume')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Resume</Link>
                             <button
                                 onClick={() => setShowNewsletterModal(true)}
                                 className="font-medium transition hover:opacity-70"
@@ -89,7 +89,7 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                             <Link href={route('posts.index')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Writing</Link>
                             <Link href={route('courses.index')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Courses</Link>
                             <Link href={route('home') + '#about'} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>About</Link>
-                            <Link href={route('resume')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>CV</Link>
+                            <Link href={route('resume')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Resume</Link>
                             <button
                                 onClick={() => {
                                     setShowNewsletterModal(true);
@@ -140,7 +140,7 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
             <footer className="py-8 px-6 bg-white">
                 <div className="max-w-6xl mx-auto border-t pt-8" style={{ borderColor: '#e5e3df' }}>
                     <div className="text-center" style={{ color: '#7a7a7a' }}>
-                        <p>© 2025 Sabrina Markon. Crafted with care and code 💚</p>
+                        <p>© 2026 Sabrina Markon. Crafted with care and code 💚</p>
                     </div>
                 </div>
             </footer>

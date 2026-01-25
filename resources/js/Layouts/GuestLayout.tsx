@@ -18,7 +18,7 @@ export default function Guest({ children }: PropsWithChildren) {
 
             {/* Footer */}
             <footer className="mt-8 text-center" style={{ color: '#7a7a7a' }}>
-                <p className="text-sm">© 2025 Sabrina Markon. Crafted with care and code 💚</p>
+                <p className="text-sm">© 2026 Sabrina Markon. Crafted with care and code 💚</p>
             </footer>
         </div>
     );

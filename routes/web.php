@@ -121,7 +121,7 @@ Route::middleware(SharedCourseSettings::class)->group(function () {
 Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::class, 'handleWebhook'])
     ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
-// CV Routes
+// Resume Routes
 Route::get('/resume', function () {
     return Inertia::render('Resume');
 })->name('resume');

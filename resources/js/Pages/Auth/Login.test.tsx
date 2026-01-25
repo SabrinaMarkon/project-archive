@@ -25,7 +25,7 @@ vi.mock('@/Layouts/GuestLayout', () => ({
                 <a href="/">Sabrina Markon</a>
             </header>
             <main>{children}</main>
-            <footer>© 2025 Sabrina Markon. Crafted with care and code 💚</footer>
+            <footer>© 2026 Sabrina Markon. Crafted with care and code 💚</footer>
         </div>
     ),
 }));
@@ -92,7 +92,7 @@ describe('Login Page', () => {
     it('displays footer with copyright', () => {
         render(<Login />);
 
-        expect(screen.getByText(/© 2025 Sabrina Markon/i)).toBeInTheDocument();
+        expect(screen.getByText(/© 2026 Sabrina Markon/i)).toBeInTheDocument();
         expect(screen.getByText(/Crafted with care and code/i)).toBeInTheDocument();
     });
 
