@@ -91,7 +91,7 @@ export default function Courses({ purchases }: Props) {
                                     started!
                                 </p>
                                 <Link
-                                    href="/courses"
+                                    href={route('courses.index')}
                                     className="inline-block rounded-md bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-700"
                                 >
                                     Browse Courses

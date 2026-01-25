@@ -18,14 +18,14 @@ export default function HeroSection() {
                         through writing about technology, development practices, and the craft of creating software.
                     </p>
                     <div className="flex flex-wrap gap-4">
-                        <Link href="/projects" className="px-8 py-4 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2 font-semibold" style={{ backgroundColor: '#7a9d7a' }}>
+                        <Link href={route('projects.index')} className="px-8 py-4 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2 font-semibold" style={{ backgroundColor: '#7a9d7a' }}>
                             <Code2 size={20} />
                             View Projects
                         </Link>
-                        <a href="/posts" className="px-8 py-4 bg-white rounded-xl transition-all duration-300 flex items-center gap-2 font-semibold shadow-sm hover:shadow-md" style={{ border: '2px solid #7a9d7a', color: '#658965' }}>
+                        <Link href={route('posts.index')} className="px-8 py-4 bg-white rounded-xl transition-all duration-300 flex items-center gap-2 font-semibold shadow-sm hover:shadow-md" style={{ border: '2px solid #7a9d7a', color: '#658965' }}>
                             <BookOpen size={20} />
                             Read Writing
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

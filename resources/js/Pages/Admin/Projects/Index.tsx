@@ -135,7 +135,7 @@ export default function Index({ projects }: { projects: Project[] }) {
                         <div className="text-center py-8" style={{ color: '#7a7a7a' }}>
                             <p>No projects found. Create your first project!</p>
                             <Link
-                                href="/admin/projects/create"
+                                href={route('admin.projects.create')}
                                 className="inline-block mt-4 px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 style={{ backgroundColor: '#7a9d7a' }}
                             >

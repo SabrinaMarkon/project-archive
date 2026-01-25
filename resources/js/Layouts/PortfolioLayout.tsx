@@ -16,19 +16,19 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
             <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b z-50 shadow-sm" style={{ borderColor: '#e5e3df' }}>
                 <div className="max-w-6xl mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
-                        <Link href="/" className="text-2xl font-bold flex items-center gap-2" style={{ color: '#3d3d3d' }}>
+                        <Link href={route('home')} className="text-2xl font-bold flex items-center gap-2" style={{ color: '#3d3d3d' }}>
                             <Leaf style={{ color: '#7a9d7a' }} size={28} />
                             Sabrina Markon
                         </Link>
 
                         {/* Desktop Navigation */}
                         <div className="hidden md:flex items-center space-x-8">
-                            <Link href="/#home" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Home</Link>
-                            <Link href="/projects" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Projects</Link>
-                            <Link href="/posts" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Writing</Link>
-                            <Link href="/courses" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Courses</Link>
-                            <Link href="/#about" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>About</Link>
-                            <Link href="/resume" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>CV</Link>
+                            <Link href={route('home') + '#home'} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Home</Link>
+                            <Link href={route('projects.index')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Projects</Link>
+                            <Link href={route('posts.index')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Writing</Link>
+                            <Link href={route('courses.index')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Courses</Link>
+                            <Link href={route('home') + '#about'} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>About</Link>
+                            <Link href={route('resume')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>CV</Link>
                             <button
                                 onClick={() => setShowNewsletterModal(true)}
                                 className="font-medium transition hover:opacity-70"
@@ -46,25 +46,25 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                                     </Dropdown.Trigger>
                                     <Dropdown.Content>
                                         {auth.user.is_admin && (
-                                            <Dropdown.Link href="/dashboard">
+                                            <Dropdown.Link href={route('dashboard')}>
                                                 Admin Dashboard
                                             </Dropdown.Link>
                                         )}
-                                        <Dropdown.Link href="/dashboard/courses">
+                                        <Dropdown.Link href={route('dashboard.courses')}>
                                             My Courses
                                         </Dropdown.Link>
-                                        <Dropdown.Link href="/profile">
+                                        <Dropdown.Link href={route('profile.edit')}>
                                             Profile
                                         </Dropdown.Link>
-                                        <Dropdown.Link href="/logout" method="post" as="button">
+                                        <Dropdown.Link href={route('logout')} method="post" as="button">
                                             Log Out
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
                             ) : (
                                 <>
-                                    <Link href="/login" className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Login</Link>
-                                    <Link href="/register" className="px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300" style={{ backgroundColor: '#7a9d7a' }}>
+                                    <Link href={route('login')} className="font-medium transition hover:opacity-70" style={{ color: '#5a5a5a' }}>Login</Link>
+                                    <Link href={route('register')} className="px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300" style={{ backgroundColor: '#7a9d7a' }}>
                                         Sign Up
                                     </Link>
                                 </>
@@ -84,12 +84,12 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                     {/* Mobile Navigation */}
                     {mobileMenuOpen && (
                         <div className="md:hidden pt-4 pb-2 space-y-2">
-                            <Link href="/#home" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Home</Link>
-                            <Link href="/projects" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Projects</Link>
-                            <Link href="/posts" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Writing</Link>
-                            <Link href="/courses" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Courses</Link>
-                            <Link href="/#about" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>About</Link>
-                            <Link href="/resume" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>CV</Link>
+                            <Link href={route('home') + '#home'} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Home</Link>
+                            <Link href={route('projects.index')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Projects</Link>
+                            <Link href={route('posts.index')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Writing</Link>
+                            <Link href={route('courses.index')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Courses</Link>
+                            <Link href={route('home') + '#about'} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>About</Link>
+                            <Link href={route('resume')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>CV</Link>
                             <button
                                 onClick={() => {
                                     setShowNewsletterModal(true);
@@ -103,24 +103,24 @@ export default function PortfolioLayout({ children }: PropsWithChildren) {
                             {auth.user ? (
                                 <>
                                     {auth.user.is_admin && (
-                                        <Link href="/dashboard" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
+                                        <Link href={route('dashboard')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
                                             Admin Dashboard
                                         </Link>
                                     )}
-                                    <Link href="/dashboard/courses" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
+                                    <Link href={route('dashboard.courses')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
                                         My Courses
                                     </Link>
-                                    <Link href="/profile" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
+                                    <Link href={route('profile.edit')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>
                                         Profile ({auth.user.name})
                                     </Link>
-                                    <Link href="/logout" method="post" as="button" className="block py-2 font-medium text-left w-full" style={{ color: '#5a5a5a' }}>
+                                    <Link href={route('logout')} method="post" as="button" className="block py-2 font-medium text-left w-full" style={{ color: '#5a5a5a' }}>
                                         Log Out
                                     </Link>
                                 </>
                             ) : (
                                 <>
-                                    <Link href="/login" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Login</Link>
-                                    <Link href="/register" className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Sign Up</Link>
+                                    <Link href={route('login')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Login</Link>
+                                    <Link href={route('register')} className="block py-2 font-medium" style={{ color: '#5a5a5a' }}>Sign Up</Link>
                                 </>
                             )}
                         </div>

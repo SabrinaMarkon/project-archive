@@ -69,7 +69,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                         Courses
                     </h2>
                     <Link
-                        href="/admin/courses/create"
+                        href={route('admin.courses.create')}
                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md transition hover:opacity-90"
                         style={{ backgroundColor: '#7a9d7a' }}
                     >
@@ -178,7 +178,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                         <div className="text-center py-8" style={{ color: '#7a7a7a' }}>
                             <p>No courses found. Create your first course!</p>
                             <Link
-                                href="/admin/courses/create"
+                                href={route('admin.courses.create')}
                                 className="inline-block mt-4 px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 style={{ backgroundColor: '#7a9d7a' }}
                             >

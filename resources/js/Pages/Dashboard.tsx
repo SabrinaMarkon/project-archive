@@ -30,7 +30,7 @@ export default function Dashboard() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
                             <Link
-                                href="/admin/projects/create"
+                                href={route('admin.projects.create')}
                                 className="flex items-center gap-4 p-6 rounded-lg border transition hover:shadow-md"
                                 style={{ borderColor: '#e5e3df' }}
                             >
@@ -48,7 +48,7 @@ export default function Dashboard() {
                             </Link>
 
                             <Link
-                                href="/admin/projects"
+                                href={route('admin.projects.index')}
                                 className="flex items-center gap-4 p-6 rounded-lg border transition hover:shadow-md"
                                 style={{ borderColor: '#e5e3df' }}
                             >

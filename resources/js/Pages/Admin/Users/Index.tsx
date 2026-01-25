@@ -29,7 +29,7 @@ export default function Index({ users }: Props) {
                         <p className="mt-2" style={{ color: '#7a7a7a' }}>Manage users, enrollments, and permissions</p>
                     </div>
                     <Link
-                        href="/admin/users/create"
+                        href={route('admin.users.create')}
                         className="px-4 py-2 rounded-lg text-white font-semibold hover:shadow-lg transition"
                         style={{ backgroundColor: '#658965' }}
                     >

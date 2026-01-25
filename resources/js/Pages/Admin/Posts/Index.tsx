@@ -180,7 +180,7 @@ export default function Index({ posts }: { posts: Post[] }) {
                         <div className="text-center py-8" style={{ color: '#7a7a7a' }}>
                             <p>No writing found. Create your first piece!</p>
                             <Link
-                                href="/admin/posts/create"
+                                href={route('admin.posts.create')}
                                 className="inline-block mt-4 px-5 py-2.5 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 style={{ backgroundColor: '#7a9d7a' }}
                             >

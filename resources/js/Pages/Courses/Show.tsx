@@ -2,7 +2,17 @@ import { Head, Link } from "@inertiajs/react";
 import { useState } from 'react';
 import PortfolioLayout from '@/Layouts/PortfolioLayout';
 import ContactSection from '@/Components/Portfolio/ContactSection';
-import { ArrowLeft, Lock, Unlock, Clock, DollarSign, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+    ArrowLeft,
+    Lock,
+    Unlock,
+    Clock,
+    DollarSign,
+    AlertTriangle,
+    ChevronDown,
+    ChevronUp,
+} from "lucide-react";
+import { SharedCourseSettings } from "@/types/sharedsettings";
 
 interface Post {
     id: number;
@@ -11,7 +21,6 @@ interface Post {
     excerpt?: string | null;
     description?: string | null;
 }
-
 interface CourseModule {
     id: number;
     post_id: number;
@@ -19,7 +28,6 @@ interface CourseModule {
     order: number;
     post: Post;
 }
-
 interface Course {
     id: number;
     title: string;
@@ -31,7 +39,14 @@ interface Course {
     modules: CourseModule[];
 }
 
-export default function Show({ course }: { course: Course }) {
+interface PageProps {
+    course: Course;
+    hasPurchased: boolean;
+    modules: CourseModule[];
+    sharedCourseSettings: SharedCourseSettings;
+}
+
+export default function Show({ course, sharedCourseSettings }: PageProps) {
     const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
 
     const toggleModule = (moduleId: number) => {
@@ -59,6 +74,10 @@ export default function Show({ course }: { course: Course }) {
         }
     };
 
+    const isAnyPaymentConfigured =
+        sharedCourseSettings.paymentSettings.stripeConfigured ||
+        sharedCourseSettings.paymentSettings.paypalConfigured;
+
     return (
         <PortfolioLayout>
             <Head title={`${course.title} - Sabrina Markon`} />
@@ -67,79 +86,136 @@ export default function Show({ course }: { course: Course }) {
             <section className="pt-32 pb-12 px-6 bg-white">
                 <div className="max-w-4xl mx-auto">
                     <Link
-                        href="/courses"
+                        href={route('courses.index')}
                         className="inline-flex items-center gap-2 mb-6 text-sm font-medium hover:underline"
-                        style={{ color: '#658965' }}
+                        style={{ color: "#658965" }}
                     >
                         <ArrowLeft size={16} />
                         Back to Courses
                     </Link>
 
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#2d2d2d' }}>
+                    <h1
+                        className="text-4xl md:text-5xl font-bold mb-4"
+                        style={{ color: "#2d2d2d" }}
+                    >
                         {course.title}
                     </h1>
 
-                    <p className="text-xl mb-6" style={{ color: '#5a5a5a' }}>
+                    <p className="text-xl mb-6" style={{ color: "#5a5a5a" }}>
                         {course.description}
                     </p>
 
                     <div className="flex items-center gap-6 mb-6">
                         <div className="flex items-center gap-2">
-                            <DollarSign size={24} style={{ color: '#658965' }} />
-                            <span className="text-3xl font-bold" style={{ color: '#2d2d2d' }}>
+                            <DollarSign
+                                size={24}
+                                style={{ color: "#658965" }}
+                            />
+                            <span
+                                className="text-3xl font-bold"
+                                style={{ color: "#2d2d2d" }}
+                            >
                                 {course.price}
                             </span>
-                            {course.payment_type !== 'one_time' && (
-                                <span className="text-sm" style={{ color: '#7a7a7a' }}>
-                                    / {course.payment_type === 'monthly' ? 'month' : 'year'}
+                            {course.payment_type !== "one_time" && (
+                                <span
+                                    className="text-sm"
+                                    style={{ color: "#7a7a7a" }}
+                                >
+                                    /{" "}
+                                    {course.payment_type === "monthly"
+                                        ? "month"
+                                        : "year"}
                                 </span>
                             )}
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <Clock size={20} style={{ color: '#658965' }} />
-                            <span style={{ color: '#5a5a5a' }}>{formatPaymentType(course.payment_type)}</span>
+                            <Clock size={20} style={{ color: "#658965" }} />
+                            <span style={{ color: "#5a5a5a" }}>
+                                {formatPaymentType(course.payment_type)}
+                            </span>
                         </div>
                     </div>
 
                     <div className="flex gap-3 mb-6">
-                        {course.stripe_enabled && (
-                            <span className="px-3 py-1 rounded text-sm font-medium" style={{ backgroundColor: '#e3f2fd', color: '#1976d2' }}>
+                        {(sharedCourseSettings.paymentSettings.stripeConfigured && course.stripe_enabled) && (
+                            <span
+                                className="px-3 py-1 rounded text-sm font-medium"
+                                style={{
+                                    backgroundColor: "#e3f2fd",
+                                    color: "#1976d2",
+                                }}
+                            >
                                 Stripe
                             </span>
                         )}
-                        {course.paypal_enabled && (
-                            <span className="px-3 py-1 rounded text-sm font-medium" style={{ backgroundColor: '#fff3e0', color: '#f57c00' }}>
+                        {(sharedCourseSettings.paymentSettings.paypalConfigured && course.paypal_enabled) && (
+                            <span
+                                className="px-3 py-1 rounded text-sm font-medium"
+                                style={{
+                                    backgroundColor: "#fff3e0",
+                                    color: "#f57c00",
+                                }}
+                            >
                                 PayPal
                             </span>
                         )}
                     </div>
 
-                    <Link
-                        href={route('courses.checkout.select', course.id)}
-                        className="px-8 py-4 rounded-lg font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block"
-                        style={{ backgroundColor: '#658965' }}
-                    >
-                        Purchase Course
-                    </Link>
+                    {!isAnyPaymentConfigured ? (
+                        <div
+                            className="max-w-6xl mx-auto flex items-center gap-3 text-sm font-medium"
+                            style={{ color: "#b45309" }}
+                        >
+                            <AlertTriangle size={20} />
+                            <span>
+                                Warning: No payment gateways are configured.
+                                Checkout is temporarily disabled.
+                            </span>
+                        </div>
+                    ) : (
+                        <Link
+                            href={route("courses.checkout.select", course.id)}
+                            className="px-8 py-4 rounded-lg font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block"
+                            style={{ backgroundColor: "#658965" }}
+                        >
+                            Purchase Course
+                        </Link>
+                    )}
                 </div>
             </section>
 
             {/* Course Modules */}
-            <section className="py-12 pb-24 px-6" style={{ backgroundColor: '#d8e5b8' }}>
+            <section
+                className="py-12 pb-24 px-6"
+                style={{ backgroundColor: "#d8e5b8" }}
+            >
                 <div className="max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-bold mb-2" style={{ color: '#2d2d2d' }}>
+                    <h2
+                        className="text-3xl font-bold mb-2"
+                        style={{ color: "#2d2d2d" }}
+                    >
                         Course Content
                     </h2>
-                    <p className="text-lg mb-6" style={{ color: '#5a5a5a' }}>
-                        {course.modules.length} {course.modules.length === 1 ? 'module' : 'modules'}
+                    <p className="text-lg mb-6" style={{ color: "#5a5a5a" }}>
+                        {course.modules.length}{" "}
+                        {course.modules.length === 1 ? "module" : "modules"}
                     </p>
 
                     {course.modules.length > 0 ? (
                         <div className="space-y-3">
                             {course.modules.map((module, index) => {
-                                const isExpanded = expandedModules.has(module.id);
-                                const modulePreview = module.post.excerpt || module.post.description?.substring(0, 200) || 'No preview available';
+                                const isExpanded = expandedModules.has(
+                                    module.id,
+                                );
+                                const modulePreview =
+                                    module.post.excerpt ||
+                                    module.post.description?.substring(
+                                        0,
+                                        200,
+                                    ) ||
+                                    "No preview available";
 
                                 return (
                                     <div
@@ -148,7 +224,10 @@ export default function Show({ course }: { course: Course }) {
                                     >
                                         <div className="flex items-center justify-between p-4">
                                             <div className="flex items-center gap-3 flex-1">
-                                                <span className="text-lg font-semibold" style={{ color: '#7a7a7a' }}>
+                                                <span
+                                                    className="text-lg font-semibold"
+                                                    style={{ color: "#7a7a7a" }}
+                                                >
                                                     {index + 1}.
                                                 </span>
                                                 <div className="flex-1">
@@ -156,62 +235,115 @@ export default function Show({ course }: { course: Course }) {
                                                         <Link
                                                             href={`/posts/${module.post.slug}`}
                                                             className="text-lg font-medium hover:underline"
-                                                            style={{ color: '#2d2d2d' }}
+                                                            style={{
+                                                                color: "#2d2d2d",
+                                                            }}
                                                         >
                                                             {module.post.title}
                                                         </Link>
                                                     ) : (
-                                                        <span className="text-lg font-medium" style={{ color: '#2d2d2d' }}>
+                                                        <span
+                                                            className="text-lg font-medium"
+                                                            style={{
+                                                                color: "#2d2d2d",
+                                                            }}
+                                                        >
                                                             {module.post.title}
                                                         </span>
                                                     )}
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <span className="px-3 py-1 rounded text-sm font-medium" style={
-                                                    module.is_free
-                                                        ? { backgroundColor: '#e8f5e9', color: '#2e7d32' }
-                                                        : { backgroundColor: '#fff3e0', color: '#e65100' }
-                                                }>
+                                                <span
+                                                    className="px-3 py-1 rounded text-sm font-medium"
+                                                    style={
+                                                        module.is_free
+                                                            ? {
+                                                                  backgroundColor:
+                                                                      "#e8f5e9",
+                                                                  color: "#2e7d32",
+                                                              }
+                                                            : {
+                                                                  backgroundColor:
+                                                                      "#fff3e0",
+                                                                  color: "#e65100",
+                                                              }
+                                                    }
+                                                >
                                                     {module.is_free ? (
                                                         <>
-                                                            <Unlock size={14} className="inline mr-1" />
+                                                            <Unlock
+                                                                size={14}
+                                                                className="inline mr-1"
+                                                            />
                                                             Free
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <Lock size={14} className="inline mr-1" />
+                                                            <Lock
+                                                                size={14}
+                                                                className="inline mr-1"
+                                                            />
                                                             Locked
                                                         </>
                                                     )}
                                                 </span>
                                                 <button
-                                                    onClick={() => toggleModule(module.id)}
+                                                    onClick={() =>
+                                                        toggleModule(module.id)
+                                                    }
                                                     className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                                                    aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                                                    aria-label={
+                                                        isExpanded
+                                                            ? "Collapse"
+                                                            : "Expand"
+                                                    }
                                                 >
                                                     {isExpanded ? (
-                                                        <ChevronUp size={20} style={{ color: '#658965' }} />
+                                                        <ChevronUp
+                                                            size={20}
+                                                            style={{
+                                                                color: "#658965",
+                                                            }}
+                                                        />
                                                     ) : (
-                                                        <ChevronDown size={20} style={{ color: '#658965' }} />
+                                                        <ChevronDown
+                                                            size={20}
+                                                            style={{
+                                                                color: "#658965",
+                                                            }}
+                                                        />
                                                     )}
                                                 </button>
                                             </div>
                                         </div>
 
                                         {isExpanded && (
-                                            <div className="px-4 pb-4 pt-2 border-t" style={{ borderColor: '#e5e3df' }}>
-                                                <h4 className="text-sm font-semibold mb-2" style={{ color: '#658965' }}>
+                                            <div
+                                                className="px-4 pb-4 pt-2 border-t"
+                                                style={{
+                                                    borderColor: "#e5e3df",
+                                                }}
+                                            >
+                                                <h4
+                                                    className="text-sm font-semibold mb-2"
+                                                    style={{ color: "#658965" }}
+                                                >
                                                     What you'll learn:
                                                 </h4>
-                                                <p className="text-sm leading-relaxed" style={{ color: '#5a5a5a' }}>
+                                                <p
+                                                    className="text-sm leading-relaxed"
+                                                    style={{ color: "#5a5a5a" }}
+                                                >
                                                     {modulePreview}
                                                 </p>
                                                 {module.is_free && (
                                                     <Link
                                                         href={`/posts/${module.post.slug}`}
                                                         className="inline-block mt-3 text-sm font-semibold hover:underline"
-                                                        style={{ color: '#658965' }}
+                                                        style={{
+                                                            color: "#658965",
+                                                        }}
                                                     >
                                                         Read this free module →
                                                     </Link>
@@ -224,7 +356,7 @@ export default function Show({ course }: { course: Course }) {
                         </div>
                     ) : (
                         <div className="text-center py-12 bg-white rounded-lg">
-                            <p className="text-lg" style={{ color: '#7a7a7a' }}>
+                            <p className="text-lg" style={{ color: "#7a7a7a" }}>
                                 No modules available yet.
                             </p>
                         </div>

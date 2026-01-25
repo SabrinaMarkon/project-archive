@@ -75,7 +75,7 @@ export default function Show({ user, enrollments, purchases, availableCourses }:
 
             <div className="p-6">
                 <div className="mb-6">
-                    <Link href="/admin/users" className="text-sm font-medium hover:underline mb-2 inline-block" style={{ color: '#658965' }}>
+                    <Link href={route('admin.users.index')} className="text-sm font-medium hover:underline mb-2 inline-block" style={{ color: '#658965' }}>
                         ← Back to Users
                     </Link>
                     <div className="flex items-center justify-between">

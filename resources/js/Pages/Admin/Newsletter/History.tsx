@@ -125,14 +125,14 @@ export default function History({ newsletters }: { newsletters: PaginatedNewslet
             {/* Navigation Links */}
             <div className="mb-4 flex gap-4">
                 <Link
-                    href="/admin/newsletter/compose"
+                    href={route('admin.newsletter.compose')}
                     className="inline-flex items-center px-6 py-2.5 border-2 rounded-md font-medium hover:opacity-70 transition"
                     style={{ borderColor: '#7a9d7a', color: '#7a9d7a' }}
                 >
                     Compose Newsletter
                 </Link>
                 <Link
-                    href="/admin/newsletter-subscribers"
+                    href={route('admin.newsletter.index')}
                     className="inline-flex items-center px-6 py-2.5 border-2 rounded-md font-medium hover:opacity-70 transition"
                     style={{ borderColor: '#7a9d7a', color: '#7a9d7a' }}
                 >

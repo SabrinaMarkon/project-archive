@@ -6,7 +6,7 @@ export default function Guest({ children }: PropsWithChildren) {
     return (
         <div className="flex min-h-screen flex-col items-center bg-white pt-6 sm:justify-center sm:pt-0">
             <div>
-                <Link href="/" className="text-3xl font-bold flex items-center gap-2" style={{ color: '#3d3d3d' }}>
+                <Link href={route('home')} className="text-3xl font-bold flex items-center gap-2" style={{ color: '#3d3d3d' }}>
                     <Leaf style={{ color: '#7a9d7a' }} size={36} />
                     <span>Sabrina Markon</span>
                 </Link>

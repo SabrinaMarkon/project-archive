@@ -37,7 +37,7 @@ export default function Show({ post, isPremium, canAccess, premiumCourse }: Prop
             <section className="pt-32 pb-12 px-6 bg-white">
                 <div className="max-w-4xl mx-auto">
                     <Link
-                        href="/posts"
+                        href={route('posts.index')}
                         className="inline-flex items-center gap-2 mb-6 font-medium transition hover:opacity-70"
                         style={{ color: '#658965' }}
                     >

@@ -20,7 +20,7 @@ export default function Unsubscribed({ success, message }: { success: boolean; m
                     </p>
 
                     <Link
-                        href="/"
+                        href={route('home')}
                         className="inline-block px-6 py-3 text-white rounded-md font-medium transition hover:opacity-90"
                         style={{ backgroundColor: '#7a9d7a' }}
                     >

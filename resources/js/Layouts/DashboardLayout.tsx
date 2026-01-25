@@ -11,81 +11,81 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
       <aside className="w-64 text-white p-6 space-y-6" style={{ backgroundColor: '#5a7a5a' }}>
         <div className="flex items-center gap-2 mb-8">
           <Leaf style={{ color: '#ffffff' }} size={32} />
-          <a href="/" target="_blank"><h2 className="text-xl font-bold">Project Archive</h2></a>
+          <a href={route('home')} target="_blank"><h2 className="text-xl font-bold">Project Archive</h2></a>
         </div>
         <nav className="flex flex-col space-y-3">
           <Link
-            href="/dashboard"
+            href={route('dashboard')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors"
           >
             <LayoutDashboard size={18} />
             Dashboard
           </Link>
           <Link
-            href="/admin/projects/create"
+            href={route('admin.projects.create')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors"
           >
             <Plus size={18} />
             Create Project
           </Link>
           <Link
-            href="/admin/projects"
+            href={route('admin.projects.index')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors"
           >
             <List size={18} />
             Project List
           </Link>
           <Link
-            href="/admin/posts/create"
+            href={route('admin.posts.create')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors mt-4"
           >
             <PenSquare size={18} />
             Create Writing
           </Link>
           <Link
-            href="/admin/posts"
+            href={route('admin.posts.index')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors"
           >
             <BookText size={18} />
             Writing List
           </Link>
           <Link
-            href="/admin/newsletter-subscribers"
+            href={route('admin.newsletter.index')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors mt-4"
           >
             <Mail size={18} />
             Newsletter
           </Link>
           <Link
-            href="/admin/courses/create"
+            href={route('admin.courses.create')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors mt-4"
           >
             <Plus size={18} />
             Create Course
           </Link>
           <Link
-            href="/admin/courses"
+            href={route('admin.courses.index')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors"
           >
             <GraduationCap size={18} />
             Courses
           </Link>
           <Link
-            href="/admin/users"
+            href={route('admin.users.index')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors mt-4"
           >
             <Users size={18} />
             Users
           </Link>
           <Link
-            href="/admin/purchases"
+            href={route('admin.purchases.index')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors"
           >
             <ShoppingCart size={18} />
             Purchases
           </Link>
           <Link
-            href="/admin/settings"
+            href={route('admin.settings')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors mt-4"
           >
             <Settings size={18} />

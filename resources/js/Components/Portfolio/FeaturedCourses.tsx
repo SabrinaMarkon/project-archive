@@ -76,7 +76,7 @@ export default function FeaturedCourses({ courses, limit = 3 }: FeaturedCoursesP
 
                 <div className="text-center">
                     <Link
-                        href="/courses"
+                        href={route('courses.index')}
                         className="inline-block px-8 py-4 text-white rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 font-bold text-lg"
                         style={{ backgroundColor: '#658965' }}
                     >

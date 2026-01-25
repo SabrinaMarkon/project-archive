@@ -46,7 +46,7 @@ export default function View({ newsletter }: { newsletter: NewsletterSend }) {
             {/* Back Link */}
             <div className="mb-4">
                 <Link
-                    href="/admin/newsletter/history"
+                    href={route('admin.newsletter.history')}
                     className="inline-flex items-center gap-2 px-4 py-2 border-2 rounded-md font-medium hover:opacity-70 transition"
                     style={{ borderColor: '#7a9d7a', color: '#7a9d7a' }}
                 >

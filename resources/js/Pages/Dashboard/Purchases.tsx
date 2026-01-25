@@ -130,7 +130,7 @@ export default function Purchases({ purchases }: Props) {
                             <h2 className="text-xl font-bold mb-2" style={{ color: '#2d2d2d' }}>No purchases yet</h2>
                             <p className="mb-4" style={{ color: '#7a7a7a' }}>You haven't purchased any courses yet.</p>
                             <Link
-                                href="/courses"
+                                href={route('courses.index')}
                                 className="inline-block px-6 py-3 text-white rounded-xl font-medium"
                                 style={{ backgroundColor: '#658965' }}
                             >

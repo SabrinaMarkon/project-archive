@@ -25,7 +25,7 @@ export default function Index({ projects, selectedTag }: { projects: Project[]; 
                                 Showing projects tagged: <span className="font-semibold">{selectedTag}</span>
                             </p>
                             <Link
-                                href="/projects"
+                                href={route('projects.index')}
                                 className="inline-block mt-2 text-sm underline hover:no-underline"
                                 style={{ color: '#658965' }}
                             >

@@ -25,7 +25,7 @@ export default function Index({ posts, selectedTag }: { posts: Post[]; selectedT
                                 Showing posts tagged: <span className="font-semibold">{selectedTag}</span>
                             </p>
                             <Link
-                                href="/posts"
+                                href={route('posts.index')}
                                 className="inline-block mt-2 text-sm underline hover:no-underline"
                                 style={{ color: '#658965' }}
                             >

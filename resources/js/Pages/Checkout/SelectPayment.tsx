@@ -2,6 +2,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import PortfolioLayout from '@/Layouts/PortfolioLayout';
 import { CreditCard, DollarSign, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
+import { SharedCourseSettings } from '@/types/sharedsettings';
 
 interface Course {
     id: number;
@@ -14,11 +15,10 @@ interface Course {
 
 interface Props {
     course: Course;
-    stripeConfigured: boolean;
-    paypalConfigured: boolean;
+    sharedCourseSettings: SharedCourseSettings;
 }
 
-export default function SelectPayment({ course, stripeConfigured, paypalConfigured }: Props) {
+export default function SelectPayment({ course, sharedCourseSettings }: Props) {
     const [processing, setProcessing] = useState(false);
 
     const handleCheckout = (method: 'stripe' | 'paypal') => {
@@ -33,8 +33,8 @@ export default function SelectPayment({ course, stripeConfigured, paypalConfigur
     };
 
     // Payment method is enabled only if BOTH course has it enabled AND global settings are configured
-    const stripeEnabled = course.stripe_enabled && stripeConfigured;
-    const paypalEnabled = course.paypal_enabled && paypalConfigured;
+    const stripeEnabled = course.stripe_enabled && sharedCourseSettings.paymentSettings.stripeConfigured;
+    const paypalEnabled = course.paypal_enabled && sharedCourseSettings.paymentSettings.paypalConfigured;
 
     const enabledMethods = [
         stripeEnabled && 'stripe',
