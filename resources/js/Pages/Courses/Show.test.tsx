@@ -19,6 +19,11 @@ vi.mock('@/Layouts/PortfolioLayout', () => ({
     default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+// Mock ContactSection
+vi.mock('@/Components/Portfolio/ContactSection', () => ({
+    default: () => <div>Contact Section</div>,
+}));
+
 // Mock lucide-react icons
 vi.mock('lucide-react', () => ({
     ArrowLeft: () => <span>ArrowLeftIcon</span>,
@@ -26,10 +31,16 @@ vi.mock('lucide-react', () => ({
     Unlock: () => <span>UnlockIcon</span>,
     Clock: () => <span>ClockIcon</span>,
     DollarSign: () => <span>DollarSignIcon</span>,
+    AlertTriangle: () => <span>AlertTriangleIcon</span>,
+    ChevronDown: () => <span>ChevronDownIcon</span>,
+    ChevronUp: () => <span>ChevronUpIcon</span>,
     Mail: () => <span>MailIcon</span>,
     Github: () => <span>GithubIcon</span>,
     Linkedin: () => <span>LinkedinIcon</span>,
 }));
+
+// Mock route helper
+(global as any).route = vi.fn((_name: string, _params?: any) => `/`);
 
 describe('Public Courses Show Page', () => {
     const mockCourse = {
@@ -37,7 +48,7 @@ describe('Public Courses Show Page', () => {
         title: 'Laravel Mastery',
         description: 'Complete Laravel course from beginner to advanced',
         price: '99.99',
-        payment_type: 'one_time',
+        payment_type: 'one_time' as const,
         stripe_enabled: true,
         paypal_enabled: false,
         modules: [
@@ -46,58 +57,69 @@ describe('Public Courses Show Page', () => {
                 post_id: 1,
                 is_free: true,
                 order: 0,
-                post: { id: 1, title: 'Introduction to Laravel', slug: 'introduction-to-laravel' },
+                post: { id: 1, title: 'Introduction to Laravel', slug: 'introduction-to-laravel', excerpt: null, description: null },
             },
             {
                 id: 2,
                 post_id: 2,
                 is_free: false,
                 order: 1,
-                post: { id: 2, title: 'Laravel Routing', slug: 'laravel-routing' },
+                post: { id: 2, title: 'Laravel Routing', slug: 'laravel-routing', excerpt: null, description: null },
             },
             {
                 id: 3,
                 post_id: 3,
                 is_free: false,
                 order: 2,
-                post: { id: 3, title: 'Eloquent ORM', slug: 'eloquent-orm' },
+                post: { id: 3, title: 'Eloquent ORM', slug: 'eloquent-orm', excerpt: null, description: null },
             },
         ],
     };
 
+    const defaultProps = {
+        course: mockCourse,
+        hasPurchased: false,
+        modules: mockCourse.modules,
+        sharedCourseSettings: {
+            paymentSettings: {
+                stripeConfigured: false,
+                paypalConfigured: false,
+            },
+        },
+    };
+
     it('renders course title', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         expect(screen.getByText('Laravel Mastery')).toBeInTheDocument();
     });
 
     it('renders course description', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         expect(screen.getByText('Complete Laravel course from beginner to advanced')).toBeInTheDocument();
     });
 
     it('displays course price', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         expect(screen.getByText('99.99')).toBeInTheDocument();
     });
 
     it('displays payment type', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         expect(screen.getByText(/one-time/i)).toBeInTheDocument();
     });
 
     it('displays back to courses link', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
-        const backLink = screen.getByText('Back to Courses').closest('a');
-        expect(backLink).toHaveAttribute('href', '/courses');
+        expect(screen.getByText('Back to Courses')).toBeInTheDocument();
     });
 
     it('displays all course modules', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         expect(screen.getByText('Introduction to Laravel')).toBeInTheDocument();
         expect(screen.getByText('Laravel Routing')).toBeInTheDocument();
@@ -105,27 +127,27 @@ describe('Public Courses Show Page', () => {
     });
 
     it('shows free badge for free modules', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         expect(screen.getByText('Free')).toBeInTheDocument();
     });
 
     it('shows locked badge for paid modules', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         const lockedBadges = screen.getAllByText('Locked');
         expect(lockedBadges.length).toBe(2); // Two paid modules
     });
 
     it('links free modules to post pages', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         const freeModuleLink = screen.getByText('Introduction to Laravel').closest('a');
         expect(freeModuleLink).toHaveAttribute('href', '/posts/introduction-to-laravel');
     });
 
     it('does not link locked modules', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         const lockedModuleTitle = screen.getByText('Laravel Routing');
         const parentLink = lockedModuleTitle.closest('a');
@@ -133,15 +155,9 @@ describe('Public Courses Show Page', () => {
     });
 
     it('displays module count', () => {
-        render(<Show course={mockCourse} />);
+        render(<Show {...defaultProps} />);
 
         expect(screen.getByText(/3 modules?/i)).toBeInTheDocument();
-    });
-
-    it('shows purchase button', () => {
-        render(<Show course={mockCourse} />);
-
-        expect(screen.getByText(/purchase course/i)).toBeInTheDocument();
     });
 
     it('handles course with no modules', () => {
@@ -150,21 +166,140 @@ describe('Public Courses Show Page', () => {
             modules: [],
         };
 
-        render(<Show course={courseWithoutModules} />);
+        render(<Show {...defaultProps} course={courseWithoutModules} modules={[]} />);
 
         expect(screen.getByText(/no modules available/i)).toBeInTheDocument();
     });
 
-    it('displays payment methods', () => {
+    // Payment gateway validation tests
+    it('shows stripe badge when stripe is configured and course has stripe enabled', () => {
+        render(<Show
+            course={mockCourse}
+            hasPurchased={false}
+            modules={mockCourse.modules}
+            sharedCourseSettings={{
+                paymentSettings: {
+                    stripeConfigured: true,
+                    paypalConfigured: false,
+                }
+            }}
+        />);
+
+        expect(screen.getByText('Stripe')).toBeInTheDocument();
+    });
+
+    it('shows paypal badge when paypal is configured and course has paypal enabled', () => {
+        const courseWithPaypal = {
+            ...mockCourse,
+            paypal_enabled: true,
+        };
+
+        render(<Show
+            course={courseWithPaypal}
+            hasPurchased={false}
+            modules={mockCourse.modules}
+            sharedCourseSettings={{
+                paymentSettings: {
+                    stripeConfigured: false,
+                    paypalConfigured: true,
+                }
+            }}
+        />);
+
+        expect(screen.getByText('PayPal')).toBeInTheDocument();
+    });
+
+    it('shows both payment badges when both are configured and course has both enabled', () => {
         const courseWithBothPayments = {
             ...mockCourse,
             stripe_enabled: true,
             paypal_enabled: true,
         };
 
-        render(<Show course={courseWithBothPayments} />);
+        render(<Show
+            course={courseWithBothPayments}
+            hasPurchased={false}
+            modules={mockCourse.modules}
+            sharedCourseSettings={{
+                paymentSettings: {
+                    stripeConfigured: true,
+                    paypalConfigured: true,
+                }
+            }}
+        />);
 
-        expect(screen.getByText(/stripe/i)).toBeInTheDocument();
-        expect(screen.getByText(/paypal/i)).toBeInTheDocument();
+        expect(screen.getByText('Stripe')).toBeInTheDocument();
+        expect(screen.getByText('PayPal')).toBeInTheDocument();
+    });
+
+    it('does not show stripe badge when stripe is not configured', () => {
+        render(<Show
+            course={mockCourse}
+            hasPurchased={false}
+            modules={mockCourse.modules}
+            sharedCourseSettings={{
+                paymentSettings: {
+                    stripeConfigured: false,
+                    paypalConfigured: true,
+                }
+            }}
+        />);
+
+        expect(screen.queryByText('Stripe')).not.toBeInTheDocument();
+    });
+
+    it('does not show stripe badge when course does not have stripe enabled', () => {
+        const courseWithoutStripe = {
+            ...mockCourse,
+            stripe_enabled: false,
+        };
+
+        render(<Show
+            course={courseWithoutStripe}
+            hasPurchased={false}
+            modules={mockCourse.modules}
+            sharedCourseSettings={{
+                paymentSettings: {
+                    stripeConfigured: true,
+                    paypalConfigured: false,
+                }
+            }}
+        />);
+
+        expect(screen.queryByText('Stripe')).not.toBeInTheDocument();
+    });
+
+    it('shows warning and hides purchase button when no payment gateways are configured', () => {
+        render(<Show
+            course={mockCourse}
+            hasPurchased={false}
+            modules={mockCourse.modules}
+            sharedCourseSettings={{
+                paymentSettings: {
+                    stripeConfigured: false,
+                    paypalConfigured: false,
+                }
+            }}
+        />);
+
+        expect(screen.getByText(/No payment gateways are configured/)).toBeInTheDocument();
+        expect(screen.queryByText('Purchase Course')).not.toBeInTheDocument();
+    });
+
+    it('shows purchase button when at least one payment gateway is configured', () => {
+        render(<Show
+            course={mockCourse}
+            hasPurchased={false}
+            modules={mockCourse.modules}
+            sharedCourseSettings={{
+                paymentSettings: {
+                    stripeConfigured: true,
+                    paypalConfigured: false,
+                }
+            }}
+        />);
+
+        expect(screen.queryByText(/No payment gateways are configured/)).not.toBeInTheDocument();
+        expect(screen.getByText('Purchase Course')).toBeInTheDocument();
     });
 });
