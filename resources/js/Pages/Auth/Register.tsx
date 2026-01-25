@@ -26,6 +26,11 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
 
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold" style={{ color: '#2d2d2d' }}>Create Account</h2>
+                <p className="text-sm mt-1" style={{ color: '#7a7a7a' }}>Sign up to get started</p>
+            </div>
+
             <form onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
@@ -95,17 +100,19 @@ export default function Register() {
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
-                    <Link
-                        href={route('login')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                <div className="mt-6">
+                    <PrimaryButton className="w-full justify-center py-3 rounded-xl font-semibold" disabled={processing}>
                         Register
                     </PrimaryButton>
+                </div>
+
+                <div className="mt-6 text-center">
+                    <span className="text-sm" style={{ color: '#7a7a7a' }}>
+                        Already registered?{' '}
+                        <Link href={route('login')} className="hover:underline font-medium" style={{ color: '#658965' }}>
+                            Log in
+                        </Link>
+                    </span>
                 </div>
             </form>
         </GuestLayout>

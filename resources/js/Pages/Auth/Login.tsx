@@ -107,6 +107,15 @@ export default function Login({
                         Log in
                     </PrimaryButton>
                 </div>
+
+                <div className="mt-6 text-center">
+                    <span className="text-sm" style={{ color: '#7a7a7a' }}>
+                        Need an account?{' '}
+                        <Link href={route('register')} className="hover:underline font-medium" style={{ color: '#658965' }}>
+                            Sign up
+                        </Link>
+                    </span>
+                </div>
             </form>
         </GuestLayout>
     );
