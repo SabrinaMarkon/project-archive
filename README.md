@@ -1,62 +1,23 @@
-# Sabrina Markon · Project Archive
+# Project Archive
 
-A curated collection of my real-world development work, built to showcase experience across legacy systems, modern stacks, and full application lifecycles.
-Hosted with Forge & Digital Ocean.
+A portfolio and content platform for showcasing development work and selling technical courses. The application includes a public-facing site for visitors and an admin panel for content management.
 
-## 🔍 About
+## Overview
 
-This archive includes projects I've developed, maintained, or led—ranging from long-running client systems to creative side projects and team-built apps. Most are written in:
+The platform serves three main purposes: displaying a portfolio of development projects with detailed case studies, hosting technical blog posts, and selling educational courses through Stripe and PayPal. Visitors can browse content freely. Authenticated admins manage everything through a dashboard interface.
 
-- **PHP** (Laravel, custom frameworks, Magento 2 / Adobe Commerce)
-- **JavaScript** (React, jQuery, Node.js)
-- **Blade + Tailwind** (for modern Laravel views)
-- **MySQL/PostgreSQL** (for backend data)
+## Architecture
 
-You can use this archive to:
-- View code and architecture examples
-- Understand my decision-making and technical approaches
-- Download summaries and interview-ready documentation
+The application is built with Laravel 12 and React 18, connected through Inertia.js. The architecture eliminates the need for a separate API layer while maintaining a modern SPA experience. The backend handles authentication, authorization, payment processing, and content management. The frontend provides the user interface and form handling.
 
-## 🧠 Why This Archive Exists
+All content uses slug-based URLs instead of numeric IDs for better SEO. Projects and posts render markdown. Courses integrate with payment gateways that can be configured independently based on admin preferences.
 
-Most developers showcase only brand-new work. I’ve taken a different route—preserving legacy, real, and production-tested work I’ve done over the years.
+## Technical Stack
 
-Many projects were made under tight constraints (deadlines, client quirks, old systems), and I’ve included:
-- **Code insights**: What I knew, built, or learned
-- **Candidate context**: What this shows about me as a developer
-- **Files**: Each project may include a GitHub README, PDF summary, chat log, and interview questions
+The application runs on Laravel 12, MySQL, React 18, TypeScript, Tailwind CSS, and Vite. Payment processing is handled through Stripe and PayPal. The codebase includes both backend (PHPUnit) and frontend (Vitest) test coverage.
 
-## 📂 Featured Projects
+## Setup
 
-| Project | Summary | Tech Stack |
-|--------|---------|------------|
-| **PearlsOfWealth** | Custom email marketing platform that ran for 10+ years with 31 servers and automated peer-to-peer systems | PHP, MySQL, HTML, Bash |
-| **Banner Maker** | Laravel-based banner creator with user library, templates, and server-side rendering | Laravel 5.2, jQuery, ImageMagick |
-| *(More coming soon)* | Project summaries will be posted as I continue this archive | |
+The setup follows standard Laravel installation procedures. The `.env.example` file should be copied to `.env`, application keys generated, and migrations and seeders run. Frontend dependencies can be installed with npm before starting the development server.
 
-Each project includes links to:
-- GitHub repo or code folder
-- Project summary (`.docx`)
-- Interview-style Q&A
-- Real code analysis
-
-## 🚀 What’s Next
-
-This archive is part of a larger site hosted at [sabrinamarkon.com](https://sabrinamarkon.com) (in progress). Over time, I’ll include:
-
-- Laravel Livewire/Inertia.js examples
-- A searchable archive browser
-- AI-assisted module generation (Laravel + OpenAI)
-- Games and tutorials
-
-## 📫 Contact
-
-Want to collaborate or hire me?
-
-- 🔗 [LinkedIn](https://www.linkedin.com/in/sabrinamarkon/)
-- ✉️ Email: phpsitescripts@outlook.com
-- 🌎 Site (WIP): [sabrinamarkon.com](https://sabrinamarkon.com)
-
----
-
-> _“I don’t just write modern apps. I also clean up old ones, preserve what matters, and build systems that survive.”_
+Admin access requires the `is_admin` flag on the user record, which must be set manually in the database after registration.
