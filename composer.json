@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "resend/resend-laravel": "^1.0",
+        "scrivo/highlight.php": "^9.18",
         "stripe/stripe-php": "^19.0",
         "tightenco/ziggy": "^2.0"
     },
