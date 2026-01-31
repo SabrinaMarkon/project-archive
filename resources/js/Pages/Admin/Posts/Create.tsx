@@ -7,6 +7,7 @@ import Modal from "@/Components/Modal";
 import DescriptionRenderer from "@/Components/DescriptionRenderer";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextareaAutosize from "react-textarea-autosize";
+import TipTapEditor from "@/Components/TipTapEditor";
 import { formatSlug } from "@/utils/validation";
 import { formatDateTimeLocal } from "@/utils/date";
 import { Head, useForm } from "@inertiajs/react";
@@ -189,7 +190,7 @@ export default function Create({ post }: { post: Post | null }) {
                             <select
                                 id="format"
                                 value={data.format}
-                                onChange={(e) => setData("format", e.target.value as "html" | "markdown" | "plaintext")}
+                                onChange={(e) => setData("format", e.target.value as "html" | "markdown" | "plaintext" | "html_editor")}
                                 className="w-full border rounded-md p-2.5 focus:outline-none focus:ring-2 transition"
                                 style={{ borderColor: '#e5e3df', color: '#3d3d3d' }}
                                 onFocus={(e) => e.target.style.borderColor = '#7a9d7a'}
@@ -197,6 +198,7 @@ export default function Create({ post }: { post: Post | null }) {
                             >
                                 <option value="markdown">Markdown</option>
                                 <option value="html">HTML</option>
+                                <option value="html_editor">HTML Editor</option>
                                 <option value="plaintext">Plain Text</option>
                             </select>
                             {errors.format && <div className="text-red-600 text-sm">{errors.format}</div>}
@@ -229,18 +231,26 @@ export default function Create({ post }: { post: Post | null }) {
                         <label htmlFor="description" className="block font-medium" style={{ color: '#3d3d3d' }}>
                             Content
                         </label>
-                        <TextareaAutosize
-                            id="description"
-                            value={data.description}
-                            onChange={(e) => setData("description", e.target.value)}
-                            minRows={10}
-                            maxRows={30}
-                            className="mt-1 block w-full border rounded-md shadow-sm p-2.5 text-base focus:outline-none focus:ring-2 transition font-mono"
-                            style={{ borderColor: '#e5e3df', color: '#3d3d3d' }}
-                            onFocus={(e) => e.target.style.borderColor = '#7a9d7a'}
-                            onBlur={(e) => e.target.style.borderColor = '#e5e3df'}
-                            placeholder="Write your post content here..."
-                        />
+                        {data.format === 'html_editor' ? (
+                            <TipTapEditor
+                                value={data.description}
+                                onChange={(value) => setData("description", value)}
+                                className="mt-1"
+                            />
+                        ) : (
+                            <TextareaAutosize
+                                id="description"
+                                value={data.description}
+                                onChange={(e) => setData("description", e.target.value)}
+                                minRows={10}
+                                maxRows={30}
+                                className="mt-1 block w-full border rounded-md shadow-sm p-2.5 text-base focus:outline-none focus:ring-2 transition font-mono"
+                                style={{ borderColor: '#e5e3df', color: '#3d3d3d' }}
+                                onFocus={(e) => e.target.style.borderColor = '#7a9d7a'}
+                                onBlur={(e) => e.target.style.borderColor = '#e5e3df'}
+                                placeholder="Write your post content here..."
+                            />
+                        )}
                         {errors.description && <div className="text-red-600">{errors.description}</div>}
                     </div>
 
@@ -464,7 +474,7 @@ export default function Create({ post }: { post: Post | null }) {
                         <div className="prose prose-lg max-w-none">
                             <DescriptionRenderer
                                 content={data.description}
-                                format={data.format as 'html' | 'markdown' | 'plaintext'}
+                                format={data.format as 'html' | 'markdown' | 'plaintext' | 'html_editor'}
                             />
                         </div>
 

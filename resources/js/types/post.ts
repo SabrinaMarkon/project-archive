@@ -3,7 +3,7 @@ export interface Post {
     title: string;
     slug: string;
     description: string | null;
-    format: "html" | "markdown" | "plaintext";
+    format: "html" | "markdown" | "plaintext" | "html_editor";
     excerpt?: string;
     status: "draft" | "published" | "archived";
     publishedAt?: string;

@@ -6,7 +6,7 @@ interface ContentCardProps {
     title: string;
     slug: string;
     description: string | null;
-    format?: 'html' | 'markdown' | 'plaintext';
+    format?: 'html' | 'markdown' | 'plaintext' | 'html_editor';
     href: string;
     linkText?: string;
     tags?: string[];

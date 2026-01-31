@@ -36,7 +36,7 @@ class StorePostRequest extends FormRequest
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
             ],
             'description' => ['nullable', 'string'],
-            'format' => ['required', 'in:html,markdown,plaintext'],
+            'format' => ['required', 'in:html,markdown,plaintext,html_editor'],
             'excerpt' => ['nullable', 'string', 'max:500'],
             'status' => ['required', 'in:draft,published,archived'],
             'published_at' => ['nullable', 'date'],

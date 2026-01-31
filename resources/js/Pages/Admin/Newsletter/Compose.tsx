@@ -160,7 +160,7 @@ export default function Compose() {
                         <div className="prose prose-lg max-w-none">
                             <DescriptionRenderer
                                 content={data.body}
-                                format={data.format === 'html_editor' ? 'html' : data.format as 'html' | 'markdown' | 'plaintext'}
+                                format={data.format as 'html' | 'markdown' | 'plaintext' | 'html_editor'}
                             />
                         </div>
 

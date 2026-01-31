@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string(column: 'title');
             $table->string(column: 'slug')->unique();
             $table->longText(column: 'description')->nullable();
-            $table->enum(column: 'format', allowed: ['html', 'markdown', 'plaintext']) ->default(value: 'markdown');
+            $table->enum(column: 'format', allowed: ['html', 'markdown', 'plaintext', 'html_editor'])->default(value: 'markdown');
             $table->text(column: 'excerpt')->nullable();
             $table->enum(column: 'status', allowed: ['draft', 'published', 'archived']) ->default(value: 'draft');
             $table->timestamp(column: 'published_at')->nullable();
