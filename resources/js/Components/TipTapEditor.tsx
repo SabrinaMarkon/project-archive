@@ -27,7 +27,6 @@ import { TaskItem } from '@tiptap/extension-task-item';
 import { Image } from '@tiptap/extension-image';
 import { Underline } from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
-import { Gapcursor } from '@tiptap/extension-gapcursor';
 import { HexColorPicker } from 'react-colorful';
 import {
     Bold,
