@@ -36,14 +36,22 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            set -e
             cd ${{ secrets.DEPLOY_PATH }}
             git pull origin main
+            # Ensure dependencies are set up before running migrations.
             composer install --no-dev --optimize-autoloader
+            # Clear old cache first to ensure migrate uses current .env and fresh databsae settings.
+            php artisan config:clear
+            # Run migrations
+            php artisan migrate --force
+            # Below commands can be used to cache config, routes, views, and events if needed.
+            # php artisan optimize will cache everything, but you can choose to cache only specific parts if desired.
+            # php artisan config:cache
+            # php artisan route:cache
+            # php artisan view:cache
+            # php artisan event:cache
+            # Assets and Optimization
             npm ci
             npm run build
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan event:cache
             php artisan optimize
