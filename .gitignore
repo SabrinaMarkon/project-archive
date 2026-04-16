@@ -49,3 +49,4 @@ yarn-error.log
 # Claude Code instructions - Private configuration
 CLAUDE.md
 /docs
+.claude/
