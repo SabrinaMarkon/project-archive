@@ -5,20 +5,46 @@ namespace App\Http\Controllers;
 use App\Mail\NewsletterConfirmation;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class NewsletterController extends Controller
 {
     public function subscribe(Request $request)
     {
+        $successMessage = 'Please check your email to confirm your subscription!';
+
+        // Honeypot: real visitors never see or fill this field.
+        if ($request->filled('website')) {
+            return back()->with('success', $successMessage);
+        }
+
         $request->validate([
             'email' => 'required|email|max:255',
         ]);
 
         $email = $request->email;
 
+        // Already confirmed and still subscribed: send nothing.
+        $alreadySubscribed = NewsletterSubscriber::where('email', $email)
+            ->whereNotNull('confirmed_at')
+            ->whereNull('unsubscribed_at')
+            ->exists();
+
+        if ($alreadySubscribed) {
+            return back()->with('success', $successMessage);
+        }
+        
+        // At most one confirmation email per address every 10 minutes.
+        $cooldownKey = 'newsletter:confirmation:' . sha1(Str::lower($email));
+
+        if (! Cache::add($cooldownKey, true, now()->addMinutes(10))) {
+            return back()->with('success', $successMessage);
+        }
+        
         // Generate signed URL (expires in 24 hours)
         $confirmationUrl = URL::temporarySignedRoute(
             'newsletter.confirm',
@@ -29,7 +55,7 @@ class NewsletterController extends Controller
         // Send confirmation email via Resend
         Mail::to($email)->send(new NewsletterConfirmation($confirmationUrl));
 
-        return back()->with('success', 'Please check your email to confirm your subscription!');
+        return back()->with('success', $successMessage);
     }
 
     public function confirm(Request $request)

@@ -18,6 +18,7 @@ export default function NewsletterModal({ externalShow = false, onExternalClose 
     const { flash } = usePage().props as any;
     const { data, setData, post, processing, errors } = useForm({
         email: '',
+        website: '',
     });
 
     useEffect(() => {
@@ -101,6 +102,21 @@ export default function NewsletterModal({ externalShow = false, onExternalClose 
                 </div>
 
                 <form onSubmit={handleSubmit} className="mb-4">
+                    <div
+                        aria-hidden="true"
+                        style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}
+                    >
+                        <label htmlFor="website">Website</label>
+                        <input
+                            type="text"
+                            id="website"
+                            name="website"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            value={data.website}
+                            onChange={(e) => setData('website', e.target.value)}
+                        />
+                    </div>
                     <TextInput
                         type="email"
                         value={data.email}

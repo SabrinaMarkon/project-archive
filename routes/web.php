@@ -127,7 +127,9 @@ Route::get('/resume', function () {
 })->name('resume');
 
 // Newsletter Routes
-Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
+    ->middleware('throttle:5,60') // Rate limit: 5 attempts per hour per IP
+    ->name('newsletter.subscribe');
 Route::get('/newsletter/confirm', [NewsletterController::class, 'confirm'])->name('newsletter.confirm');
 Route::get('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 

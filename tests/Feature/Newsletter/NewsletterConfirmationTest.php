@@ -117,11 +117,23 @@ class NewsletterConfirmationTest extends TestCase
         $this->assertStringContainsString('check your email', strtolower(session('success')));
     }
 
-    public function test_resubscribing_with_same_email_sends_new_confirmation(): void
+    public function test_resubscribing_within_cooldown_does_not_send_second_confirmation(): void
     {
         Mail::fake();
 
         $this->post('/newsletter/subscribe', ['email' => 'test@example.com']);
+        $response = $this->post('/newsletter/subscribe', ['email' => 'test@example.com']);
+
+        Mail::assertSent(\App\Mail\NewsletterConfirmation::class, 1);
+        $response->assertSessionHas('success');
+    }
+
+    public function test_resubscribing_after_cooldown_sends_new_confirmation(): void
+    {
+        Mail::fake();
+
+        $this->post('/newsletter/subscribe', ['email' => 'test@example.com']);
+        $this->travel(11)->minutes();
         $this->post('/newsletter/subscribe', ['email' => 'test@example.com']);
 
         Mail::assertSent(\App\Mail\NewsletterConfirmation::class, 2);
