@@ -40,6 +40,7 @@
         "vitest": "^3.2.4"
     },
     "dependencies": {
+        "@marsidev/react-turnstile": "^1.6.3",
         "@tiptap/extension-code-block-lowlight": "^3.17.1",
         "@tiptap/extension-color": "^3.17.1",
         "@tiptap/extension-font-family": "^3.17.1",

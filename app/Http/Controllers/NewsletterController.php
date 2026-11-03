@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\NewsletterConfirmation;
 use App\Models\NewsletterSubscriber;
+use App\Rules\TurnstileToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
@@ -22,8 +23,16 @@ class NewsletterController extends Controller
             return back()->with('success', $successMessage);
         }
 
-        $request->validate([
+        $rules = [
             'email' => 'required|email|max:255',
+        ];
+
+        if (config('services.turnstile.enabled')) {
+            $rules['cf-turnstile-response'] = ['required', new TurnstileToken];
+        }
+
+        $request->validate($rules, [
+            'cf-turnstile-response.required' => 'Please complete the verification.',
         ]);
 
         $email = $request->email;
@@ -44,7 +53,7 @@ class NewsletterController extends Controller
         if (! Cache::add($cooldownKey, true, now()->addMinutes(10))) {
             return back()->with('success', $successMessage);
         }
-        
+
         // Generate signed URL (expires in 24 hours)
         $confirmationUrl = URL::temporarySignedRoute(
             'newsletter.confirm',

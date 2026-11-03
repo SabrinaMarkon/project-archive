@@ -38,6 +38,10 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
+            'turnstile' => [
+                'enabled' => (bool) config('services.turnstile.enabled'),
+                'siteKey' => config('services.turnstile.site_key'),
+            ],
         ];
     }
 }

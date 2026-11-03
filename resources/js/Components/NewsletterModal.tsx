@@ -1,5 +1,6 @@
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import Modal from './Modal';
 import PrimaryButton from './PrimaryButton';
 import TextInput from './TextInput';
@@ -15,10 +16,12 @@ interface NewsletterModalProps {
 
 export default function NewsletterModal({ externalShow = false, onExternalClose }: NewsletterModalProps = {}) {
     const [internalShow, setInternalShow] = useState(false);
-    const { flash } = usePage().props as any;
+    const { flash, turnstile } = usePage().props as any;
+    const turnstileRef = useRef<TurnstileInstance>(null);
     const { data, setData, post, processing, errors } = useForm({
         email: '',
         website: '',
+        'cf-turnstile-response': '',
     });
 
     useEffect(() => {
@@ -80,6 +83,8 @@ export default function NewsletterModal({ externalShow = false, onExternalClose 
             preserveScroll: true,
             onFinish: () => {
                 setData('email', '');
+                setData('cf-turnstile-response', '');
+                turnstileRef.current?.reset();
             },
             onSuccess: () => {
                 localStorage.setItem('newsletter_subscribed', 'true');
@@ -87,6 +92,8 @@ export default function NewsletterModal({ externalShow = false, onExternalClose 
             },
         });
     };
+
+    const verificationPending = Boolean(turnstile?.enabled) && !data['cf-turnstile-response'];
 
     return (
         <Modal show={show} onClose={handleClose} maxWidth="md">
@@ -117,6 +124,7 @@ export default function NewsletterModal({ externalShow = false, onExternalClose 
                             onChange={(e) => setData('website', e.target.value)}
                         />
                     </div>
+
                     <TextInput
                         type="email"
                         value={data.email}
@@ -128,6 +136,22 @@ export default function NewsletterModal({ externalShow = false, onExternalClose 
                     />
 
                     {errors.email && <InputError message={errors.email} className="mb-4" />}
+
+                    {turnstile?.enabled && (
+                        <div className="mb-4 flex justify-center">
+                            <Turnstile
+                                ref={turnstileRef}
+                                siteKey={turnstile.siteKey}
+                                onSuccess={(token) => setData('cf-turnstile-response', token)}
+                                onExpire={() => setData('cf-turnstile-response', '')}
+                                onError={() => setData('cf-turnstile-response', '')}
+                            />
+                        </div>
+                    )}
+
+                    {errors['cf-turnstile-response'] && (
+                        <InputError message={errors['cf-turnstile-response']} className="mb-4" />
+                    )}
 
                     {flash?.success && (
                         <p className="mb-4 text-sm text-center text-green-600">
@@ -144,7 +168,7 @@ export default function NewsletterModal({ externalShow = false, onExternalClose 
                     <div className="flex gap-3">
                         <PrimaryButton
                             type="submit"
-                            disabled={processing}
+                            disabled={processing || verificationPending}
                             className="flex-1 justify-center"
                         >
                             {processing ? 'Subscribing...' : 'Subscribe'}
