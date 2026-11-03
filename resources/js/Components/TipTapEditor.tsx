@@ -470,7 +470,6 @@ export default function TipTapEditor({ value, onChange, className = '' }: TipTap
             }),
             createCodeBlockKeyboard(autoMatch),
             RainbowBrackets,
-            Gapcursor,
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
