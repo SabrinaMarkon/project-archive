@@ -12,7 +12,7 @@ class SharedCourseSettingsMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function it_shares_payment_settings_when_both_stripe_and_paypal_are_configured()
     {
         Setting::set('stripe_enabled', true);
@@ -29,7 +29,7 @@ class SharedCourseSettingsMiddlewareTest extends TestCase
         $this->assertTrue($sharedData['paymentSettings']['paypalConfigured']);
     }
 
-    /** @test */
+    #[Test]
     public function stripe_not_configured_when_enabled_but_missing_secret_key()
     {
         Setting::set('stripe_enabled', true);
@@ -42,7 +42,7 @@ class SharedCourseSettingsMiddlewareTest extends TestCase
         $this->assertFalse($sharedData['paymentSettings']['stripeConfigured']);
     }
 
-    /** @test */
+    #[Test]
     public function stripe_not_configured_when_disabled()
     {
         Setting::set('stripe_enabled', false);
@@ -55,7 +55,7 @@ class SharedCourseSettingsMiddlewareTest extends TestCase
         $this->assertFalse($sharedData['paymentSettings']['stripeConfigured']);
     }
 
-    /** @test */
+    #[Test]
     public function paypal_not_configured_when_enabled_but_missing_credentials()
     {
         Setting::set('paypal_enabled', true);
@@ -69,7 +69,7 @@ class SharedCourseSettingsMiddlewareTest extends TestCase
         $this->assertFalse($sharedData['paymentSettings']['paypalConfigured']);
     }
 
-    /** @test */
+    #[Test]
     public function paypal_not_configured_when_missing_client_id_only()
     {
         Setting::set('paypal_enabled', true);
@@ -83,7 +83,7 @@ class SharedCourseSettingsMiddlewareTest extends TestCase
         $this->assertFalse($sharedData['paymentSettings']['paypalConfigured']);
     }
 
-    /** @test */
+    #[Test]
     public function paypal_not_configured_when_missing_secret_only()
     {
         Setting::set('paypal_enabled', true);
@@ -97,7 +97,7 @@ class SharedCourseSettingsMiddlewareTest extends TestCase
         $this->assertFalse($sharedData['paymentSettings']['paypalConfigured']);
     }
 
-    /** @test */
+    #[Test]
     public function both_payment_methods_not_configured_when_disabled()
     {
         Setting::set('stripe_enabled', false);
