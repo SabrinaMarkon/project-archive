@@ -6,7 +6,8 @@ import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
-Edit.layout = (page: React.ReactNode) => <DashboardLayout children={page} />;
+Edit.layout = (page: React.ReactElement<PageProps>) =>
+    page.props.auth?.user?.is_admin ? <DashboardLayout children={page} /> : page;
 
 export default function Edit({
     mustVerifyEmail,
